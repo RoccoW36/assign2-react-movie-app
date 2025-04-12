@@ -9,7 +9,7 @@ import { MovieDetailsProps } from "../../types/interfaces";
 import NavigationIcon from "@mui/icons-material/Navigation";
 import Fab from "@mui/material/Fab";
 import Drawer from "@mui/material/Drawer";
-import MovieReviews from '../movieReviews'
+import MovieReviews from '../movieReviews';
 
 const styles = {
     chipSet: {
@@ -32,8 +32,7 @@ const styles = {
 };
 
 const MovieDetails: React.FC<MovieDetailsProps> = (movie) => {
-
-    const [drawerOpen, setDrawerOpen] = useState(false); // New
+    const [drawerOpen, setDrawerOpen] = useState(false);
 
     return (
         <>
@@ -50,23 +49,31 @@ const MovieDetails: React.FC<MovieDetailsProps> = (movie) => {
                     <Chip label="Genres" sx={styles.chipLabel} color="primary" />
                 </li>
                 {movie.genres.map((g) => (
-                    <li key={g.name}>
+                    <li key={g.id}>
                         <Chip label={g.name} />
                     </li>
                 ))}
             </Paper>
+
             <Paper component="ul" sx={styles.chipSet}>
                 <Chip icon={<AccessTimeIcon />} label={`${movie.runtime} min.`} />
-                <Chip
-                    icon={<MonetizationIcon />}
-                    label={`${movie.revenue.toLocaleString()}`}
-                />
-                <Chip
-                    icon={<StarRate />}
-                    label={`${movie.vote_average} (${movie.vote_count}`}
-                />
+                <Chip icon={<MonetizationIcon />} label={`${movie.revenue.toLocaleString()}`} />
+                <Chip icon={<StarRate />} label={`${movie.vote_average} (${movie.vote_count})`} />
                 <Chip label={`Released: ${movie.release_date}`} />
             </Paper>
+
+            {/* Production Countries Section */}
+            <Paper component="ul" sx={styles.chipSet}>
+                <li>
+                    <Chip label="Production Countries" sx={styles.chipLabel} color="primary" />
+                </li>
+                {movie.production_countries.map((country) => (
+                    <li key={country.iso_3166_1}>
+                        <Chip label={`${country.name} (${country.iso_3166_1})`} />
+                    </li>
+                ))}
+            </Paper>
+
             <Fab
                 color="secondary"
                 variant="extended"
@@ -76,10 +83,12 @@ const MovieDetails: React.FC<MovieDetailsProps> = (movie) => {
                 <NavigationIcon />
                 Reviews
             </Fab>
+
             <Drawer anchor="top" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
                 <MovieReviews {...movie} />
             </Drawer>
         </>
     );
 };
+
 export default MovieDetails;
