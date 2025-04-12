@@ -9,7 +9,8 @@ interface MovieContextInterface {
   myReviews: Record<number, Review>;
 
   mustWatch: number[];
-  addToMustWatch: (movieId: number) => void;
+  addToMustWatch: (movie: BaseMovieProps) => void;
+  removeFromMustWatch: (movie: BaseMovieProps) => void;
 }
 
 const initialContextState: MovieContextInterface = {
@@ -21,6 +22,7 @@ const initialContextState: MovieContextInterface = {
 
   mustWatch: [],
   addToMustWatch: () => {},
+  removeFromMustWatch: () => {},
 };
 
 export const MoviesContext = React.createContext<MovieContextInterface>(initialContextState);
@@ -28,7 +30,6 @@ export const MoviesContext = React.createContext<MovieContextInterface>(initialC
 const MoviesContextProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
   const [favourites, setFavourites] = useState<number[]>([]);
   const [myReviews, setMyReviews] = useState<Record<number, Review>>({});
-
   const [mustWatch, setMustWatch] = useState<number[]>([]);
 
   const addToFavourites = useCallback((movie: BaseMovieProps) => {
@@ -48,14 +49,22 @@ const MoviesContextProvider: React.FC<React.PropsWithChildren> = ({ children }) 
     setMyReviews((prevReviews) => ({ ...prevReviews, [movie.id]: review }));
   }, []);
 
-  const addToMustWatch = useCallback((movieId: number) => {
+  const addToMustWatch = useCallback((movie: BaseMovieProps) => {
     setMustWatch((prevMustWatch) => {
-      if (!prevMustWatch.includes(movieId)) {
-        const updatedList = [...prevMustWatch, movieId];
-        console.log("Updated Must Watch List:", updatedList);
+      if (!prevMustWatch.includes(movie.id)) {
+        const updatedList = [...prevMustWatch, movie.id];
+        console.log("Updated Must-Watch List:", updatedList);
         return updatedList;
       }
       return prevMustWatch;
+    });
+  }, []);
+
+  const removeFromMustWatch = useCallback((movie: BaseMovieProps) => {
+    setMustWatch((prevMustWatch) => {
+      const updatedList = prevMustWatch.filter((mId) => mId !== movie.id);
+      console.log("Updated Must-Watch List after removal:", updatedList);
+      return updatedList;
     });
   }, []);
 
@@ -69,7 +78,8 @@ const MoviesContextProvider: React.FC<React.PropsWithChildren> = ({ children }) 
         myReviews,
         
         mustWatch,
-        addToMustWatch, 
+        addToMustWatch,
+        removeFromMustWatch,
       }}
     >
       {children}

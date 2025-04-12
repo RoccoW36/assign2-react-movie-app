@@ -4,12 +4,13 @@ import IconButton from "@mui/material/IconButton";
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import { BaseMovieProps } from "../../types/interfaces";
 
-const MustWatchIcon: React.FC<BaseMovieProps> = (movie) => {
+const AddToMustWatchIcon: React.FC<BaseMovieProps> = (movie) => {
   const context = useContext(MoviesContext);
 
   const onUserSelect = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    context.addToMustWatch(movie.id);
+    console.log("Adding to Must-Watch:", movie);
+    context.addToMustWatch(movie);
   };
 
   return (
@@ -19,4 +20,4 @@ const MustWatchIcon: React.FC<BaseMovieProps> = (movie) => {
   );
 };
 
-export default MustWatchIcon;
+export default AddToMustWatchIcon;
