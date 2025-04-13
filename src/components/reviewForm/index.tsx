@@ -51,7 +51,6 @@ const ReviewForm: React.FC<BaseMovieProps> = (movie) => {
         review.rating = rating;
         context.addReview(movie, review);
         setOpen(true);
-        //console.log(review);
       };
     
       return (

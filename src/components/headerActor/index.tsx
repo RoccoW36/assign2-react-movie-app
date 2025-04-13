@@ -66,7 +66,7 @@ const ActorHeader: React.FC<{ actor: ActorDetailsProps }> = ({ actor }) => {
             <Typography variant="h4" component="h3">
                 {actor.name}
                 <br />
-                <span>{actor.known_for_department}</span> {/* Example: "Acting" */}
+                <span>{actor.known_for_department}</span>
             </Typography>
 
             <IconButton aria-label="go forward">

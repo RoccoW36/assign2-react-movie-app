@@ -43,6 +43,7 @@ export const getActorImages = (id: string | number) => {
   return fetchData(`${BASE_URL}/person/${id}/images?api_key=${API_KEY}`);
 };
 
-export const getPopularActors = () => {
-  return fetchData(`${BASE_URL}/person/popular?api_key=${API_KEY}&language=en-US&page=1`);
+export const getPopularActors = (page: number) => {
+  return fetchData(`${BASE_URL}/person/popular?api_key=${API_KEY}&language=en-US&page=${page}`);
 };
+

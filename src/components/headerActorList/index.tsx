@@ -12,38 +12,25 @@ const styles = {
         alignItems: "center",
         flexWrap: "wrap",
         marginBottom: 1.5,
-        padding: 2,
-        backgroundColor: "#1E1E1E",
-        color: "white",
     },
 };
 
-interface HeaderActorListProps {
+interface HeaderActorProps {
     title: string;
-    subtitle?: string;
-    onBack?: () => void;
-    onForward?: () => void;
 }
 
-const HeaderActorList: React.FC<HeaderActorListProps> = ({ title, subtitle, onBack, onForward }) => {
+const HeaderActorList: React.FC<HeaderActorProps> = ({ title }) => {
     return (
         <Paper component="div" sx={styles.root}>
-            <IconButton aria-label="Go back" onClick={onBack}>
+            <IconButton aria-label="go back">
                 <ArrowBackIcon color="primary" fontSize="large" />
             </IconButton>
 
-            <div>
-                <Typography variant="h4" component="h3">
-                    {title}
-                </Typography>
-                {subtitle && (
-                    <Typography variant="subtitle1" component="p">
-                        {subtitle}
-                    </Typography>
-                )}
-            </div>
-
-            <IconButton aria-label="Go forward" onClick={onForward}>
+            <Typography variant="h4" component="h3">
+                {title}
+            </Typography>
+            
+            <IconButton aria-label="go forward">
                 <ArrowForwardIcon color="primary" fontSize="large" />
             </IconButton>
         </Paper>

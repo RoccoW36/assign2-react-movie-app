@@ -12,7 +12,7 @@ const FavouriteActorsPage: React.FC = () => {
   const favouriteActorQueries = useQueries(
     actorIds.map((actorId: number) => ({
       queryKey: ["actor", actorId],
-      queryFn: () => getActor(actorId.toString()),
+      queryFn: () => actorId ? getActor(actorId.toString()) : Promise.resolve(null),
     }))
   );
 
@@ -20,7 +20,15 @@ const FavouriteActorsPage: React.FC = () => {
     return <Spinner />;
   }
 
+  if (favouriteActorQueries.some((q) => q.isError)) {
+    return <h1>Failed to load favourite actors.</h1>;
+  }
+
   const displayedActors = favouriteActorQueries.map((q) => q.data).filter(Boolean);
+
+  if (displayedActors.length === 0) {
+    return <h1>No favourite actors found.</h1>;
+  }
 
   return (
     <PageTemplate

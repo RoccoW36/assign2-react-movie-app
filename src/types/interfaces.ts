@@ -1,7 +1,7 @@
 export interface BaseMovieProps {
   title: string;
   budget: number;
-  homepage?: string;
+  homepage: string | undefined;
   id: number;
   imdb_id: string;
   original_language: string;
@@ -32,13 +32,11 @@ export interface MovieDetailsProps extends BaseMovieProps {
     iso_3166_1: string;
     name: string;
   }[];
-  actors?: Actor[];
-  image?: string | null;
 }
 
 export interface MovieImage {
   file_path: string;
-  aspect_ratio?: number;
+  aspect_ratio?: number; 
   height?: number;
   iso_639_1?: string;
   vote_average?: number;
@@ -51,30 +49,29 @@ export interface MoviePageProps {
   images: MovieImage[];
 }
 
-export type FilterOption = "title" | "genre" | "name" | "department";
+export type FilterOption = "title" | "genre";
 
 export interface MovieListPageTemplateProps extends BaseMovieListProps {
   title: string;
 }
 
 export interface Review {
-  id: string;
-  content: string;
-  author: string;
-  agree?: boolean;
-  rating?: number;
-  movieId: number;
+  author: string,
+  content: string,
+  agree: boolean,
+  rating: number,
+  movieId: number,
 }
 
 export interface GenreData {
   genres: {
-    id: number;
-    name: string;
+    id: string;
+    name: string
   }[];
 }
 
 export interface DiscoverMovies {
-  page: number; 
+  page: number;	
   total_pages: number;
   total_results: number;
   results: BaseMovieProps[];
@@ -83,55 +80,70 @@ export interface DiscoverMovies {
 export interface Actor {
   id: number;
   name: string;
-  biography?: string;
+}
+
+export interface BaseActorProps {
+  id: number;
+  name: string;
+  profile_path?: string;
+  popularity: number;
+  known_for_department: string;
+  gender?: number;
+  favourite?: boolean;
+  known_for?: {
+    id: number;
+    title?: string;
+    name?: string;
+    media_type?: string;
+  }[];
+}
+
+export interface ActorDetailsProps extends BaseActorProps {
+  biography: string;
   birthday?: string;
   deathday?: string;
   place_of_birth?: string;
-  popularity: number;
-  profile_path?: string;
-  known_for_department?: string; 
-  gender?: number; 
-  known_for?: Array<{ id: number; title?: string; name?: string; media_type?: string }>;
+  known_for: {
+    id: number;
+    title?: string;
+    name?: string;
+    media_type?: string;
+  }[];
 }
 
-
-export interface ActorDetailsProps extends Actor {
-  movie_credits: {
-    cast: ActorMovieCredits[];
-    crew: ActorMovieCredits[];
-  };
-  images?: ActorImage[];
+export interface ActorCardProps {
+  actor: BaseActorProps;
+  action: (a: BaseActorProps) => React.ReactNode;
 }
 
-export interface ActorMovieCredits {
-  id: number;
-  title: string;
-  character?: string;
-  poster_path?: string;
-}
-
-export interface ActorImage {
-  file_path: string;
-}
-
-export interface BaseActorListProps { 
-  actors: Actor[];
-  action: (actor: Actor) => React.ReactNode;
+export interface BaseActorListProps {
+  actors: BaseActorProps[];
+  action: (a: BaseActorProps) => React.ReactNode;
 }
 
 export interface ActorListPageTemplateProps extends BaseActorListProps {
   title: string;
 }
 
-export interface DiscoverActors {
-  page: number; 
-  total_pages: number;
-  total_results: number;
-  results: Actor[];
+export interface ActorPageProps {
+  actor: ActorDetailsProps;
 }
 
-export interface ActorsContextInterface {
-  favourites: number[];
-  addToFavourites: (actor: Actor) => void;
-  removeFromFavourites: (actor: Actor) => void;
+export type ActorFilterOption = "name";
+
+export interface DiscoverActors {
+  page: number;
+  total_pages: number;
+  total_results: number;
+  results: BaseActorProps[];
+}
+
+export interface ActorImage {
+  file_path: string;
+  aspect_ratio?: number; 
+  height?: number;
+  iso_639_1?: string;
+  vote_average?: number;
+  vote_count?: number;
+  width?: number;
 }

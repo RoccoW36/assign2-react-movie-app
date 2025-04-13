@@ -23,11 +23,11 @@ const styles = {
 
 interface FilterActorsCardProps {
   onUserInput: (type: "name" | "gender", value: string | number) => void;
-  titleFilter: string;
+  nameFilter: string;
   genderFilter: number;
 }
 
-const FilterActorsCard: React.FC<FilterActorsCardProps> = ({ titleFilter, genderFilter, onUserInput }) => {
+const FilterActorsCard: React.FC<FilterActorsCardProps> = ({ nameFilter, genderFilter, onUserInput }) => {
   
   const handleNameChange = (e: ChangeEvent<HTMLInputElement>) => {
     onUserInput("name", e.target.value);
@@ -36,6 +36,7 @@ const FilterActorsCard: React.FC<FilterActorsCardProps> = ({ titleFilter, gender
   const handleGenderChange = (e: SelectChangeEvent) => {
     onUserInput("gender", Number(e.target.value));
   };
+  
 
   return (
     <>
@@ -51,14 +52,14 @@ const FilterActorsCard: React.FC<FilterActorsCardProps> = ({ titleFilter, gender
             id="filled-search"
             label="Search by Name"
             type="search"
-            value={titleFilter}
+            value={nameFilter}
             variant="filled"
             onChange={handleNameChange}
           />
 
           <FormControl sx={styles.formControl}>
             <InputLabel id="gender-label">Gender</InputLabel>
-            <Select labelId="gender-label" id="gender-select" value={genderFilter} onChange={handleGenderChange}>
+            <Select labelId="gender-label" id="gender-select" value={genderFilter.toString()} onChange={handleGenderChange}>
               <MenuItem value={0}>All</MenuItem>
               <MenuItem value={1}>Female</MenuItem>
               <MenuItem value={2}>Male</MenuItem>

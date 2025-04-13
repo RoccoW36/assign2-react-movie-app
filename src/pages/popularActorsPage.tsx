@@ -1,14 +1,14 @@
-import React, { useState } from "react";
-import PageTemplate from "../components/templateActorListPage";
+import React, { useState, useEffect } from "react";
 import { getPopularActors } from "../api/tmdb-api";
-import useFiltering from "../hooks/useFiltering";
-import FilterActorsCard from "../components/filterActorsCard";
+import PageTemplate from "../components/templateActorListPage";
 import { useQuery } from "react-query";
 import Spinner from "../components/spinner";
 import AddToActorFavouritesIcon from "../components/cardIcons/addToActorFavourites";
-import { DiscoverActors, Actor } from "../types/interfaces";
 import Pagination from "@mui/material/Pagination";
 import Grid from "@mui/material/Grid";
+import FilterActorsCard from "../components/filterActorsCard";
+import useFiltering from "../hooks/useFiltering";
+import { DiscoverActors, BaseActorProps } from "../types/interfaces";
 import Alert from "@mui/material/Alert";
 
 const styles = {
@@ -19,42 +19,47 @@ const styles = {
   },
 };
 
-const titleFiltering = {
-  name: "title",
+const nameFiltering = {
+  name: "name",
   value: "",
-  condition: (actor: Actor, value: string) => actor.name.toLowerCase().includes(value.toLowerCase()),
+  condition: (actor: BaseActorProps, value: string) =>
+    actor.name.toLowerCase().includes(value.toLowerCase()),
 };
 
 const genderFiltering = {
   name: "gender",
-  value: "0", 
-  condition: (actor: Actor, value: string) => value === "0" || actor.gender?.toString() === value,
+  value: "0",
+  condition: (actor: BaseActorProps, value: string) =>
+    value === "0" || actor.gender?.toString() === value,
 };
 
 const PopularActorsPage: React.FC = () => {
   const [page, setPage] = useState(1);
 
-
-  const { data, error, isLoading, isError } = useQuery<DiscoverActors, Error>(["popularActors", page], () => 
-    getPopularActors()
+  const { data, error, isLoading, isError } = useQuery<DiscoverActors, Error>(
+    ["popularActors", page], 
+    () => getPopularActors(page)
   );
 
-  const { filterValues, setFilterValues, filterFunction } = useFiltering([titleFiltering, genderFiltering]);
+  const actors = data?.results || []; 
 
-  if (isLoading) {
-    return <Spinner />;
-  }
+  const { filterValues, setFilterValues, filterFunction } = useFiltering(
+    [nameFiltering, genderFiltering]
+  );
 
-  if (isError) {
-    return <Alert severity="error">Failed to load actors: {(error as Error).message}</Alert>;
-  }
+  useEffect(() => {
+    const favourites = actors.filter((actor: BaseActorProps) => actor.favourite);
+    localStorage.setItem("favourites", JSON.stringify(favourites)); 
+  }, [actors]);
+
+  if (isLoading) return <Spinner />;
+  if (isError) return <Alert severity="error">Failed to load actors: {error.message}</Alert>;
 
   const changeFilterValues = (type: "name" | "gender", value: string | number) => {
     const changedFilter = { name: type, value: value.toString() };
     setFilterValues(type === "name" ? [changedFilter, filterValues[1]] : [filterValues[0], changedFilter]);
   };
 
-  const actors = data ? data.results : [];
   const displayedActors = filterFunction(actors);
 
   return (
@@ -62,16 +67,16 @@ const PopularActorsPage: React.FC = () => {
       <PageTemplate
         title="Discover Actors"
         actors={displayedActors}
-        action={(actor: Actor) => <AddToActorFavouritesIcon actor={actor} />}
+        action={(actor: BaseActorProps) => <AddToActorFavouritesIcon actor={actor} />}
       />
       <FilterActorsCard
         onUserInput={changeFilterValues}
-        titleFilter={filterValues[0].value}
-        genderFilter={Number(filterValues[1].value)} 
+        nameFilter={filterValues[0].value} 
+        genderFilter={Number(filterValues[1].value)}
       />
-      <Grid item container sx={styles.paginationContainer}>
+      <Grid container sx={styles.paginationContainer}>
         <Pagination
-          count={50}
+          count={data?.total_pages || 50} 
           page={page}
           onChange={(_, value) => setPage(value)}
           color="primary"

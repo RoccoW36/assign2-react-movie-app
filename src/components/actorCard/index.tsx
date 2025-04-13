@@ -14,7 +14,7 @@ import Divider from "@mui/material/Divider";
 import { Link } from "react-router-dom";
 import img from "../../images/film-poster-placeholder.png";
 import { ActorsContext } from "../../contexts/actorsContext";
-import { Actor } from "../../types/interfaces";
+import { BaseActorProps } from "../../types/interfaces";
 
 const styles = {
   card: { maxWidth: 345 },
@@ -25,14 +25,15 @@ const styles = {
 };
 
 interface ActorCardProps {
-  actor: Actor;
-  action: (a: Actor) => React.ReactNode;
+  actor: BaseActorProps;
+  action: (a: BaseActorProps) => React.ReactNode;
 }
 
 const ActorCard: React.FC<ActorCardProps> = ({ actor, action }) => {
   const { favourites } = useContext(ActorsContext);
   const isFavourite = favourites.includes(actor.id);
-  const gender = actor.gender === 1 ? "Female" : actor.gender === 2 ? "Male" : "Unknown";
+  const gender =
+    actor.gender === 1 ? "Female" : actor.gender === 2 ? "Male" : "Unknown";
 
   return (
     <Card sx={styles.card}>
@@ -45,9 +46,7 @@ const ActorCard: React.FC<ActorCardProps> = ({ actor, action }) => {
           ) : null
         }
         title={
-          <Typography variant="h5" component="p">
-            {actor.name}
-          </Typography>
+          <Typography variant="h5" component="p">{actor.name}</Typography>
         }
       />
 
