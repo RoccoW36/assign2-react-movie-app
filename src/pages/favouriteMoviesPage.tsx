@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import React, { useContext } from "react";
 import PageTemplate from "../components/templateMovieListPage";
 import { MoviesContext } from "../contexts/moviesContext";
 import { useQueries } from "react-query";
@@ -12,7 +12,7 @@ import MovieFilterUI, {
 import RemoveFromFavourites from "../components/cardIcons/removeFromFavourites";
 import WriteReview from "../components/cardIcons/writeReview";
 
-
+// Define filtering conditions
 const titleFiltering = {
   name: "title",
   value: "",
@@ -25,33 +25,42 @@ const genreFiltering = {
 };
 
 const FavouriteMoviesPage: React.FC = () => {
+  // Fetch favourite movie IDs from context
   const { favourites: movieIds } = useContext(MoviesContext);
   const { filterValues, setFilterValues, filterFunction } = useFiltering(
     [titleFiltering, genreFiltering]
   );
 
+  // Fetch detailed movie data for all favourite movies
   const favouriteMovieQueries = useQueries(
-    movieIds.map((movieId) => {
-      return {
-        queryKey: ["movie", movieId],
-        queryFn: () => getMovie(movieId.toString()),
-      };
-    })
+    movieIds.map((movieId) => ({
+      queryKey: ["movie", movieId],
+      queryFn: () => getMovie(movieId.toString()),
+    }))
   );
 
-  const isLoading = favouriteMovieQueries.find((m) => m.isLoading === true);
+  // Check if any query is still loading
+  const isLoading = favouriteMovieQueries.some((q) => q.isLoading);
 
   if (isLoading) {
     return <Spinner />;
   }
 
-  const allFavourites = favouriteMovieQueries.map((q) => q.data);
-  const displayedMovies = allFavourites
-    ? filterFunction(allFavourites)
-    : [];
+  // Combine all retrieved data into a list of favourite movies
+  const allFavourites = favouriteMovieQueries
+    .map((q) => q.data)
+    .filter((movie) => movie !== undefined); // Remove undefined results
 
+  console.log("All Favourites (before filtering):", allFavourites); // Debug log
+
+  // Apply filtering logic to the favourites list
+  const displayedMovies = filterFunction(allFavourites);
+
+  console.log("Filtered Movies (after filtering):", displayedMovies); // Debug log
+
+  // Handle filter changes dynamically
   const changeFilterValues = (type: string, value: string) => {
-    const changedFilter = { name: type, value: value };
+    const changedFilter = { name: type, value };
     const updatedFilterSet =
       type === "title" ? [changedFilter, filterValues[1]] : [filterValues[0], changedFilter];
     setFilterValues(updatedFilterSet);
@@ -59,17 +68,15 @@ const FavouriteMoviesPage: React.FC = () => {
 
   return (
     <>
-    <PageTemplate
+      <PageTemplate
         title="Favourite Movies"
         movies={displayedMovies}
-        action={(movie) => {
-          return (
-            <>
-              <RemoveFromFavourites {...movie} />
-              <WriteReview {...movie} />
-            </>
-          );
-        }}
+        action={(movie) => (
+          <>
+            <RemoveFromFavourites {...movie} />
+            <WriteReview {...movie} />
+          </>
+        )}
       />
       <MovieFilterUI
         onFilterValuesChange={changeFilterValues}
