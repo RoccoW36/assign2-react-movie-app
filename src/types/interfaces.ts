@@ -18,10 +18,10 @@ export interface BaseMovieProps {
   genre_ids?: number[];
 }
 
-export interface BaseMovieListProps { 
+export interface BaseMovieListProps {
   movies: BaseMovieProps[];
   action: (m: BaseMovieProps) => React.ReactNode;
-}   
+}  
 
 export interface MovieDetailsProps extends BaseMovieProps {
   genres: {
@@ -33,10 +33,10 @@ export interface MovieDetailsProps extends BaseMovieProps {
     name: string;
   }[];
 }
-
+ 
 export interface MovieImage {
   file_path: string;
-  aspect_ratio?: number; 
+  aspect_ratio?: number;
   height?: number;
   iso_639_1?: string;
   vote_average?: number;
@@ -49,8 +49,8 @@ export interface MoviePageProps {
   images: MovieImage[];
 }
 
-export type FilterOption = "title" | "genre";
 
+export type FilterOption = "title" | "genre";
 export interface MovieListPageTemplateProps extends BaseMovieListProps {
   title: string;
 }
@@ -69,19 +69,19 @@ export interface GenreData {
     name: string
   }[];
 }
-
+ 
 export interface DiscoverMovies {
-  page: number;	
+  page: number;           
   total_pages: number;
   total_results: number;
   results: BaseMovieProps[];
 }
-
+ 
 export interface Actor {
   id: number;
   name: string;
 }
-
+ 
 export interface BaseActorProps {
   id: number;
   name: string;
@@ -140,7 +140,7 @@ export interface DiscoverActors {
 
 export interface ActorImage {
   file_path: string;
-  aspect_ratio?: number; 
+  aspect_ratio?: number;
   height?: number;
   iso_639_1?: string;
   vote_average?: number;

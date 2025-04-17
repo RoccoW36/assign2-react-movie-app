@@ -75,12 +75,12 @@ const PopularActorsPage: React.FC = () => {
         genderFilter={Number(filterValues[1].value)}
       />
       <Grid container sx={styles.paginationContainer}>
-        <Pagination
-          count={data?.total_pages || 50} 
-          page={page}
-          onChange={(_, value) => setPage(value)}
-          color="primary"
-        />
+      <Pagination
+        count={data?.total_pages || 1}
+        page={page}
+        onChange={(_, value) => setPage(value)}
+        color="primary"
+      />
       </Grid>
     </>
   );
