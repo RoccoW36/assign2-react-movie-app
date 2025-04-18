@@ -47,7 +47,7 @@ const SiteHeader: React.FC = () => {
   const tvShowsMenu = [
     { label: "Discover TV Shows", path: "/tv" },
     { label: "Favorite TV Shows", path: "/tv/favourites" },
-    { label: "Must Watch TV Shows", path: "/tv/mustwatch" }, // <-- Added here
+    { label: "Must Watch TV Shows", path: "/tv/mustwatch" }, 
   ];
 
   const actorsMenu = [
