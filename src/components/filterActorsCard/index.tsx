@@ -12,7 +12,7 @@ import Select, { SelectChangeEvent } from "@mui/material/Select";
 const styles = {
   root: {
     maxWidth: 345,
-    margin: "0 auto", // Center within modal
+    margin: "0 auto",
   },
   formControl: {
     margin: 1,

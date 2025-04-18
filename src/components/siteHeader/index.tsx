@@ -1,44 +1,60 @@
-import React, { useState, MouseEvent, ChangeEvent, KeyboardEvent } from "react";
-import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import IconButton from "@mui/material/IconButton";
-import Button from "@mui/material/Button";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import Switch from "@mui/material/Switch";
-import { styled, alpha } from "@mui/material/styles";
+import React, { useState, ChangeEvent, KeyboardEvent, MouseEvent } from "react";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  IconButton,
+  Button,
+  Menu,
+  MenuItem,
+  Switch,
+  InputBase,
+  Box,
+} from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import InputBase from "@mui/material/InputBase";
+import MovieIcon from "@mui/icons-material/Movie";
+import TvIcon from "@mui/icons-material/Tv";
+import PersonIcon from "@mui/icons-material/Person";
+import { styled, alpha } from "@mui/material/styles";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTheme, createTheme, ThemeProvider } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
-// Offset for AppBar (to avoid content being hidden under fixed header)
 const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 
 const SiteHeader: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [darkMode, setDarkMode] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const open = Boolean(anchorEl);
-  
-  // Dynamically switch between light and dark themes
+
+  const [moviesMenuAnchorEl, setMoviesMenuAnchorEl] = useState<null | HTMLElement>(null);
+  const [tvShowsMenuAnchorEl, setTVShowsMenuAnchorEl] = useState<null | HTMLElement>(null);
+  const [actorsMenuAnchorEl, setActorsMenuAnchorEl] = useState<null | HTMLElement>(null);
+
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
 
-  const menuOptions = [
-    { label: "Home", path: "/" },
-    { label: "Upcoming", path: "/movies/upcoming" },
-    { label: "Favorites", path: "/movies/favourites" },
-    { label: "Must Watch", path: "/movies/mustwatch" },
-    { label: "Popular Actors", path: "/actors" },
-    { label: "Favourite Actors", path: "/actors/favourites" },
+  const homeOption = { label: "Home", path: "/" };
+
+  const moviesMenu = [
+    { label: "Discover Movies", path: "/movies" },
+    { label: "Upcoming Movies", path: "/movies/upcoming" },
+    { label: "Favorite Movies", path: "/movies/favourites" },
+    { label: "Must Watch Movies", path: "/movies/mustwatch" },
   ];
 
-  // Toggle dark mode
+  const tvShowsMenu = [
+    { label: "Discover TV Shows", path: "/tv" },
+    { label: "Favorite TV Shows", path: "/tv/favourites" },
+    { label: "Must Watch TV Shows", path: "/tv/mustwatch" }, // <-- Added here
+  ];
+
+  const actorsMenu = [
+    { label: "Popular Actors", path: "/actors" },
+    { label: "Favorite Actors", path: "/actors/favourites" },
+  ];
+
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
   };
@@ -50,25 +66,34 @@ const SiteHeader: React.FC = () => {
   const handleSearchKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && searchQuery.trim() !== "") {
       navigate(`/search?query=${encodeURIComponent(searchQuery.trim())}`);
-      setSearchQuery(""); // Clear after search
+      setSearchQuery("");
     }
   };
 
-  const handleMenuSelect = (pageURL: string) => {
-    navigate(pageURL);
-    setAnchorEl(null);
+  const handleMenuSelect = (path: string) => {
+    navigate(path);
+    setMoviesMenuAnchorEl(null);
+    setTVShowsMenuAnchorEl(null);
+    setActorsMenuAnchorEl(null);
   };
 
-  const handleMenu = (event: MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
+  const handleMoviesMenuOpen = (event: MouseEvent<HTMLButtonElement>) => {
+    setMoviesMenuAnchorEl(event.currentTarget);
   };
 
-  // Create a custom theme based on darkMode
+  const handleTVShowsMenuOpen = (event: MouseEvent<HTMLButtonElement>) => {
+    setTVShowsMenuAnchorEl(event.currentTarget);
+  };
+
+  const handleActorsMenuOpen = (event: MouseEvent<HTMLButtonElement>) => {
+    setActorsMenuAnchorEl(event.currentTarget);
+  };
+
   const customTheme = createTheme({
     palette: {
-      mode: darkMode ? 'dark' : 'light', // Toggle dark mode
+      mode: darkMode ? "dark" : "light",
       primary: {
-        main: darkMode ? "#1976d2" : "#6c5ce7", // Blue when dark, purple for light mode
+        main: darkMode ? "#1976d2" : "#6c5ce7",
       },
       background: {
         default: darkMode ? "#121212" : "#fff",
@@ -80,19 +105,24 @@ const SiteHeader: React.FC = () => {
     <ThemeProvider theme={customTheme}>
       <AppBar position="sticky" elevation={2}>
         <Toolbar>
-          <Typography variant="h4" sx={{ flexGrow: 1 }}>
+          <Typography
+            variant="h5"
+            sx={{ flexGrow: 1, cursor: "pointer" }}
+            onClick={() => navigate("/")}
+          >
             TMDB Client
           </Typography>
-          <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
-            Your gateway to movie discovery!
-          </Typography>
-          <div
-            style={{
+
+          {/* Search Box */}
+          <Box
+            sx={{
               position: "relative",
-              borderRadius: "4px",
+              borderRadius: 1,
               backgroundColor: alpha("#ffffff", 0.15),
-              marginLeft: "10px",
-              maxWidth: "300px",
+              marginRight: 2,
+              marginLeft: 2,
+              maxWidth: 300,
+              flexGrow: 1,
             }}
           >
             <InputBase
@@ -101,40 +131,82 @@ const SiteHeader: React.FC = () => {
               value={searchQuery}
               onChange={handleSearchChange}
               onKeyDown={handleSearchKeyDown}
-              style={{
+              sx={{
                 color: "inherit",
                 padding: "8px 8px 8px 40px",
                 width: "100%",
               }}
             />
-          </div>
+          </Box>
+
+          {/* Dark Mode Switch */}
           <Switch checked={darkMode} onChange={toggleDarkMode} />
-          {isMobile ? (
+
+          {!isMobile ? (
             <>
-              <IconButton
-                aria-label="menu"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleMenu}
+              {/* Home Button */}
+              <Button
+                color={location.pathname === homeOption.path ? "secondary" : "inherit"}
+                onClick={() => handleMenuSelect(homeOption.path)}
+              >
+                Home
+              </Button>
+
+              {/* Movies Button */}
+              <Button
                 color="inherit"
-                size="large"
+                startIcon={<MovieIcon />}
+                onClick={handleMoviesMenuOpen}
               >
-                <MenuIcon />
-              </IconButton>
+                Movies
+              </Button>
               <Menu
-                id="menu-appbar"
-                anchorEl={anchorEl}
-                anchorOrigin={{ vertical: "top", horizontal: "right" }}
-                keepMounted
-                transformOrigin={{ vertical: "top", horizontal: "right" }}
-                open={open}
-                onClose={() => setAnchorEl(null)}
+                anchorEl={moviesMenuAnchorEl}
+                open={Boolean(moviesMenuAnchorEl)}
+                onClose={() => setMoviesMenuAnchorEl(null)}
               >
-                {menuOptions.map((opt) => (
-                  <MenuItem
-                    key={opt.label}
-                    onClick={() => handleMenuSelect(opt.path)}
-                  >
+                {moviesMenu.map((opt) => (
+                  <MenuItem key={opt.label} onClick={() => handleMenuSelect(opt.path)}>
+                    {opt.label}
+                  </MenuItem>
+                ))}
+              </Menu>
+
+              {/* TV Shows Button */}
+              <Button
+                color="inherit"
+                startIcon={<TvIcon />}
+                onClick={handleTVShowsMenuOpen}
+              >
+                TV Shows
+              </Button>
+              <Menu
+                anchorEl={tvShowsMenuAnchorEl}
+                open={Boolean(tvShowsMenuAnchorEl)}
+                onClose={() => setTVShowsMenuAnchorEl(null)}
+              >
+                {tvShowsMenu.map((opt) => (
+                  <MenuItem key={opt.label} onClick={() => handleMenuSelect(opt.path)}>
+                    {opt.label}
+                  </MenuItem>
+                ))}
+              </Menu>
+
+              {/* Actors Button */}
+              <Button
+                color="inherit"
+                startIcon={<PersonIcon />}
+                onClick={handleActorsMenuOpen}
+              >
+                Actors
+              </Button>
+              <Menu
+                anchorEl={actorsMenuAnchorEl}
+                open={Boolean(actorsMenuAnchorEl)}
+                onClose={() => setActorsMenuAnchorEl(null)}
+              >
+                {actorsMenu.map((opt) => (
+                  <MenuItem key={opt.label} onClick={() => handleMenuSelect(opt.path)}>
                     {opt.label}
                   </MenuItem>
                 ))}
@@ -142,15 +214,39 @@ const SiteHeader: React.FC = () => {
             </>
           ) : (
             <>
-              {menuOptions.map((opt) => (
-                <Button
-                  key={opt.label}
-                  color={location.pathname === opt.path ? "secondary" : "inherit"}
-                  onClick={() => handleMenuSelect(opt.path)}
-                >
-                  {opt.label}
-                </Button>
-              ))}
+              {/* Mobile Menu */}
+              <IconButton
+                aria-label="menu"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleMoviesMenuOpen}
+                color="inherit"
+                size="large"
+              >
+                <MenuIcon />
+              </IconButton>
+              <Menu
+                anchorEl={moviesMenuAnchorEl}
+                open={Boolean(moviesMenuAnchorEl)}
+                onClose={() => setMoviesMenuAnchorEl(null)}
+              >
+                <MenuItem onClick={() => handleMenuSelect(homeOption.path)}>Home</MenuItem>
+                {moviesMenu.map((opt) => (
+                  <MenuItem key={opt.label} onClick={() => handleMenuSelect(opt.path)}>
+                    {opt.label}
+                  </MenuItem>
+                ))}
+                {tvShowsMenu.map((opt) => (
+                  <MenuItem key={opt.label} onClick={() => handleMenuSelect(opt.path)}>
+                    {opt.label}
+                  </MenuItem>
+                ))}
+                {actorsMenu.map((opt) => (
+                  <MenuItem key={opt.label} onClick={() => handleMenuSelect(opt.path)}>
+                    {opt.label}
+                  </MenuItem>
+                ))}
+              </Menu>
             </>
           )}
         </Toolbar>

@@ -47,3 +47,20 @@ export const searchMovies = (query: string) =>
 export const searchActors = (query: string) =>
   fetchData(`${BASE_URL}/search/person?api_key=${API_KEY}&language=en-US&query=${query}&page=1`);
 
+export const getTVShows = () =>
+  fetchData(`${BASE_URL}/discover/tv?api_key=${API_KEY}&language=en-US&include_adult=false&page=1`);
+
+export const getTVShow = (id: string | number) =>
+  fetchData(`${BASE_URL}/tv/${id}?api_key=${API_KEY}`);
+
+export const searchTVShows = (query: string) =>
+  fetchData(`${BASE_URL}/search/tv?api_key=${API_KEY}&query=${encodeURIComponent(query)}&language=en-US&page=1`);
+
+export const getTVShowImages = (id: string | number) =>
+  fetchData(`${BASE_URL}/tv/${id}/images?api_key=${API_KEY}`).then((json) => json.posters);
+
+export const getTVShowReviews = (id: string | number) =>
+  fetchData(`${BASE_URL}/tv/${id}/reviews?api_key=${API_KEY}`).then((json) => json.results);
+
+
+

@@ -41,14 +41,14 @@ const ActorFilterUI: React.FC<ActorFilterUIProps> = ({ onFilterValuesChange, nam
                 anchor="left"
                 open={drawerOpen}
                 onClose={() => setDrawerOpen(false)}
-                sx={{ width: "75%", maxWidth: 400, backgroundColor: "#fff" }} // Optional responsive styling
+                sx={{ width: "75%", maxWidth: 400, backgroundColor: "#fff" }}
             >
                 <FilterActorsCard
                     onUserInput={onFilterValuesChange}
                     nameFilter={nameFilter}
                     genderFilter={genderFilter}
                 />
-                <button onClick={handleResetFilters}>Reset Filters</button> {/* Optional Reset Button */}
+                <button onClick={handleResetFilters}>Reset Filters</button>
             </Drawer>
         </>
     );

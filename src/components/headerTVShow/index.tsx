@@ -7,8 +7,8 @@ import Typography from "@mui/material/Typography";
 import HomeIcon from "@mui/icons-material/Home";
 import FavouriteIcon from "@mui/icons-material/Favorite";
 import Avatar from "@mui/material/Avatar";
-import { MovieDetailsProps } from "../../types/interfaces";
-import { MoviesContext } from "../../contexts/moviesContext";
+import { TVShowDetailsProps } from "../../types/interfaces";  
+import { TVShowsContext } from "../../contexts/tvShowsContext";
 
 const styles = {
   root: {
@@ -23,19 +23,19 @@ const styles = {
   },
 };
 
-const MovieHeader: React.FC<{ movie: MovieDetailsProps }> = ({ movie }) => {
-  const { favourites, addToFavourites, removeFromFavourites } = useContext(MoviesContext);
+const TVShowHeader: React.FC<{ tvShow: TVShowDetailsProps }> = ({ tvShow }) => {
+  const { favourites, addToFavourites, removeFromFavourites } = useContext(TVShowsContext);
   const [isFavorite, setIsFavorite] = useState(false);
 
   useEffect(() => {
-    setIsFavorite(favourites.includes(movie.id));
-  }, [favourites, movie.id]);
+    setIsFavorite(favourites.includes(tvShow.id));
+  }, [favourites, tvShow.id]);
 
   const toggleFavorite = () => {
     if (isFavorite) {
-      removeFromFavourites(movie);
+      removeFromFavourites(tvShow);
     } else {
-      addToFavourites(movie);
+      addToFavourites(tvShow);
     }
     setIsFavorite(!isFavorite);
   };
@@ -53,14 +53,14 @@ const MovieHeader: React.FC<{ movie: MovieDetailsProps }> = ({ movie }) => {
       </IconButton>
 
       <Typography variant="h4" component="h3">
-        {movie.title}{" "}
-        {movie.homepage && (
-          <a href={movie.homepage}>
+        {tvShow.name}{" "}
+        {tvShow.homepage && (
+          <a href={tvShow.homepage}>
             <HomeIcon color="primary" fontSize="large" />
           </a>
         )}
         <br />
-        <span>{movie.tagline || "No tagline available"}</span>
+        <span>{tvShow.tagline || "No tagline available"}</span>
       </Typography>
 
       <IconButton aria-label="go forward">
@@ -70,4 +70,4 @@ const MovieHeader: React.FC<{ movie: MovieDetailsProps }> = ({ movie }) => {
   );
 };
 
-export default MovieHeader;
+export default TVShowHeader;

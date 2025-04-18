@@ -1,3 +1,4 @@
+
 export interface BaseMovieProps {
   title: string;
   budget: number;
@@ -21,7 +22,7 @@ export interface BaseMovieProps {
 export interface BaseMovieListProps {
   movies: BaseMovieProps[];
   action: (m: BaseMovieProps) => React.ReactNode;
-}  
+}
 
 export interface MovieDetailsProps extends BaseMovieProps {
   genres: {
@@ -33,7 +34,7 @@ export interface MovieDetailsProps extends BaseMovieProps {
     name: string;
   }[];
 }
- 
+
 export interface MovieImage {
   file_path: string;
   aspect_ratio?: number;
@@ -49,39 +50,40 @@ export interface MoviePageProps {
   images: MovieImage[];
 }
 
-
 export type FilterOption = "title" | "genre";
+
 export interface MovieListPageTemplateProps extends BaseMovieListProps {
   title: string;
 }
 
 export interface Review {
-  author: string,
-  content: string,
-  agree: boolean,
-  rating: number,
-  movieId: number,
+  author: string;
+  content: string;
+  agree: boolean;
+  rating: number;
+  movieId: number;
+  tvShowId: number; 
 }
 
 export interface GenreData {
   genres: {
     id: string;
-    name: string
+    name: string;
   }[];
 }
- 
+
 export interface DiscoverMovies {
-  page: number;           
+  page: number;
   total_pages: number;
   total_results: number;
   results: BaseMovieProps[];
 }
- 
+
 export interface Actor {
   id: number;
   name: string;
 }
- 
+
 export interface BaseActorProps {
   id: number;
   name: string;
@@ -146,4 +148,61 @@ export interface ActorImage {
   vote_average?: number;
   vote_count?: number;
   width?: number;
+}
+
+export interface BaseTVShowProps {
+  id: number;
+  name: string;
+  overview: string;
+  first_air_date: string;
+  vote_average: number;
+  popularity: number;
+  poster_path?: string;
+  tagline?: string;
+  favourite?: boolean;
+  genre_ids?: number[];
+}
+
+export interface BaseTVShowListProps {
+  tvShows: BaseTVShowProps[];
+  action: (tv: BaseTVShowProps) => React.ReactNode;
+}
+
+export interface TVShowDetailsProps extends BaseTVShowProps {
+  genres: {
+    id: number;
+    name: string;
+  }[];
+  origin_country: string[];
+  number_of_episodes: number;
+  number_of_seasons: number;
+  homepage?: string;
+}
+
+export interface TVShowImage {
+  file_path: string;
+  aspect_ratio?: number;
+  height?: number;
+  iso_639_1?: string;
+  vote_average?: number;
+  vote_count?: number;
+  width?: number;
+}
+
+export interface TVShowPageProps {
+  tvShow: TVShowDetailsProps;
+  images: TVShowImage[];
+}
+
+export type TVShowFilterOption = "name" | "genre";
+
+export interface TVShowListPageTemplateProps extends BaseTVShowListProps {
+  title: string;
+}
+
+export interface DiscoverTVShows {
+  page: number;
+  total_pages: number;
+  total_results: number;
+  results: BaseTVShowProps[];
 }

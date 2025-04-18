@@ -17,8 +17,8 @@ const useFiltering = ( filters: Filter[]) => {
 
   const filteringConditions = filters.map((f) => f.condition);
   const filterFunction = (collection: any) =>{
-    console.log("collection):", collection); // Debug log
-    console.log("filtering conditions):", filteringConditions); // Debug log
+    console.log("collection):", collection); 
+    console.log("filtering conditions):", filteringConditions); 
     return filteringConditions.reduce((data, conditionFn, index) => {
 
       return data.filter((item: any) => {

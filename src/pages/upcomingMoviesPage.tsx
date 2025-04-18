@@ -1,7 +1,7 @@
 import React from "react";
 import { useQuery } from "react-query";
-import PageTemplate from "../components/templateMovieListPage";
-import { getUpcomingMovies } from "../api/tmdb-api";
+import PageTemplate from "../components/templateMovieListPage"; 
+import { getUpcomingMovies } from "../api/tmdb-api"; 
 import Spinner from "../components/spinner";
 import AddToMustWatchIcon from "../components/cardIcons/addToMustWatch";
 import MovieFilterUI, { titleFilter, genreFilter } from "../components/movieFilterUI";
@@ -25,10 +25,7 @@ const UpcomingMoviesPage: React.FC = () => {
     getUpcomingMovies
   );
 
-  const { filterValues, setFilterValues, filterFunction } = useFiltering([
-    titleFiltering,
-    genreFiltering,
-  ]);
+  const { filterValues, setFilterValues, filterFunction } = useFiltering([titleFiltering, genreFiltering]);
 
   if (isLoading) {
     return <Spinner />;
@@ -47,7 +44,7 @@ const UpcomingMoviesPage: React.FC = () => {
     setFilterValues(updatedFilterSet);
   };
 
-  const displayedMovies = filterFunction(movies || []);
+  const displayedMovies = movies ? filterFunction(movies) : [];
 
   return (
     <>
@@ -55,8 +52,8 @@ const UpcomingMoviesPage: React.FC = () => {
         title="Upcoming Movies"
         movies={displayedMovies}
         action={(movie: BaseMovieProps) => (
-          <AddToMustWatchIcon {...movie} /> 
-                )}
+          <AddToMustWatchIcon {...movie} />
+        )}
       />
       <MovieFilterUI
         onFilterValuesChange={changeFilterValues}

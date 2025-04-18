@@ -61,16 +61,16 @@ const FavouriteMoviesPage: React.FC = () => {
 
   return (
     <>
-      <PageTemplate
-        title="Favourite Movies"
-        movies={displayedMovies}
-        action={(movie) => (
-          <>
-            <RemoveFromFavourites {...movie} />
-            <WriteReview {...movie} />
-          </>
-        )}
-      />
+<PageTemplate
+  title="Favourite Movies"
+  movies={displayedMovies}
+  action={(movie) => (
+    <>
+      <RemoveFromFavourites {...movie} />
+      <WriteReview movieId={movie.id} />
+    </>
+  )}
+/>
       {displayedMovies.length === 0 ? (
         <h1>No favourite movies selected</h1>
       ) : (

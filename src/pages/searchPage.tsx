@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
-import { searchMovies, searchActors } from "../api/tmdb-api"; // Make sure these functions are available in tmdb-api
+import { searchMovies, searchActors, searchTVShows } from "../api/tmdb-api";
 import {
   Grid,
   Card,
@@ -13,7 +13,6 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-// ⭐ Styled Card with Hover Effect
 const HoverCard = styled(Card)(({ theme }) => ({
   height: "100%",
   display: "flex",
@@ -30,7 +29,7 @@ const SearchPage: React.FC = () => {
   const [results, setResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [selectedTab, setSelectedTab] = useState(0); // 0 for Movies, 1 for Actors
+  const [selectedTab, setSelectedTab] = useState(0);
 
   const queryParams = new URLSearchParams(location.search);
   const query = queryParams.get("query");
@@ -46,6 +45,8 @@ const SearchPage: React.FC = () => {
         data = await searchMovies(query);
       } else if (type === "actor") {
         data = await searchActors(query);
+      } else if (type === "tv") {
+        data = await searchTVShows(query);
       }
 
       setResults(data.results);
@@ -58,13 +59,13 @@ const SearchPage: React.FC = () => {
 
   useEffect(() => {
     if (query) {
-      fetchResults("movie"); // Default search type is movie
+      fetchResults("movie");
     }
   }, [query]);
 
   const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
     setSelectedTab(newValue);
-    const type = newValue === 0 ? "movie" : "actor";
+    const type = newValue === 0 ? "movie" : newValue === 1 ? "actor" : "tv";
     fetchResults(type);
   };
 
@@ -81,6 +82,7 @@ const SearchPage: React.FC = () => {
       <Tabs value={selectedTab} onChange={handleTabChange} aria-label="search-tabs">
         <Tab label="Movies" />
         <Tab label="Actors" />
+        <Tab label="TV Shows" />
       </Tabs>
 
       {loading && <CircularProgress />}
@@ -94,12 +96,11 @@ const SearchPage: React.FC = () => {
         {results.map((item) => (
           <Grid item key={item.id} xs={12} sm={6} md={4} lg={3}>
             <Link
-              to={`/${selectedTab === 0 ? "movies" : "actors"}/${item.id}`}
+              to={`/${selectedTab === 0 ? "movies" : selectedTab === 1 ? "actors" : "tv"}/${item.id}`}
               style={{ textDecoration: "none" }}
             >
               <HoverCard>
                 {selectedTab === 0 ? (
-                  // Movie Image
                   item.poster_path ? (
                     <CardMedia
                       component="img"
@@ -120,12 +121,32 @@ const SearchPage: React.FC = () => {
                       <Typography variant="subtitle1">No Image</Typography>
                     </div>
                   )
-                ) : (
-                  // Actor Image
+                ) : selectedTab === 1 ? (
                   item.profile_path ? (
                     <CardMedia
                       component="img"
                       image={`https://image.tmdb.org/t/p/w500${item.profile_path}`}
+                      alt={item.name}
+                      sx={{ height: 300 }}
+                    />
+                  ) : (
+                    <div
+                      style={{
+                        height: 300,
+                        backgroundColor: "#ccc",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Typography variant="subtitle1">No Image</Typography>
+                    </div>
+                  )
+                ) : (
+                  item.poster_path ? (
+                    <CardMedia
+                      component="img"
+                      image={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
                       alt={item.name}
                       sx={{ height: 300 }}
                     />
