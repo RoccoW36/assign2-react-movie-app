@@ -4,25 +4,23 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import Button from "@mui/material/Button";
-import { styled } from "@mui/material/styles";
-import MenuIcon from "@mui/icons-material/Menu";
-import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
-import { useNavigate } from "react-router-dom";
+import MenuItem from "@mui/material/MenuItem";
+import Switch from "@mui/material/Switch";
+import { styled, alpha } from "@mui/material/styles";
+import MenuIcon from "@mui/icons-material/Menu";
+import InputBase from "@mui/material/InputBase";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-
-const styles = {
-  title: {
-    flexGrow: 1,
-  },
-};
 
 const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 
 const SiteHeader: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [darkMode, setDarkMode] = useState(false);
   const open = Boolean(anchorEl);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
@@ -45,16 +43,48 @@ const SiteHeader: React.FC = () => {
     setAnchorEl(event.currentTarget);
   };
 
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+  };
+
   return (
     <>
-      <AppBar position="fixed" elevation={0} color="primary">
+      <AppBar
+        position="sticky"
+        elevation={2}
+        style={{
+          background: darkMode
+            ? "linear-gradient(90deg, #333, #000)"
+            : "linear-gradient(90deg, #6c5ce7, #0984e3)",
+        }}
+      >
         <Toolbar>
-          <Typography variant="h4" sx={styles.title}>
+          <Typography variant="h4" sx={{ flexGrow: 1 }}>
             TMDB Client
           </Typography>
-          <Typography variant="h6" sx={styles.title}>
+          <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
             Your gateway to movie discovery!
           </Typography>
+          <div
+            style={{
+              position: "relative",
+              borderRadius: "4px",
+              backgroundColor: alpha("#ffffff", 0.15),
+              marginLeft: "10px",
+              maxWidth: "300px",
+            }}
+          >
+            <InputBase
+              placeholder="Search…"
+              inputProps={{ "aria-label": "search" }}
+              style={{
+                color: "inherit",
+                padding: "8px 8px 8px 40px",
+                width: "100%",
+              }}
+            />
+          </div>
+          <Switch checked={darkMode} onChange={toggleDarkMode} />
           {isMobile ? (
             <>
               <IconButton
@@ -73,7 +103,7 @@ const SiteHeader: React.FC = () => {
                 anchorOrigin={{ vertical: "top", horizontal: "right" }}
                 keepMounted
                 transformOrigin={{ vertical: "top", horizontal: "right" }}
-                open={open}
+                open={open} 
                 onClose={() => setAnchorEl(null)}
               >
                 {menuOptions.map((opt) => (
@@ -86,7 +116,11 @@ const SiteHeader: React.FC = () => {
           ) : (
             <>
               {menuOptions.map((opt) => (
-                <Button key={opt.label} color="inherit" onClick={() => handleMenuSelect(opt.path)}>
+                <Button
+                  key={opt.label}
+                  color={location.pathname === opt.path ? "secondary" : "inherit"}
+                  onClick={() => handleMenuSelect(opt.path)}
+                >
                   {opt.label}
                 </Button>
               ))}

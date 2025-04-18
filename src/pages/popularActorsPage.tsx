@@ -6,30 +6,23 @@ import Spinner from "../components/spinner";
 import AddToActorFavouritesIcon from "../components/cardIcons/addToActorFavourites";
 import Pagination from "@mui/material/Pagination";
 import Grid from "@mui/material/Grid";
-import FilterActorsCard from "../components/filterActorsCard";
-import useFiltering from "../hooks/useFiltering";
-import { DiscoverActors, BaseActorProps } from "../types/interfaces";
 import Alert from "@mui/material/Alert";
-
-const styles = {
-  paginationContainer: {
-    marginTop: 2,
-    display: "flex",
-    justifyContent: "center",
-  },
-};
+import ActorCard from "../components/actorCard";
+import useFiltering from "../hooks/useFiltering";
+import FloatingFilterActorsMenu from "../components/actorFilterUI";
+import { DiscoverActors, BaseActorProps } from "../types/interfaces";
 
 const nameFiltering = {
   name: "name",
   value: "",
-  condition: (actor: BaseActorProps, value: string) =>
+  condition: (actor: BaseActorProps, value: string): boolean =>
     actor.name.toLowerCase().includes(value.toLowerCase()),
 };
 
 const genderFiltering = {
   name: "gender",
   value: "0",
-  condition: (actor: BaseActorProps, value: string) =>
+  condition: (actor: BaseActorProps, value: string): boolean =>
     value === "0" || actor.gender?.toString() === value,
 };
 
@@ -37,27 +30,39 @@ const PopularActorsPage: React.FC = () => {
   const [page, setPage] = useState(1);
 
   const { data, error, isLoading, isError } = useQuery<DiscoverActors, Error>(
-    ["popularActors", page], 
+    ["popularActors", page],
     () => getPopularActors(page)
   );
 
-  const actors = data?.results || []; 
+  const actors = data?.results || [];
 
-  const { filterValues, setFilterValues, filterFunction } = useFiltering(
-    [nameFiltering, genderFiltering]
-  );
+  const { filterValues, setFilterValues, filterFunction } = useFiltering([
+    nameFiltering,
+    genderFiltering,
+  ]);
 
   useEffect(() => {
     const favourites = actors.filter((actor: BaseActorProps) => actor.favourite);
-    localStorage.setItem("favourites", JSON.stringify(favourites)); 
+    localStorage.setItem("favourites", JSON.stringify(favourites));
   }, [actors]);
 
-  if (isLoading) return <Spinner />;
-  if (isError) return <Alert severity="error">Failed to load actors: {error.message}</Alert>;
+  if (isLoading) {
+    return <Spinner />;
+  }
+
+  if (isError) {
+    return (
+      <Alert severity="error">Failed to load actors: {error.message}</Alert>
+    );
+  }
 
   const changeFilterValues = (type: "name" | "gender", value: string | number) => {
     const changedFilter = { name: type, value: value.toString() };
-    setFilterValues(type === "name" ? [changedFilter, filterValues[1]] : [filterValues[0], changedFilter]);
+    setFilterValues(
+      type === "name"
+        ? [changedFilter, filterValues[1]]
+        : [filterValues[0], changedFilter]
+    );
   };
 
   const displayedActors = filterFunction(actors);
@@ -67,20 +72,48 @@ const PopularActorsPage: React.FC = () => {
       <PageTemplate
         title="Discover Actors"
         actors={displayedActors}
-        action={(actor: BaseActorProps) => <AddToActorFavouritesIcon actor={actor} />}
+        action={(actor: BaseActorProps) => (
+          <AddToActorFavouritesIcon actor={actor} />
+        )}
       />
-      <FilterActorsCard
-        onUserInput={changeFilterValues}
-        nameFilter={filterValues[0].value} 
+      <FloatingFilterActorsMenu
+        onFilterValuesChange={changeFilterValues}
+        nameFilter={filterValues[0].value}
         genderFilter={Number(filterValues[1].value)}
       />
-      <Grid container sx={styles.paginationContainer}>
-      <Pagination
-        count={data?.total_pages || 1}
-        page={page}
-        onChange={(_, value) => setPage(value)}
-        color="primary"
-      />
+      <Grid
+        container
+        spacing={4}
+        sx={{
+          marginTop: 5, 
+          padding: "0 20px",
+        }}
+      >
+        {displayedActors.map((actor: BaseActorProps) => (
+          <Grid item xs={12} sm={6} md={4} lg={3} key={actor.id}>
+            <ActorCard
+              actor={actor}
+              action={(a: BaseActorProps) => (
+                <AddToActorFavouritesIcon actor={a} />
+              )}
+            />
+          </Grid>
+        ))}
+      </Grid>
+      <Grid
+        container
+        sx={{
+          marginTop: 4,
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+        <Pagination
+          count={data?.total_pages || 1}
+          page={page}
+          onChange={(_, value) => setPage(value)}
+          color="primary"
+        />
       </Grid>
     </>
   );

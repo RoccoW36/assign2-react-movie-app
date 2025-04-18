@@ -27,7 +27,7 @@ const FavouriteActorsPage: React.FC = () => {
   const displayedActors = favouriteActorQueries.map((q) => q.data).filter(Boolean);
 
   if (displayedActors.length === 0) {
-    return <h1>No favourite actors found.</h1>;
+    return <h1>No favourite actors selected</h1>;
   }
 
   return (

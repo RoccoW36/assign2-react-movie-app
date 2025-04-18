@@ -16,10 +16,16 @@ interface ActorFilterUIProps {
     onFilterValuesChange: (type: "name" | "gender", value: string | number) => void;
     nameFilter: string;
     genderFilter: number;
-  }
+}
 
 const ActorFilterUI: React.FC<ActorFilterUIProps> = ({ onFilterValuesChange, nameFilter, genderFilter }) => {
     const [drawerOpen, setDrawerOpen] = useState(false);
+
+    const handleResetFilters = () => {
+        onFilterValuesChange("name", "");
+        onFilterValuesChange("gender", 0);
+        setDrawerOpen(false); 
+    };
 
     return (
         <>
@@ -29,14 +35,20 @@ const ActorFilterUI: React.FC<ActorFilterUIProps> = ({ onFilterValuesChange, nam
                 onClick={() => setDrawerOpen(true)}
                 sx={styles.fab}
             >
-                Filter Actors
+                {nameFilter || genderFilter !== 0 ? "Filters Applied" : "Filter Actors"}
             </Fab>
-            <Drawer anchor="left" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
+            <Drawer
+                anchor="left"
+                open={drawerOpen}
+                onClose={() => setDrawerOpen(false)}
+                sx={{ width: "75%", maxWidth: 400, backgroundColor: "#fff" }} // Optional responsive styling
+            >
                 <FilterActorsCard
                     onUserInput={onFilterValuesChange}
                     nameFilter={nameFilter}
                     genderFilter={genderFilter}
                 />
+                <button onClick={handleResetFilters}>Reset Filters</button> {/* Optional Reset Button */}
             </Drawer>
         </>
     );

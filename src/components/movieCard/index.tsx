@@ -7,7 +7,7 @@ import CardHeader from "@mui/material/CardHeader";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import PlaylistPlayIcon from "@mui/icons-material/PlaylistPlay";
 import CalendarIcon from "@mui/icons-material/CalendarTodayTwoTone";
 import StarRateIcon from "@mui/icons-material/StarRate";
 import Grid from "@mui/material/Grid";
@@ -49,7 +49,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, action }) => {
             </Avatar>
           ) : isMustWatch ? (
             <Avatar sx={styles.avatarMustWatch}>
-              <CheckCircleIcon />
+              <PlaylistPlayIcon />
             </Avatar>
           ) : null
         }

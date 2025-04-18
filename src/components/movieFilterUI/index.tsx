@@ -8,15 +8,16 @@ export const titleFilter = (movie: BaseMovieProps, value: string): boolean => {
     return movie.title.toLowerCase().search(value.toLowerCase()) !== -1;
 };
 
-export const genreFilter = (movie: BaseMovieProps, value: string) => {
+export const genreFilter = (movie: BaseMovieProps, value: string): boolean => {
     const genreId = Number(value);
     const genreIds = movie.genre_ids;
     return genreId > 0 && genreIds ? genreIds.includes(genreId) : true;
 };
 
-export const favouritesgenreFilter = (movie: MovieDetailsProps, value: string) => {
-     const genreId = Number(value);
-    const genres = movie.genres; return genreId > 0 && genres ? genres.some((genre) => genre.id == genreId) : true;
+export const favouritesgenreFilter = (movie: MovieDetailsProps, value: string): boolean => {
+    const genreId = Number(value);
+    const genres = movie.genres;
+    return genreId > 0 && genres ? genres.some((genre) => genre.id === genreId) : true;
 };
 
 const styles = {
@@ -37,9 +38,20 @@ interface MovieFilterUIProps {
     genreFilter: string;
 }
 
-
 const MovieFilterUI: React.FC<MovieFilterUIProps> = ({ onFilterValuesChange, titleFilter, genreFilter }) => {
     const [drawerOpen, setDrawerOpen] = useState(false);
+
+    // Function to determine the FAB label
+    const getFabLabel = () => {
+        return titleFilter || genreFilter !== "0" ? "Filters Applied" : "Filter Movies";
+    };
+
+    // Reset filters function (optional)
+    const handleResetFilters = () => {
+        onFilterValuesChange("title", "");
+        onFilterValuesChange("genre", "0");
+        setDrawerOpen(false); // Optionally close the drawer
+    };
 
     return (
         <>
@@ -49,18 +61,20 @@ const MovieFilterUI: React.FC<MovieFilterUIProps> = ({ onFilterValuesChange, tit
                 onClick={() => setDrawerOpen(true)}
                 sx={styles.fab}
             >
-                Filter
+                {getFabLabel()}
             </Fab>
             <Drawer
                 anchor="left"
                 open={drawerOpen}
                 onClose={() => setDrawerOpen(false)}
+                sx={{ width: "75%", maxWidth: 400, backgroundColor: "#fff" }} // Optional responsive styling
             >
                 <FilterCard
                     onUserInput={onFilterValuesChange}
                     titleFilter={titleFilter}
                     genreFilter={genreFilter}
                 />
+                <button onClick={handleResetFilters}>Reset Filters</button> {/* Optional Reset Button */}
             </Drawer>
         </>
     );

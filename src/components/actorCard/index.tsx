@@ -17,10 +17,17 @@ import { ActorsContext } from "../../contexts/actorsContext";
 import { BaseActorProps } from "../../types/interfaces";
 
 const styles = {
-  card: { maxWidth: 345 },
-  media: { height: 500 },
+  card: {
+    maxWidth: 300, 
+    height: "auto", 
+    margin: "20px auto", 
+  },
+  media: {
+    height: 300, 
+    objectFit: "cover", 
+  },
   avatarFav: {
-    backgroundColor: "rgb(255, 0, 0)",
+    backgroundColor: "rgb(255, 0, 0)", 
   },
 };
 
@@ -49,7 +56,6 @@ const ActorCard: React.FC<ActorCardProps> = ({ actor, action }) => {
           <Typography variant="h5" component="p">{actor.name}</Typography>
         }
       />
-
       <CardMedia
         sx={styles.media}
         image={actor.profile_path ? `https://image.tmdb.org/t/p/w500/${actor.profile_path}` : img}

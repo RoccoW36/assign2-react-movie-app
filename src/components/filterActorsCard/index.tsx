@@ -6,13 +6,13 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
-import SortIcon from "@mui/icons-material/Sort";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 
 const styles = {
   root: {
     maxWidth: 345,
+    margin: "0 auto", // Center within modal
   },
   formControl: {
     margin: 1,
@@ -27,8 +27,11 @@ interface FilterActorsCardProps {
   genderFilter: number;
 }
 
-const FilterActorsCard: React.FC<FilterActorsCardProps> = ({ nameFilter, genderFilter, onUserInput }) => {
-  
+const FilterActorsCard: React.FC<FilterActorsCardProps> = ({
+  nameFilter,
+  genderFilter,
+  onUserInput,
+}) => {
   const handleNameChange = (e: ChangeEvent<HTMLInputElement>) => {
     onUserInput("name", e.target.value);
   };
@@ -36,47 +39,40 @@ const FilterActorsCard: React.FC<FilterActorsCardProps> = ({ nameFilter, genderF
   const handleGenderChange = (e: SelectChangeEvent) => {
     onUserInput("gender", Number(e.target.value));
   };
-  
 
   return (
-    <>
-      <Card sx={styles.root} variant="outlined">
-        <CardContent>
-          <Typography variant="h5" component="h1">
-            <FilterAltIcon fontSize="large" />
-            Filter the actors.
-          </Typography>
+    <Card sx={styles.root} variant="outlined">
+      <CardContent>
+        <Typography variant="h5" component="h1">
+          <FilterAltIcon fontSize="large" />
+          Filter the actors
+        </Typography>
 
-          <TextField
-            sx={styles.formControl}
-            id="filled-search"
-            label="Search by Name"
-            type="search"
-            value={nameFilter}
-            variant="filled"
-            onChange={handleNameChange}
-          />
+        <TextField
+          sx={styles.formControl}
+          id="filled-search"
+          label="Search by Name"
+          type="search"
+          value={nameFilter}
+          variant="filled"
+          onChange={handleNameChange}
+        />
 
-          <FormControl sx={styles.formControl}>
-            <InputLabel id="gender-label">Gender</InputLabel>
-            <Select labelId="gender-label" id="gender-select" value={genderFilter.toString()} onChange={handleGenderChange}>
-              <MenuItem value={0}>All</MenuItem>
-              <MenuItem value={1}>Female</MenuItem>
-              <MenuItem value={2}>Male</MenuItem>
-            </Select>
-          </FormControl>
-        </CardContent>
-      </Card>
-
-      <Card sx={styles.root} variant="outlined">
-        <CardContent>
-          <Typography variant="h5" component="h1">
-            <SortIcon fontSize="large" />
-            Sort the actors.
-          </Typography>
-        </CardContent>
-      </Card>
-    </>
+        <FormControl sx={styles.formControl}>
+          <InputLabel id="gender-label">Gender</InputLabel>
+          <Select
+            labelId="gender-label"
+            id="gender-select"
+            value={genderFilter.toString()}
+            onChange={handleGenderChange}
+          >
+            <MenuItem value={0}>All</MenuItem>
+            <MenuItem value={1}>Female</MenuItem>
+            <MenuItem value={2}>Male</MenuItem>
+          </Select>
+        </FormControl>
+      </CardContent>
+    </Card>
   );
 };
 

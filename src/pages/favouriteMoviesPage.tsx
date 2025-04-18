@@ -5,10 +5,7 @@ import { useQueries } from "react-query";
 import { getMovie } from "../api/tmdb-api";
 import Spinner from "../components/spinner";
 import useFiltering from "../hooks/useFiltering";
-import MovieFilterUI, {
-  titleFilter,
-  favouritesgenreFilter,
-} from "../components/movieFilterUI";
+import MovieFilterUI, { titleFilter, favouritesgenreFilter } from "../components/movieFilterUI";
 import RemoveFromFavourites from "../components/cardIcons/removeFromFavourites";
 import WriteReview from "../components/cardIcons/writeReview";
 
@@ -28,7 +25,7 @@ const FavouriteMoviesPage: React.FC = () => {
   const { filterValues, setFilterValues, filterFunction } = useFiltering(
     [titleFiltering, genreFiltering]
   );
-  
+
   const favouriteMovieQueries = useQueries(
     movieIds.map((movieId) => ({
       queryKey: ["movie", movieId],
@@ -47,11 +44,19 @@ const FavouriteMoviesPage: React.FC = () => {
     .filter((movie) => movie !== undefined);
 
   const displayedMovies = filterFunction(allFavourites);
+
   const changeFilterValues = (type: string, value: string) => {
     const changedFilter = { name: type, value };
     const updatedFilterSet =
-      type === "title" ? [changedFilter, filterValues[1]] : [filterValues[0], changedFilter];
+      type === "title"
+        ? [changedFilter, filterValues[1]]
+        : [filterValues[0], changedFilter];
     setFilterValues(updatedFilterSet);
+  };
+
+  const resetFilters = () => {
+    changeFilterValues("title", "");
+    changeFilterValues("genre", "0");
   };
 
   return (
@@ -66,11 +71,19 @@ const FavouriteMoviesPage: React.FC = () => {
           </>
         )}
       />
-      <MovieFilterUI
-        onFilterValuesChange={changeFilterValues}
-        titleFilter={filterValues[0].value}
-        genreFilter={filterValues[1].value}
-      />
+      {displayedMovies.length === 0 ? (
+        <h1>No favourite movies selected</h1>
+      ) : (
+        <MovieFilterUI
+          onFilterValuesChange={changeFilterValues}
+          titleFilter={filterValues[0].value}
+          genreFilter={filterValues[1].value}
+        />
+      )}
+      {/* Optional Reset Button */}
+      <button onClick={resetFilters} style={{ marginTop: "20px", padding: "10px 20px", cursor: "pointer" }}>
+        Reset Filters
+      </button>
     </>
   );
 };

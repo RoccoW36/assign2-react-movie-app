@@ -5,15 +5,27 @@ import { useQueries } from "react-query";
 import { getMovie } from "../api/tmdb-api";
 import Spinner from "../components/spinner";
 import useFiltering from "../hooks/useFiltering";
-import MovieFilterUI from "../components/movieFilterUI";
+import MovieFilterUI, { titleFilter, favouritesgenreFilter } from "../components/movieFilterUI";
 import RemoveFromMustWatchIcon from "../components/cardIcons/removeFromMustWatch";
+
+const titleFiltering = {
+  name: "title",
+  value: "",
+  condition: titleFilter,
+};
+
+const genreFiltering = {
+  name: "genre",
+  value: "0",
+  condition: favouritesgenreFilter,
+};
 
 const MustWatchMoviesPage: React.FC = () => {
   const { mustWatch: movieIds } = useContext(MoviesContext);
 
   const { filterValues, setFilterValues, filterFunction } = useFiltering([
-    { name: "title", value: "", condition: (movie, value) => movie?.title?.toLowerCase().includes(value.toLowerCase()) },
-    { name: "genre", value: "0", condition: (movie, value) => value === "0" || (movie.genre_ids && movie.genre_ids.includes(Number(value))) },
+    titleFiltering,
+    genreFiltering,
   ]);
 
   const mustWatchMovieQueries = useQueries(
@@ -29,19 +41,24 @@ const MustWatchMoviesPage: React.FC = () => {
     return <Spinner />;
   }
 
-  const allMustWatchMovies = mustWatchMovieQueries.map((q) => q.data).filter(Boolean);
+  const allMustWatchMovies = mustWatchMovieQueries
+    .map((q) => q.data)
+    .filter(Boolean);
 
-  console.log("Movies BEFORE filtering:", allMustWatchMovies);
-  console.log("Filter values:", filterValues);
-
-  const displayedMovies = allMustWatchMovies.length > 0 ? filterFunction(allMustWatchMovies) : allMustWatchMovies;
-
-  console.log("Movies AFTER filtering:", displayedMovies); 
+  const displayedMovies = filterFunction(allMustWatchMovies);
 
   const changeFilterValues = (type: string, value: string) => {
-    setFilterValues(prevFilters =>
-      prevFilters.map(filter => (filter.name === type ? { ...filter, value } : filter))
-    );
+    const changedFilter = { name: type, value };
+    const updatedFilterSet =
+      type === "title"
+        ? [changedFilter, filterValues[1]]
+        : [filterValues[0], changedFilter];
+    setFilterValues(updatedFilterSet);
+  };
+
+  const resetFilters = () => {
+    changeFilterValues("title", "");
+    changeFilterValues("genre", "0");
   };
 
   return (
@@ -53,9 +70,15 @@ const MustWatchMoviesPage: React.FC = () => {
       />
       <MovieFilterUI
         onFilterValuesChange={changeFilterValues}
-        titleFilter={filterValues.find(f => f.name === "title")?.value || ""}
-        genreFilter={filterValues.find(f => f.name === "genre")?.value || "0"}
+        titleFilter={filterValues.find((f) => f.name === "title")?.value || ""}
+        genreFilter={filterValues.find((f) => f.name === "genre")?.value || "0"}
       />
+      <button
+        onClick={resetFilters}
+        style={{ marginTop: "20px", padding: "10px 20px", cursor: "pointer" }}
+      >
+        Reset Filters
+      </button>
     </>
   );
 };
