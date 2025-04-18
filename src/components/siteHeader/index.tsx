@@ -1,4 +1,4 @@
-import React, { useState, MouseEvent } from "react";
+import React, { useState, MouseEvent, ChangeEvent, KeyboardEvent } from "react";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
@@ -11,9 +11,10 @@ import { styled, alpha } from "@mui/material/styles";
 import MenuIcon from "@mui/icons-material/Menu";
 import InputBase from "@mui/material/InputBase";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useTheme } from "@mui/material/styles";
+import { useTheme, createTheme, ThemeProvider } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
+// Offset for AppBar (to avoid content being hidden under fixed header)
 const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 
 const SiteHeader: React.FC = () => {
@@ -21,7 +22,10 @@ const SiteHeader: React.FC = () => {
   const location = useLocation();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [darkMode, setDarkMode] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const open = Boolean(anchorEl);
+  
+  // Dynamically switch between light and dark themes
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
 
@@ -34,6 +38,22 @@ const SiteHeader: React.FC = () => {
     { label: "Favourite Actors", path: "/actors/favourites" },
   ];
 
+  // Toggle dark mode
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+  };
+
+  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const handleSearchKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && searchQuery.trim() !== "") {
+      navigate(`/search?query=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchQuery(""); // Clear after search
+    }
+  };
+
   const handleMenuSelect = (pageURL: string) => {
     navigate(pageURL);
     setAnchorEl(null);
@@ -43,21 +63,22 @@ const SiteHeader: React.FC = () => {
     setAnchorEl(event.currentTarget);
   };
 
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
-  };
+  // Create a custom theme based on darkMode
+  const customTheme = createTheme({
+    palette: {
+      mode: darkMode ? 'dark' : 'light', // Toggle dark mode
+      primary: {
+        main: darkMode ? "#1976d2" : "#6c5ce7", // Blue when dark, purple for light mode
+      },
+      background: {
+        default: darkMode ? "#121212" : "#fff",
+      },
+    },
+  });
 
   return (
-    <>
-      <AppBar
-        position="sticky"
-        elevation={2}
-        style={{
-          background: darkMode
-            ? "linear-gradient(90deg, #333, #000)"
-            : "linear-gradient(90deg, #6c5ce7, #0984e3)",
-        }}
-      >
+    <ThemeProvider theme={customTheme}>
+      <AppBar position="sticky" elevation={2}>
         <Toolbar>
           <Typography variant="h4" sx={{ flexGrow: 1 }}>
             TMDB Client
@@ -77,6 +98,9 @@ const SiteHeader: React.FC = () => {
             <InputBase
               placeholder="Search…"
               inputProps={{ "aria-label": "search" }}
+              value={searchQuery}
+              onChange={handleSearchChange}
+              onKeyDown={handleSearchKeyDown}
               style={{
                 color: "inherit",
                 padding: "8px 8px 8px 40px",
@@ -103,11 +127,14 @@ const SiteHeader: React.FC = () => {
                 anchorOrigin={{ vertical: "top", horizontal: "right" }}
                 keepMounted
                 transformOrigin={{ vertical: "top", horizontal: "right" }}
-                open={open} 
+                open={open}
                 onClose={() => setAnchorEl(null)}
               >
                 {menuOptions.map((opt) => (
-                  <MenuItem key={opt.label} onClick={() => handleMenuSelect(opt.path)}>
+                  <MenuItem
+                    key={opt.label}
+                    onClick={() => handleMenuSelect(opt.path)}
+                  >
                     {opt.label}
                   </MenuItem>
                 ))}
@@ -129,7 +156,7 @@ const SiteHeader: React.FC = () => {
         </Toolbar>
       </AppBar>
       <Offset />
-    </>
+    </ThemeProvider>
   );
 };
 

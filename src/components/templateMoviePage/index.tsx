@@ -46,7 +46,7 @@ const TemplateMoviePage: React.FC<TemplateMoviePageProps> = ({movie, children}) 
 
     return (
         <>
-            <MovieHeader {...movie} />
+            <MovieHeader movie={movie} />
 
             <Grid container spacing={5} style={{ padding: "15px" }}>
                 <Grid item xs={3}>

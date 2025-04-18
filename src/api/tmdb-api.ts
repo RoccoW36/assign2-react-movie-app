@@ -23,27 +23,27 @@ export const getMovie = (id: string) =>
 export const getGenres = () =>
   fetchData(`${BASE_URL}/genre/movie/list?api_key=${API_KEY}&language=en-US`);
 
-export const getMovieImages = (id: string | number) => {
-  return fetchData(`${BASE_URL}/movie/${id}/images?api_key=${API_KEY}`).then((json) => json.posters);
-};
+export const getMovieImages = (id: string | number) =>
+  fetchData(`${BASE_URL}/movie/${id}/images?api_key=${API_KEY}`).then((json) => json.posters);
 
-export const getMovieReviews = (id: string | number) => {
-  return fetchData(`${BASE_URL}/movie/${id}/reviews?api_key=${API_KEY}`).then((json) => json.results);
-};
+export const getMovieReviews = (id: string | number) =>
+  fetchData(`${BASE_URL}/movie/${id}/reviews?api_key=${API_KEY}`).then((json) => json.results);
 
-export const getUpcomingMovies = () => {
-  return fetchData(`${BASE_URL}/movie/upcoming?api_key=${API_KEY}`).then((json) => json.results);
-};
+export const getUpcomingMovies = () =>
+  fetchData(`${BASE_URL}/movie/upcoming?api_key=${API_KEY}`).then((json) => json.results);
 
-export const getActor = (id: string | number) => {
-  return fetchData(`${BASE_URL}/person/${id}?api_key=${API_KEY}`);
-};
+export const getActor = (id: string | number) =>
+  fetchData(`${BASE_URL}/person/${id}?api_key=${API_KEY}`);
 
-export const getActorImages = (id: string | number) => {
-  return fetchData(`${BASE_URL}/person/${id}/images?api_key=${API_KEY}`);
-};
+export const getActorImages = (id: string | number) =>
+  fetchData(`${BASE_URL}/person/${id}/images?api_key=${API_KEY}`);
 
-export const getPopularActors = (page: number) => {
-  return fetchData(`${BASE_URL}/person/popular?api_key=${API_KEY}&language=en-US&page=${page}`);
-};
+export const getPopularActors = (page: number) =>
+  fetchData(`${BASE_URL}/person/popular?api_key=${API_KEY}&language=en-US&page=${page}`);
+
+export const searchMovies = (query: string) =>
+  fetchData(`${BASE_URL}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}&language=en-US&include_adult=false`);
+
+export const searchActors = (query: string) =>
+  fetchData(`${BASE_URL}/search/person?api_key=${API_KEY}&language=en-US&query=${query}&page=1`);
 

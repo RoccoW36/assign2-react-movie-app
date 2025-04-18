@@ -1,5 +1,5 @@
 import React from "react";
-import ReactDOM from 'react-dom/client';
+import ReactDOM from "react-dom/client";
 import { BrowserRouter, Route, Navigate, Routes } from "react-router-dom";
 import HomePage from "./pages/homePage";
 import MoviePage from "./pages/movieDetailsPage";
@@ -8,7 +8,7 @@ import MovieReviewPage from "./pages/movieReviewPage";
 import SiteHeader from "./components/siteHeader";
 import UpcomingMoviesPage from "./pages/upcomingMoviesPage";
 import { QueryClientProvider, QueryClient } from "react-query";
-import { ReactQueryDevtools } from 'react-query/devtools';
+import { ReactQueryDevtools } from "react-query/devtools";
 import MoviesContextProvider from "./contexts/moviesContext";
 import ActorsContextProvider from "./contexts/actorsContext";
 import AddMovieReviewPage from "./pages/addMovieReviewPage";
@@ -16,6 +16,7 @@ import MustWatchMoviesPage from "./pages/mustWatchMoviesPage";
 import PopularActorsPage from "./pages/popularActorsPage";
 import ActorDetailsPage from "./pages/actorDetailsPage";
 import FavouriteActorsPage from "./pages/favouriteActorsPage";
+import SearchPage from "./pages/searchPage"; 
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -44,6 +45,7 @@ const App = () => {
               <Route path="/actors" element={<PopularActorsPage />} />
               <Route path="/actors/:id" element={<ActorDetailsPage />} />
               <Route path="/actors/favourites" element={<FavouriteActorsPage />} />
+              <Route path="/search" element={<SearchPage />} />
               <Route path="*" element={<Navigate to="/" />} />
             </Routes>
           </ActorsContextProvider>
@@ -54,8 +56,8 @@ const App = () => {
   );
 };
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <App />
-  </React.StrictMode>,
+  </React.StrictMode>
 );
