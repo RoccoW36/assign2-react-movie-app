@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { Actor } from "../types/interfaces";
 
 interface ActorsContextInterface {
@@ -16,31 +16,25 @@ const initialContextState: ActorsContextInterface = {
 export const ActorsContext = React.createContext<ActorsContextInterface>(initialContextState);
 
 const ActorsContextProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
-  const [favourites, setFavourites] = useState<number[]>([]);
+  const [favourites, setFavourites] = useState<number[]>(() => {
+    const stored = localStorage.getItem("favoriteActors");
+    return stored ? JSON.parse(stored) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem("favoriteActors", JSON.stringify(favourites));
+  }, [favourites]);
 
   const addToFavourites = useCallback((actor: Actor) => {
-    setFavourites((prevFavourites) => {
-      if (!prevFavourites.includes(actor.id)) {
-        return [...prevFavourites, actor.id];
-      }
-      return prevFavourites;
-    });
+    setFavourites((prev) => (prev.includes(actor.id) ? prev : [...prev, actor.id]));
   }, []);
 
   const removeFromFavourites = useCallback((actor: Actor) => {
-    setFavourites((prevFavourites) =>
-      prevFavourites.filter((actorId) => actorId !== actor.id)
-    );
+    setFavourites((prev) => prev.filter((id) => id !== actor.id));
   }, []);
 
   return (
-    <ActorsContext.Provider
-      value={{
-        favourites,
-        addToFavourites,
-        removeFromFavourites,
-      }}
-    >
+    <ActorsContext.Provider value={{ favourites, addToFavourites, removeFromFavourites }}>
       {children}
     </ActorsContext.Provider>
   );

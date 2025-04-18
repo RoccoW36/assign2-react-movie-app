@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from "react"; 
+import React, { useContext, useEffect, useState } from "react";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import Paper from "@mui/material/Paper";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import HomeIcon from "@mui/icons-material/Home";
-import FavouriteIcon from "@mui/icons-material/Favorite"; 
-import Avatar from "@mui/material/Avatar"; 
+import FavouriteIcon from "@mui/icons-material/Favorite";
+import Avatar from "@mui/material/Avatar";
 import { MovieDetailsProps } from "../../types/interfaces";
+import { MoviesContext } from "../../contexts/moviesContext"; // Import context
 
 const styles = {
-  root: { 
+  root: {
     display: "flex",
     justifyContent: "space-around",
     alignItems: "center",
@@ -18,35 +19,25 @@ const styles = {
     padding: 1.5,
   },
   avatar: {
-    backgroundColor: "rgb(255, 0, 0)", 
+    backgroundColor: "rgb(255, 0, 0)",
   },
 };
 
 const MovieHeader: React.FC<{ movie: MovieDetailsProps }> = ({ movie }) => {
+  const { favourites, addToFavourites, removeFromFavourites } = useContext(MoviesContext);
   const [isFavorite, setIsFavorite] = useState(false);
 
   useEffect(() => {
-    // Retrieve favorite movies from localStorage
-    const favourites = JSON.parse(localStorage.getItem("favoriteMovies") || "[]");
-    if (Array.isArray(favourites)) {
-      setIsFavorite(favourites.some((fav: { id: number }) => fav.id === movie.id));
-    }
-  }, [movie.id]);
+    setIsFavorite(favourites.includes(movie.id));
+  }, [favourites, movie.id]);
 
   const toggleFavorite = () => {
-    const favourites = JSON.parse(localStorage.getItem("favoriteMovies") || "[]");
-    let updatedFavorites;
-
     if (isFavorite) {
-      // Remove movie from favorites
-      updatedFavorites = favourites.filter((fav: { id: number }) => fav.id !== movie.id);
+      removeFromFavourites(movie);
     } else {
-      // Add movie to favorites
-      updatedFavorites = [...favourites, { id: movie.id, title: movie.title }];
+      addToFavourites(movie);
     }
-
-    localStorage.setItem("favoriteMovies", JSON.stringify(updatedFavorites));
-    setIsFavorite(!isFavorite); // Toggle state
+    setIsFavorite(!isFavorite);
   };
 
   return (
@@ -55,17 +46,10 @@ const MovieHeader: React.FC<{ movie: MovieDetailsProps }> = ({ movie }) => {
         <ArrowBackIcon color="primary" fontSize="large" />
       </IconButton>
 
-      {/* Favorite Toggle */}
-      <IconButton onClick={toggleFavorite} aria-label={isFavorite ? "Remove from Favorites" : "Add to Favorites"}>
-        {isFavorite ? (
-          <Avatar sx={styles.avatar}>
-            <FavouriteIcon />
-          </Avatar>
-        ) : (
-          <Avatar sx={{ backgroundColor: "gray" }}>
-            <FavouriteIcon />
-          </Avatar>
-        )}
+      <IconButton onClick={toggleFavorite} aria-label="toggle favorite">
+        <Avatar sx={isFavorite ? styles.avatar : { backgroundColor: "gray" }}>
+          <FavouriteIcon />
+        </Avatar>
       </IconButton>
 
       <Typography variant="h4" component="h3">
