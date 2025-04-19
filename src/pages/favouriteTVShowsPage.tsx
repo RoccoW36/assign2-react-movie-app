@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import PageTemplate from "../components/templateTVShowListPage";
 import { TVShowsContext } from "../contexts/tvShowsContext";
 import { useQueries } from "react-query";
@@ -8,7 +8,6 @@ import useFiltering from "../hooks/useFiltering";
 import TVShowFilterUI, { titleFilter, genreFilter } from "../components/TVShowFilterUI";
 import RemoveFromFavouritesTVShow from "../components/cardIcons/removeFromTVShowFavourites";
 import WriteReview from "../components/cardIcons/writeReview";
-import { BaseTVShowProps } from "../types/interfaces";
 
 const titleFiltering = {
   name: "title",
@@ -39,27 +38,19 @@ const FavouriteTVShowsPage: React.FC = () => {
     return <Spinner />;
   }
 
-  const allFavourites: BaseTVShowProps[] = favouriteTVShowQueries
+  const allFavourites = favouriteTVShowQueries
     .map((q) => q.data)
-    .filter((tvShow): tvShow is BaseTVShowProps => tvShow !== undefined);
+    .filter((tvShow) => tvShow !== undefined);
 
   const displayedTVShows = filterFunction(allFavourites);
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
-  const totalPages = Math.ceil(displayedTVShows.length / itemsPerPage);
-
-  const paginateTVShows = displayedTVShows.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
   const changeFilterValues = (type: string, value: string) => {
-    const updatedFilters =
+    const changedFilter = { name: type, value };
+    const updatedFilterSet =
       type === "title"
-        ? [{ name: "title", value }, filterValues[1]]
-        : [filterValues[0], { name: "genre", value }];
-    setFilterValues(updatedFilters);
+        ? [changedFilter, filterValues[1]]
+        : [filterValues[0], changedFilter];
+    setFilterValues(updatedFilterSet);
   };
 
   const resetFilters = () => {
@@ -67,26 +58,17 @@ const FavouriteTVShowsPage: React.FC = () => {
     changeFilterValues("genre", "0");
   };
 
-  const handlePageChange = (_: React.ChangeEvent<unknown>, value: number) => {
-    if (value >= 1 && value <= totalPages) {
-      setCurrentPage(value);
-    }
-  };
-
   return (
     <>
       <PageTemplate
         title="Favourite TV Shows"
-        tvShows={paginateTVShows}
+        tvShows={displayedTVShows}
         action={(tvShow) => (
           <>
             <RemoveFromFavouritesTVShow tvShow={tvShow} />
             <WriteReview tvShowId={tvShow.id} />
           </>
         )}
-        page={currentPage}
-        totalPages={totalPages}
-        handlePageChange={handlePageChange} 
       />
       {displayedTVShows.length === 0 ? (
         <h1>No favourite TV shows selected</h1>
@@ -97,6 +79,7 @@ const FavouriteTVShowsPage: React.FC = () => {
           genreFilter={filterValues[1].value}
         />
       )}
+      {/* Optional Reset Button */}
       <button
         onClick={resetFilters}
         style={{ marginTop: "20px", padding: "10px 20px", cursor: "pointer" }}

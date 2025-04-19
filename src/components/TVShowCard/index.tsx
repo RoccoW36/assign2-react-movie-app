@@ -7,15 +7,13 @@ import CardHeader from "@mui/material/CardHeader";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import PlaylistPlayIcon from "@mui/icons-material/PlaylistPlay";
 import CalendarIcon from "@mui/icons-material/CalendarTodayTwoTone";
 import StarRateIcon from "@mui/icons-material/StarRate";
 import Grid from "@mui/material/Grid";
 import Avatar from "@mui/material/Avatar";
-import Stack from "@mui/material/Stack"; 
 import { Link } from "react-router-dom";
 import { TVShowsContext } from "../../contexts/tvShowsContext";
-import { BaseTVShowProps } from "../../types/interfaces"; 
+import { BaseTVShowProps } from "../../types/interfaces";
 import img from '../../images/film-poster-placeholder.png';
 
 const styles = {
@@ -23,12 +21,6 @@ const styles = {
   media: { height: 500 },
   avatarFav: {
     backgroundColor: "rgb(255, 0, 0)",
-    width: 32,
-    height: 32,
-    fontSize: 18,
-  },
-  avatarMustWatch: {
-    backgroundColor: "rgb(0, 128, 0)",
     width: 32,
     height: 32,
     fontSize: 18,
@@ -41,29 +33,27 @@ interface TVShowCardProps {
 }
 
 const TVShowCard: React.FC<TVShowCardProps> = ({ tvShow, action }) => {
-  const { favourites, mustWatch } = useContext(TVShowsContext);
+  const { favourites } = useContext(TVShowsContext);
+  console.log("Favourites in TVShowsPage:", favourites); // Debugging context propagation
 
+  // Debugging log to ensure TVShowCard is rendering
+  console.log("Rendering TVShowCard for ID:", tvShow.id); // Proper placement
+
+  // Check if the TV show is in the favourites list
   const isFavourite = favourites.includes(tvShow.id);
-  const isMustWatch = mustWatch.includes(tvShow.id);
+
+  // Debugging log to check context and favourite status
+  console.log("TVShowCard Debug:", { tvShowId: tvShow.id, isFavourite, favourites });
 
   return (
     <Card sx={styles.card}>
       <CardHeader
         avatar={
-          (isFavourite || isMustWatch) && (
-            <Stack direction="row" spacing={-0.5}>
-              {isFavourite && (
-                <Avatar sx={styles.avatarFav}>
-                  <FavoriteIcon fontSize="small" />
-                </Avatar>
-              )}
-              {isMustWatch && (
-                <Avatar sx={styles.avatarMustWatch}>
-                  <PlaylistPlayIcon fontSize="small" />
-                </Avatar>
-              )}
-            </Stack>
-          )
+          isFavourite ? (
+            <Avatar sx={styles.avatarFav}>
+              <FavoriteIcon fontSize="small" />
+            </Avatar>
+          ) : null
         }
         title={
           <Typography variant="h5" component="p">
@@ -94,6 +84,7 @@ const TVShowCard: React.FC<TVShowCardProps> = ({ tvShow, action }) => {
         </Grid>
       </CardContent>
       <CardActions disableSpacing>
+        {/* The action prop allows for custom buttons or icons */}
         {action(tvShow)}
         <Link to={`/tv/${tvShow.id}`}>
           <Button variant="outlined" size="medium" color="primary">

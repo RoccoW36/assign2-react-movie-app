@@ -44,6 +44,7 @@ const MovieListPageTemplate: React.FC<MovieListPageTemplateExtendedProps> = ({
         </Grid>
       </Grid>
 
+
       {page !== undefined && handlePageChange && totalPages !== undefined && (
         <Grid item sx={{ padding: "0 20px" }}>
           <PaginationUI

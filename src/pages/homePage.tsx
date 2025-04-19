@@ -1,17 +1,15 @@
 import React from "react";
 import { useQuery } from "react-query";
-import { getMovies } from "../api/tmdb-api";
-import PageTemplate from "../components/templateMovieListPage";
-import Spinner from "../components/spinner";
-import Alert from "@mui/material/Alert";
-import MovieCard from "../components/movieCard";
+import { getMovies } from "../api/tmdb-api"; 
+import PageTemplate from "../components/templateMovieListPage"; 
+import Spinner from "../components/spinner"; 
+import Alert from "@mui/material/Alert"; 
+import MovieFilterUI, { titleFilter, genreFilter } from "../components/movieFilterUI"; 
 import AddToFavouritesIcon from "../components/cardIcons/addToFavourites";
-import Grid from "@mui/material/Grid";
-import useFiltering from "../hooks/useFiltering";
-import MovieFilterUI, { titleFilter, genreFilter } from "../components/movieFilterUI";
-import { DiscoverMovies, BaseMovieProps } from "../types/interfaces";
-import { usePagination } from "../hooks/usePagination";
-import PaginationUI from "../components/PaginationUI";
+import PaginationUI from "../components/PaginationUI"; 
+import { DiscoverMovies, BaseMovieProps } from "../types/interfaces"; 
+import { usePagination } from "../hooks/usePagination"; 
+import useFiltering from "../hooks/useFiltering"; 
 
 const titleFiltering = {
   name: "title",
@@ -26,6 +24,7 @@ const genreFiltering = {
 };
 
 const HomePage: React.FC = () => {
+  
   const { page, handlePageChange, totalPages, updateTotalPages } = usePagination({
     initialPage: 1,
     initialTotalPages: 1,
@@ -37,16 +36,35 @@ const HomePage: React.FC = () => {
     {
       keepPreviousData: true,
       onSuccess: (data) => {
-        updateTotalPages(Math.min(data.total_pages, 500)); // Limit to a max of 500 pages
+        updateTotalPages(Math.min(data.total_pages, 500));
       },
     }
   );
 
   const movies = data ? data.results : [];
+
+  const uniqueMovies = Array.from(new Set(movies.map((movie) => movie.id))).map(
+    (id) => movies.find((movie) => movie.id === id)
+  );
+
   const { filterValues, setFilterValues, filterFunction } = useFiltering([titleFiltering, genreFiltering]);
 
   if (isLoading) return <Spinner />;
   if (isError) return <Alert severity="error">Failed to load movies: {error.message}</Alert>;
+
+  const displayedMovies = filterFunction(uniqueMovies);
+
+  const onBack = () => {
+    if (page > 1) {
+      handlePageChange({} as React.ChangeEvent<unknown>, page - 1);
+    }
+  };
+
+  const onForward = () => {
+    if (page < totalPages) {
+      handlePageChange({} as React.ChangeEvent<unknown>, page + 1);
+    }
+  };
 
   const changeFilterValues = (type: string, value: string) => {
     const changedFilter = { name: type, value };
@@ -55,20 +73,6 @@ const HomePage: React.FC = () => {
         ? [changedFilter, filterValues[1]]
         : [filterValues[0], changedFilter];
     setFilterValues(updatedFilterSet);
-  };
-
-  const displayedMovies = filterFunction(movies);
-
-  const onBack = () => {
-    if (page > 1) {
-      handlePageChange({} as React.ChangeEvent<unknown>, page - 1); // Passing an empty object as the event
-    }
-  };
-
-  const onForward = () => {
-    if (page < totalPages) {
-      handlePageChange({} as React.ChangeEvent<unknown>, page + 1); // Passing an empty object as the event
-    }
   };
 
   return (
@@ -85,21 +89,12 @@ const HomePage: React.FC = () => {
         onBack={onBack}
         onForward={onForward}
       />
+
       <MovieFilterUI
         onFilterValuesChange={changeFilterValues}
         titleFilter={filterValues[0].value}
         genreFilter={filterValues[1].value}
       />
-      <Grid container spacing={4} sx={{ marginTop: 5, padding: "0 20px" }}>
-        {displayedMovies.map((movie: BaseMovieProps) => (
-          <Grid item xs={12} sm={6} md={4} lg={3} key={movie.id}>
-            <MovieCard
-              movie={movie}
-              action={(m: BaseMovieProps) => <AddToFavouritesIcon {...m} />}
-            />
-          </Grid>
-        ))}
-      </Grid>
     </>
   );
 };

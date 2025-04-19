@@ -10,38 +10,46 @@ interface HeaderProps {
   title: string;
   onBack?: () => void;   
   onForward?: () => void; 
+  subtitle?: string; // Add optional subtitle prop
 }
 
-const Header: React.FC<HeaderProps> = ({ title, onBack, onForward }) => {
+const Header: React.FC<HeaderProps> = ({ title, onBack, onForward, subtitle }) => {
   return (
     <Paper
       component="div"
       sx={{
         display: "flex",
-        justifyContent: "space-between",
+        flexDirection: "column", // Allow vertical stacking for title and subtitle
         alignItems: "center",
         padding: 2,
         marginBottom: 2,
       }}
       elevation={3}
     >
-      {onBack && (
-        <IconButton aria-label="go back" size="large" onClick={onBack}>
-          <ArrowBackIcon color="primary" fontSize="large" />
-        </IconButton>
-      )}
+      <Box sx={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
+        {onBack && (
+          <IconButton aria-label="go back" size="large" onClick={onBack}>
+            <ArrowBackIcon color="primary" fontSize="large" />
+          </IconButton>
+        )}
 
-      <Box sx={{ flexGrow: 1, textAlign: "center" }}>
-        <Typography variant="h5" component="h3" noWrap>
-          {title}
-        </Typography>
+        <Box sx={{ flexGrow: 1, textAlign: "center" }}>
+          <Typography variant="h5" component="h3" noWrap>
+            {title}
+          </Typography>
+          {subtitle && (
+            <Typography variant="subtitle1" component="h4" sx={{ color: "gray", marginTop: 1 }}>
+              {subtitle}
+            </Typography>
+          )}
+        </Box>
+
+        {onForward && (
+          <IconButton aria-label="go forward" size="large" onClick={onForward}>
+            <ArrowForwardIcon color="primary" fontSize="large" />
+          </IconButton>
+        )}
       </Box>
-
-      {onForward && (
-        <IconButton aria-label="go forward" size="large" onClick={onForward}>
-          <ArrowForwardIcon color="primary" fontSize="large" />
-        </IconButton>
-      )}
     </Paper>
   );
 };
