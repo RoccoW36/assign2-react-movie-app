@@ -13,14 +13,12 @@ const RemoveFromFavouritesTVShow: React.FC<RemoveFromFavouritesTVShowProps> = ({
 
   const onUserRequest = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    console.log("Removing from Favourites:", tvShow);
     context.removeFromFavourites(tvShow);
   };
 
   return (
-    <IconButton
-      aria-label="remove from favourites"
-      onClick={onUserRequest}
-    >
+    <IconButton aria-label="remove from favourites" onClick={onUserRequest}>
       <DeleteIcon color="primary" fontSize="large" />
     </IconButton>
   );

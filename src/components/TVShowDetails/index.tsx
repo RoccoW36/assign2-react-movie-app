@@ -62,7 +62,6 @@ const TVShowDetails: React.FC<TVShowDetailsProps> = (tvShow) => {
                 <Chip label={`First Aired: ${tvShow.first_air_date}`} />
             </Paper>
 
-            {/* Origin Country Section */}
             <Paper component="ul" sx={styles.chipSet}>
                 <li>
                     <Chip label="Origin Countries" sx={styles.chipLabel} color="primary" />

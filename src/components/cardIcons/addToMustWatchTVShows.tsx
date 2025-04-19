@@ -4,7 +4,7 @@ import IconButton from "@mui/material/IconButton";
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import { BaseTVShowProps } from "../../types/interfaces";
 
-const AddToMustWatchTVShows: React.FC<BaseTVShowProps> = ({
+const AddToMustWatchTVShowsIcon: React.FC<BaseTVShowProps> = ({
   id,
   name,
   overview,
@@ -28,4 +28,4 @@ const AddToMustWatchTVShows: React.FC<BaseTVShowProps> = ({
   );
 };
 
-export default AddToMustWatchTVShows;
+export default AddToMustWatchTVShowsIcon;

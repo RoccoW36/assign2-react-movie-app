@@ -4,15 +4,7 @@ import IconButton from "@mui/material/IconButton";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { BaseTVShowProps } from "../../types/interfaces";
 
-const AddToFavouritesIcon: React.FC<BaseTVShowProps> = ({
-  id,
-  name,
-  overview,
-  first_air_date,
-  vote_average,
-  popularity,
-  poster_path,
-}) => {
+const AddToTVShowFavouritesIcon: React.FC<BaseTVShowProps> = ({ id, name, overview, first_air_date, vote_average, popularity, poster_path }) => {
   const context = useContext(TVShowsContext);
 
   const onUserSelect = (e: MouseEvent<HTMLButtonElement>) => {
@@ -28,4 +20,4 @@ const AddToFavouritesIcon: React.FC<BaseTVShowProps> = ({
   );
 };
 
-export default AddToFavouritesIcon;
+export default AddToTVShowFavouritesIcon;

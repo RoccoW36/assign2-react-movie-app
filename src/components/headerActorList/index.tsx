@@ -5,32 +5,34 @@ import Paper from "@mui/material/Paper";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 
-const styles = {
-  root: {
-    display: "flex",
-    justifyContent: "space-around",
-    alignItems: "center",
-    flexWrap: "wrap",
-    marginBottom: 1.5,
-  },
-};
-
-interface HeaderActorProps {
+interface HeaderActorListProps {
   title: string;
+  onBack: () => void;
+  onForward: () => void;
 }
 
-const HeaderActorList: React.FC<HeaderActorProps> = ({ title }) => {
+const HeaderActorList: React.FC<HeaderActorListProps> = ({ title, onBack, onForward }) => {
   return (
-    <Paper component="div" sx={styles.root}>
-      <IconButton aria-label="go back">
+    <Paper
+      component="div"
+      sx={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        padding: 2,
+        marginBottom: 2,
+      }}
+      elevation={3}
+    >
+      <IconButton aria-label="go back" onClick={onBack}>
         <ArrowBackIcon color="primary" fontSize="large" />
       </IconButton>
 
-      <Typography variant="h4" component="h3">
+      <Typography variant="h4" component="h3" sx={{ flexGrow: 1, textAlign: "center" }}>
         {title}
       </Typography>
 
-      <IconButton aria-label="go forward">
+      <IconButton aria-label="go forward" onClick={onForward}>
         <ArrowForwardIcon color="primary" fontSize="large" />
       </IconButton>
     </Paper>

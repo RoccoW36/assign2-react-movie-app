@@ -21,16 +21,13 @@ export const favouritesgenreFilter = (movie: MovieDetailsProps, value: string): 
 };
 
 const styles = {
-    root: {
-        backgroundColor: "#bfbfbf",
-    },
     fab: {
-        marginTop: 8,
-        position: "fixed",
-        top: 20,
-        right: 2,
+      position: "fixed",
+      top: "90px", 
+      right: "20px",
+      zIndex: 1300,
     },
-};
+  };
 
 interface MovieFilterUIProps {
     onFilterValuesChange: (f: string, s: string) => void;
@@ -41,16 +38,14 @@ interface MovieFilterUIProps {
 const MovieFilterUI: React.FC<MovieFilterUIProps> = ({ onFilterValuesChange, titleFilter, genreFilter }) => {
     const [drawerOpen, setDrawerOpen] = useState(false);
 
-    // Function to determine the FAB label
     const getFabLabel = () => {
         return titleFilter || genreFilter !== "0" ? "Filters Applied" : "Filter Movies";
     };
 
-    // Reset filters function (optional)
     const handleResetFilters = () => {
         onFilterValuesChange("title", "");
         onFilterValuesChange("genre", "0");
-        setDrawerOpen(false); // Optionally close the drawer
+        setDrawerOpen(false);
     };
 
     return (
@@ -67,14 +62,14 @@ const MovieFilterUI: React.FC<MovieFilterUIProps> = ({ onFilterValuesChange, tit
                 anchor="left"
                 open={drawerOpen}
                 onClose={() => setDrawerOpen(false)}
-                sx={{ width: "75%", maxWidth: 400, backgroundColor: "#fff" }} // Optional responsive styling
+                sx={{ width: "75%", maxWidth: 400, backgroundColor: "#fff" }}
             >
                 <FilterCard
                     onUserInput={onFilterValuesChange}
                     titleFilter={titleFilter}
                     genreFilter={genreFilter}
                 />
-                <button onClick={handleResetFilters}>Reset Filters</button> {/* Optional Reset Button */}
+                <button onClick={handleResetFilters}>Reset Filters</button>
             </Drawer>
         </>
     );

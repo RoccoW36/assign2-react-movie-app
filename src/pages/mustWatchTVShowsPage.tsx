@@ -58,8 +58,8 @@ const MustWatchTVShowsPage: React.FC = () => {
     changeFilterValues("genre", "0");
   };
 
-  return (
-    <>
+      return (
+        <>
       <PageTemplate
         title="Must-Watch TV Shows"
         tvShows={displayedTVShows}

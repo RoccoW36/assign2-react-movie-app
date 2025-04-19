@@ -7,7 +7,7 @@ import Typography from "@mui/material/Typography";
 import FavouriteIcon from "@mui/icons-material/Favorite";
 import Avatar from "@mui/material/Avatar";
 import { ActorDetailsProps } from "../../types/interfaces";
-import { ActorsContext } from "../../contexts/actorsContext"; // Import context
+import { ActorsContext } from "../../contexts/actorsContext";
 
 const styles = {
   root: {
@@ -36,7 +36,7 @@ const ActorHeader: React.FC<{ actor: ActorDetailsProps }> = ({ actor }) => {
     } else {
       addToFavourites(actor);
     }
-    setIsFavorite(!isFavorite); // Optional: can rely on context only if you want
+    setIsFavorite(!isFavorite);
   };
 
   return (

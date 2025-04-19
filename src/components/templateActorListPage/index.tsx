@@ -4,22 +4,22 @@ import Grid from "@mui/material/Grid";
 import ActorList from "../actorList";
 import { ActorListPageTemplateProps } from "../../types/interfaces";
 
-const styles = {
-  root: { 
-    backgroundColor: "#bfbfbf",
-  }
-};
+interface TemplateActorListPageProps extends ActorListPageTemplateProps {
+  onBack: () => void;
+  onForward: () => void;
+}
 
-const TemplateActorListPage: React.FC<ActorListPageTemplateProps> = ({ actors, title, action }) => {
+const TemplateActorListPage: React.FC<TemplateActorListPageProps> = ({ actors, title, action, onBack, onForward }) => {
   return (
-    <Grid container sx={styles.root}>
-      <Grid item xs={12}>
-        <HeaderActorList title={title} />
+    <>
+      <HeaderActorList title={title} onBack={onBack} onForward={onForward} />
+      
+      <Grid container spacing={5} sx={{ padding: "15px", backgroundColor: "#bfbfbf" }}>
+        <Grid item xs={12}>
+          <ActorList action={action} actors={actors} />
+        </Grid>
       </Grid>
-      <Grid item container spacing={5}>
-        <ActorList action={action} actors={actors} /> 
-      </Grid>
-    </Grid>
+    </>
   );
 };
 

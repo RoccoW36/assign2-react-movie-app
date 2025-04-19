@@ -14,8 +14,12 @@ const fetchData = (url: string) => {
     });
 };
 
-export const getMovies = () =>
-  fetchData(`${BASE_URL}/discover/movie?api_key=${API_KEY}&language=en-US&include_adult=false&include_video=false&page=1`);
+export const getMovies = (page: number = 1) => {
+    const pageNumber = page <= 500 ? page : 1;
+    return fetchData(
+      `${BASE_URL}/discover/movie?api_key=${API_KEY}&language=en-US&include_adult=false&include_video=false&page=${pageNumber}`
+    );
+  };
 
 export const getMovie = (id: string) =>
   fetchData(`${BASE_URL}/movie/${id}?api_key=${API_KEY}`);
@@ -47,8 +51,12 @@ export const searchMovies = (query: string) =>
 export const searchActors = (query: string) =>
   fetchData(`${BASE_URL}/search/person?api_key=${API_KEY}&language=en-US&query=${query}&page=1`);
 
-export const getTVShows = () =>
-  fetchData(`${BASE_URL}/discover/tv?api_key=${API_KEY}&language=en-US&include_adult=false&page=1`);
+export const getTVShows = (page: number = 1) => {
+  const pageNumber = page <= 500 ? page : 1;
+  return fetchData(
+    `${BASE_URL}/discover/tv?api_key=${API_KEY}&language=en-US&include_adult=false&page=${pageNumber}`
+  );
+};
 
 export const getTVShow = (id: string | number) =>
   fetchData(`${BASE_URL}/tv/${id}?api_key=${API_KEY}`);

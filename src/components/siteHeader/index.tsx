@@ -113,7 +113,6 @@ const SiteHeader: React.FC = () => {
             TMDB Client
           </Typography>
 
-          {/* Search Box */}
           <Box
             sx={{
               position: "relative",
@@ -139,12 +138,10 @@ const SiteHeader: React.FC = () => {
             />
           </Box>
 
-          {/* Dark Mode Switch */}
           <Switch checked={darkMode} onChange={toggleDarkMode} />
 
           {!isMobile ? (
             <>
-              {/* Home Button */}
               <Button
                 color={location.pathname === homeOption.path ? "secondary" : "inherit"}
                 onClick={() => handleMenuSelect(homeOption.path)}
@@ -152,7 +149,6 @@ const SiteHeader: React.FC = () => {
                 Home
               </Button>
 
-              {/* Movies Button */}
               <Button
                 color="inherit"
                 startIcon={<MovieIcon />}
@@ -172,7 +168,6 @@ const SiteHeader: React.FC = () => {
                 ))}
               </Menu>
 
-              {/* TV Shows Button */}
               <Button
                 color="inherit"
                 startIcon={<TvIcon />}
@@ -192,7 +187,6 @@ const SiteHeader: React.FC = () => {
                 ))}
               </Menu>
 
-              {/* Actors Button */}
               <Button
                 color="inherit"
                 startIcon={<PersonIcon />}
@@ -214,7 +208,6 @@ const SiteHeader: React.FC = () => {
             </>
           ) : (
             <>
-              {/* Mobile Menu */}
               <IconButton
                 aria-label="menu"
                 aria-controls="menu-appbar"

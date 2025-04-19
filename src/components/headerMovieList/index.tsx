@@ -4,42 +4,46 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import Paper from "@mui/material/Paper";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
-
-const styles = {
-    root: {
-        display: "flex",
-        justifyContent: "space-around",
-        alignItems: "center",
-        flexWrap: "wrap",
-        marginBottom: 1.5,
-    },
-};
+import Box from "@mui/material/Box";
 
 interface HeaderProps {
-    title: string;
+  title: string;
+  onBack?: () => void;   
+  onForward?: () => void; 
 }
 
-const Header: React.FC<HeaderProps> = (headerProps) => {
-    const title = headerProps.title
+const Header: React.FC<HeaderProps> = ({ title, onBack, onForward }) => {
+  return (
+    <Paper
+      component="div"
+      sx={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        padding: 2,
+        marginBottom: 2,
+      }}
+      elevation={3}
+    >
+      {onBack && (
+        <IconButton aria-label="go back" size="large" onClick={onBack}>
+          <ArrowBackIcon color="primary" fontSize="large" />
+        </IconButton>
+      )}
 
-    return (
-        <Paper component="div" sx={styles.root}>
-            <IconButton
-                aria-label="go back"
-            >
-                <ArrowBackIcon color="primary" fontSize="large" />
-            </IconButton>
+      <Box sx={{ flexGrow: 1, textAlign: "center" }}>
+        <Typography variant="h5" component="h3" noWrap>
+          {title}
+        </Typography>
+      </Box>
 
-            <Typography variant="h4" component="h3">
-                {title}
-            </Typography>
-            <IconButton
-                aria-label="go forward"
-            >
-                <ArrowForwardIcon color="primary" fontSize="large" />
-            </IconButton>
-        </Paper>
-    );
+      {onForward && (
+        <IconButton aria-label="go forward" size="large" onClick={onForward}>
+          <ArrowForwardIcon color="primary" fontSize="large" />
+        </IconButton>
+      )}
+    </Paper>
+  );
 };
 
 export default Header;

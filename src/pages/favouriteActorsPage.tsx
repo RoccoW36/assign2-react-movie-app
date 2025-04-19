@@ -7,9 +7,8 @@ import Spinner from "../components/spinner";
 import RemoveFromActorFavourites from "../components/cardIcons/removeFromActorFavourites";
 import useFiltering from "../hooks/useFiltering";
 import FloatingFilterActorsMenu from "../components/actorFilterUI";
-import { BaseActorProps } from "../types/interfaces";  // Make sure you have this!
+import { BaseActorProps } from "../types/interfaces";
 
-// Define the filter logic
 const nameFiltering = {
   name: "name",
   value: "",
@@ -64,12 +63,20 @@ const FavouriteActorsPage: React.FC = () => {
     return <h1>No favourite actors match your filter</h1>;
   }
 
+  const onBack = () => {
+  };
+
+  const onForward = () => {
+  };
+
   return (
     <>
       <PageTemplate
         title="Favourite Actors"
         actors={displayedActors}
         action={(actor) => <RemoveFromActorFavourites actor={actor} />}
+        onBack={onBack}
+        onForward={onForward}
       />
       <FloatingFilterActorsMenu
         onFilterValuesChange={changeFilterValues}

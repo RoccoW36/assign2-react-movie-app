@@ -161,10 +161,12 @@ export interface BaseTVShowProps {
   tagline?: string;
   favourite?: boolean;
   genre_ids?: number[];
+  isFavourite?: boolean; 
 }
 
+
 export interface BaseTVShowListProps {
-  tvShows: BaseTVShowProps[];
+  tvShows: BaseTVShowProps[]; 
   action: (tv: BaseTVShowProps) => React.ReactNode;
 }
 

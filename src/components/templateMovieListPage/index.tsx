@@ -2,25 +2,57 @@ import React from "react";
 import Header from "../headerMovieList";
 import Grid from "@mui/material/Grid";
 import MovieList from "../movieList";
+import PaginationUI from "../PaginationUI";
 import { MovieListPageTemplateProps } from "../../types/interfaces";
 
 const styles = {
   root: { 
-    backgroundColor: "#bfbfbf",
-  }
+    backgroundColor: "#f5f5f5",
+    minHeight: "100vh",
+    paddingTop: "20px",
+  },
 };
 
-const MovieListPageTemplate: React.FC<MovieListPageTemplateProps> = ({ movies, title, action }) => {
-  console.log("Movies passed to PageTemplate:", movies);
+interface MovieListPageTemplateExtendedProps extends MovieListPageTemplateProps {
+  onBack?: () => void;
+  onForward?: () => void;
+  page?: number;
+  handlePageChange?: (event: React.ChangeEvent<unknown>, value: number) => void;
+  totalPages?: number;
+}
 
+const MovieListPageTemplate: React.FC<MovieListPageTemplateExtendedProps> = ({
+  movies,
+  title,
+  action,
+  onBack,
+  onForward,
+  page,
+  handlePageChange,
+  totalPages,
+}) => {
   return (
-    <Grid container sx={styles.root}>
-      <Grid item xs={12}>
-        <Header title={title} />
+    <Grid container direction="column" sx={styles.root} spacing={2}>
+    
+      <Grid item>
+        <Header title={title} onBack={onBack} onForward={onForward} />
       </Grid>
-      <Grid item container spacing={5}>
-        <MovieList action={action} movies={movies} />
+
+      <Grid item sx={{ padding: "0 20px" }}>
+        <Grid container spacing={3} justifyContent="center">
+          <MovieList action={action} movies={movies} />
+        </Grid>
       </Grid>
+
+      {page !== undefined && handlePageChange && totalPages !== undefined && (
+        <Grid item sx={{ padding: "0 20px" }}>
+          <PaginationUI
+            page={page}
+            handlePageChange={handlePageChange}
+            totalPages={totalPages}
+          />
+        </Grid>
+      )}
     </Grid>
   );
 };

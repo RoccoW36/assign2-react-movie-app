@@ -3,7 +3,7 @@ import TVShowHeader from "../headerTVShow";
 import Grid from "@mui/material/Grid";
 import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
-import { getTVShowImages } from "../../api/tmdb-api"; 
+import { getTVShowImages } from "../../api/tmdb-api";
 import { TVShowImage, TVShowDetailsProps } from "../../types/interfaces";
 import { useQuery } from "react-query";
 import Spinner from "../spinner";
@@ -12,11 +12,11 @@ const styles = {
   gridListRoot: {
     display: "flex",
     flexWrap: "wrap",
-    justifyContent: "space-around",
+    justifyContent: "center",
   },
   gridListTile: {
     width: 450,
-    height: "100vh",
+    height: "auto",
   },
 };
 
@@ -43,30 +43,24 @@ const TemplateTVShowPage: React.FC<TemplateTVShowPageProps> = ({ tvShow, childre
 
   return (
     <>
-      <TVShowHeader tvShow={tvShow} /> 
+      <TVShowHeader tvShow={tvShow} />
       
-      <Grid container spacing={5} style={{ padding: "15px" }}>
-        <Grid item xs={3}>
-          <div>
-            <ImageList cols={1}>
-              {images.map((image: TVShowImage) => (
-                <ImageListItem
-                  key={image.file_path}
-                  sx={styles.gridListTile}
-                  cols={1}
-                >
-                  <img
-                    src={`https://image.tmdb.org/t/p/w500/${image.file_path}`}
-                    alt={"Image alternative"}
-                  />
-                </ImageListItem>
-              ))}
-            </ImageList>
-          </div>
+      <Grid container spacing={5} sx={{ padding: "15px" }}>
+        <Grid item xs={12} sm={4} md={3}>
+          <ImageList cols={1} sx={styles.gridListRoot}>
+            {images.map((image: TVShowImage) => (
+              <ImageListItem key={image.file_path} sx={styles.gridListTile}>
+                <img
+                  src={`https://image.tmdb.org/t/p/w500/${image.file_path}`}
+                  alt={"Image alternative"}
+                />
+              </ImageListItem>
+            ))}
+          </ImageList>
         </Grid>
 
-        <Grid item xs={9}>
-          {children} 
+        <Grid item xs={12} sm={8} md={9}>
+          {children}
         </Grid>
       </Grid>
     </>
