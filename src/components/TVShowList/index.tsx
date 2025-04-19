@@ -1,7 +1,7 @@
 import React from "react";
-import TVShowCard from "../TVShowCard"; 
+import TVShowCard from "../TVShowCard/";
 import Grid from "@mui/material/Grid";
-import { BaseTVShowListProps } from "../../types/interfaces"; 
+import { BaseTVShowListProps } from "../../types/interfaces";
 
 const TVShowList: React.FC<BaseTVShowListProps> = ({ tvShows, action }) => {
   let tvShowCards = tvShows.map((tvShow) => (
@@ -9,12 +9,7 @@ const TVShowList: React.FC<BaseTVShowListProps> = ({ tvShows, action }) => {
       <TVShowCard key={tvShow.id} tvShow={tvShow} action={action} />
     </Grid>
   ));
-
-  return (
-    <Grid container spacing={3}>
-      {tvShowCards}
-    </Grid>
-  );
+  return tvShowCards;
 };
 
 export default TVShowList;

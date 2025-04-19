@@ -5,7 +5,7 @@ import Paper from "@mui/material/Paper";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import HomeIcon from "@mui/icons-material/Home";
-import FavouriteIcon from "@mui/icons-material/Favorite";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 import Avatar from "@mui/material/Avatar";
 import { TVShowDetailsProps } from "../../types/interfaces";  
 import { TVShowsContext } from "../../contexts/tvShowsContext";
@@ -13,17 +13,21 @@ import { TVShowsContext } from "../../contexts/tvShowsContext";
 const styles = {
   root: {
     display: "flex",
-    justifyContent: "space-around",
-    alignItems: "center",
-    flexWrap: "wrap",
+    justifyContent: "space-around", 
+    alignItems: "center", 
+    flexWrap: "wrap", 
     padding: 1.5,
   },
   avatar: {
-    backgroundColor: "rgb(255, 0, 0)",
+    backgroundColor: "rgb(255, 0, 0)", 
   },
 };
 
-const TVShowHeader: React.FC<{ tvShow: TVShowDetailsProps }> = ({ tvShow }) => {
+const TVShowHeader: React.FC<{ tvShow: TVShowDetailsProps; onBack?: () => void; onForward?: () => void }> = ({
+  tvShow,
+  onBack,
+  onForward,
+}) => {
   const { favourites, addToFavourites, removeFromFavourites } = useContext(TVShowsContext);
   const [isFavorite, setIsFavorite] = useState(false);
 
@@ -42,20 +46,26 @@ const TVShowHeader: React.FC<{ tvShow: TVShowDetailsProps }> = ({ tvShow }) => {
 
   return (
     <Paper component="div" sx={styles.root}>
-      <IconButton aria-label="go back">
-        <ArrowBackIcon color="primary" fontSize="large" />
-      </IconButton>
+      {onBack && (
+        <IconButton aria-label="go back" onClick={onBack}>
+          <ArrowBackIcon color="primary" fontSize="large" />
+        </IconButton>
+      )}
 
-      <IconButton onClick={toggleFavorite} aria-label="toggle favorite">
-        <Avatar sx={isFavorite ? styles.avatar : { backgroundColor: "gray" }}>
-          <FavouriteIcon />
-        </Avatar>
-      </IconButton>
+      <Avatar
+        onClick={toggleFavorite}
+        sx={{
+          backgroundColor: isFavorite ? "rgb(255, 0, 0)" : "gray",
+          cursor: "pointer",
+        }}
+      >
+        <FavoriteIcon />
+      </Avatar>
 
       <Typography variant="h4" component="h3">
-        {tvShow.name}{" "}
+        {tvShow.name} 
         {tvShow.homepage && (
-          <a href={tvShow.homepage}>
+          <a href={tvShow.homepage} target="_blank" rel="noopener noreferrer">
             <HomeIcon color="primary" fontSize="large" />
           </a>
         )}
@@ -63,9 +73,11 @@ const TVShowHeader: React.FC<{ tvShow: TVShowDetailsProps }> = ({ tvShow }) => {
         <span>{tvShow.tagline || "No tagline available"}</span>
       </Typography>
 
-      <IconButton aria-label="go forward">
-        <ArrowForwardIcon color="primary" fontSize="large" />
-      </IconButton>
+      {onForward && (
+        <IconButton aria-label="go forward" onClick={onForward}>
+          <ArrowForwardIcon color="primary" fontSize="large" />
+        </IconButton>
+      )}
     </Paper>
   );
 };

@@ -80,7 +80,6 @@ const FavouriteMoviesPage: React.FC = () => {
           genreFilter={filterValues[1].value}
         />
       )}
-      {/* Optional Reset Button */}
       <button onClick={resetFilters} style={{ marginTop: "20px", padding: "10px 20px", cursor: "pointer" }}>
         Reset Filters
       </button>

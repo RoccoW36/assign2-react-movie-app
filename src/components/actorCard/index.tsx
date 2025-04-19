@@ -17,15 +17,9 @@ import { ActorsContext } from "../../contexts/actorsContext";
 import { BaseActorProps } from "../../types/interfaces";
 
 const styles = {
-  card: {
-    maxWidth: 300, 
-    height: "auto", 
-    margin: "20px auto", 
-  },
-  media: {
-    height: 300, 
-    objectFit: "cover", 
-  },
+  card: { maxWidth: 345 },
+  media: { height: 500 },
+
   avatarFav: {
     backgroundColor: "rgb(255, 0, 0)", 
   },

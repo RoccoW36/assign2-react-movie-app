@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { Actor } from "../types/interfaces";
 
 interface ActorsContextInterface {
@@ -16,7 +16,14 @@ const initialContextState: ActorsContextInterface = {
 export const ActorsContext = React.createContext<ActorsContextInterface>(initialContextState);
 
 const ActorsContextProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
-  const [favourites, setFavourites] = useState<number[]>([]);
+  const [favourites, setFavourites] = useState<number[]>(() => {
+    const stored = localStorage.getItem("actorFavourites");
+    return stored ? JSON.parse(stored) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem("actorFavourites", JSON.stringify(favourites));
+  }, [favourites]);
 
   const addToFavourites = useCallback((actor: Actor) => {
     setFavourites((prevFavourites) => {

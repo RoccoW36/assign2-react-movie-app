@@ -4,37 +4,52 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import Paper from "@mui/material/Paper";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
 
 interface HeaderActorListProps {
   title: string;
-  onBack: () => void;
-  onForward: () => void;
+  onBack?: () => void;   
+  onForward?: () => void; 
+  subtitle?: string;
 }
 
-const HeaderActorList: React.FC<HeaderActorListProps> = ({ title, onBack, onForward }) => {
+const HeaderActorList: React.FC<HeaderActorListProps> = ({ title, onBack, onForward, subtitle }) => {
   return (
     <Paper
       component="div"
       sx={{
         display: "flex",
-        justifyContent: "space-between",
+        flexDirection: "column",
         alignItems: "center",
         padding: 2,
         marginBottom: 2,
       }}
       elevation={3}
     >
-      <IconButton aria-label="go back" onClick={onBack}>
-        <ArrowBackIcon color="primary" fontSize="large" />
-      </IconButton>
+      <Box sx={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
+        {onBack && (
+          <IconButton aria-label="go back" size="large" onClick={onBack}>
+            <ArrowBackIcon color="primary" fontSize="large" />
+          </IconButton>
+        )}
 
-      <Typography variant="h4" component="h3" sx={{ flexGrow: 1, textAlign: "center" }}>
-        {title}
-      </Typography>
+        <Box sx={{ flexGrow: 1, textAlign: "center" }}>
+          <Typography variant="h5" component="h3" noWrap>
+            {title}
+          </Typography>
+          {subtitle && (
+            <Typography variant="subtitle1" component="h4" sx={{ color: "gray", marginTop: 1 }}>
+              {subtitle}
+            </Typography>
+          )}
+        </Box>
 
-      <IconButton aria-label="go forward" onClick={onForward}>
-        <ArrowForwardIcon color="primary" fontSize="large" />
-      </IconButton>
+        {onForward && (
+          <IconButton aria-label="go forward" size="large" onClick={onForward}>
+            <ArrowForwardIcon color="primary" fontSize="large" />
+          </IconButton>
+        )}
+      </Box>
     </Paper>
   );
 };

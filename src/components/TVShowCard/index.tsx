@@ -19,11 +19,9 @@ import img from '../../images/film-poster-placeholder.png';
 const styles = {
   card: { maxWidth: 345 },
   media: { height: 500 },
+
   avatarFav: {
     backgroundColor: "rgb(255, 0, 0)",
-    width: 32,
-    height: 32,
-    fontSize: 18,
   },
 };
 
@@ -34,15 +32,11 @@ interface TVShowCardProps {
 
 const TVShowCard: React.FC<TVShowCardProps> = ({ tvShow, action }) => {
   const { favourites } = useContext(TVShowsContext);
-  console.log("Favourites in TVShowsPage:", favourites); // Debugging context propagation
+  console.log("Favourites in TVShowsPage:", favourites);
+  console.log("Rendering TVShowCard for ID:", tvShow.id);
 
-  // Debugging log to ensure TVShowCard is rendering
-  console.log("Rendering TVShowCard for ID:", tvShow.id); // Proper placement
-
-  // Check if the TV show is in the favourites list
   const isFavourite = favourites.includes(tvShow.id);
 
-  // Debugging log to check context and favourite status
   console.log("TVShowCard Debug:", { tvShowId: tvShow.id, isFavourite, favourites });
 
   return (
@@ -84,7 +78,6 @@ const TVShowCard: React.FC<TVShowCardProps> = ({ tvShow, action }) => {
         </Grid>
       </CardContent>
       <CardActions disableSpacing>
-        {/* The action prop allows for custom buttons or icons */}
         {action(tvShow)}
         <Link to={`/tv/${tvShow.id}`}>
           <Button variant="outlined" size="medium" color="primary">

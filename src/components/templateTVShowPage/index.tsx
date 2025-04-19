@@ -13,9 +13,10 @@ const styles = {
     display: "flex",
     flexWrap: "wrap",
     justifyContent: "center",
+    margin: "0 auto",
   },
   gridListTile: {
-    width: 450,
+    width: "100%",
     height: "auto",
   },
 };
@@ -36,23 +37,23 @@ const TemplateTVShowPage: React.FC<TemplateTVShowPageProps> = ({ tvShow, childre
   }
 
   if (isError) {
-    return <h1>{(error as Error).message}</h1>;
+    return <h1>Error loading TV show images: {error.message}</h1>;
   }
 
-  const images = data as TVShowImage[];
+  const images = data || [];
 
   return (
     <>
       <TVShowHeader tvShow={tvShow} />
       
-      <Grid container spacing={5} sx={{ padding: "15px" }}>
+      <Grid container spacing={5} sx={{ padding: "20px", margin: "auto", maxWidth: "1200px" }}>
         <Grid item xs={12} sm={4} md={3}>
           <ImageList cols={1} sx={styles.gridListRoot}>
             {images.map((image: TVShowImage) => (
               <ImageListItem key={image.file_path} sx={styles.gridListTile}>
                 <img
                   src={`https://image.tmdb.org/t/p/w500/${image.file_path}`}
-                  alt={"Image alternative"}
+                  alt="TV Show image"
                 />
               </ImageListItem>
             ))}

@@ -34,7 +34,10 @@ const FavouriteActorsPage: React.FC = () => {
   const favouriteActorQueries = useQueries(
     actorIds.map((actorId: number) => ({
       queryKey: ["actor", actorId],
-      queryFn: () => actorId ? getActor(actorId.toString()) : Promise.resolve(null),
+      queryFn: async () => {
+        const actor = await getActor(actorId.toString());
+        return actor; 
+      },
     }))
   );
 
@@ -63,18 +66,16 @@ const FavouriteActorsPage: React.FC = () => {
     return <h1>No favourite actors match your filter</h1>;
   }
 
-  const onBack = () => {
-  };
+  const onBack = () => {};
 
-  const onForward = () => {
-  };
+  const onForward = () => {};
 
   return (
     <>
       <PageTemplate
         title="Favourite Actors"
         actors={displayedActors}
-        action={(actor) => <RemoveFromActorFavourites actor={actor} />}
+        action={(actor: BaseActorProps) => <RemoveFromActorFavourites actor={actor} />}
         onBack={onBack}
         onForward={onForward}
       />

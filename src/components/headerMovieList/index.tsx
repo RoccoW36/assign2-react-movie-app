@@ -10,7 +10,7 @@ interface HeaderProps {
   title: string;
   onBack?: () => void;   
   onForward?: () => void; 
-  subtitle?: string; // Add optional subtitle prop
+  subtitle?: string;
 }
 
 const Header: React.FC<HeaderProps> = ({ title, onBack, onForward, subtitle }) => {
@@ -19,7 +19,7 @@ const Header: React.FC<HeaderProps> = ({ title, onBack, onForward, subtitle }) =
       component="div"
       sx={{
         display: "flex",
-        flexDirection: "column", // Allow vertical stacking for title and subtitle
+        flexDirection: "column",
         alignItems: "center",
         padding: 2,
         marginBottom: 2,

@@ -77,11 +77,6 @@ const HomePage: React.FC = () => {
 
   return (
     <>
-      <PaginationUI
-        page={page}
-        handlePageChange={handlePageChange}
-        totalPages={totalPages}
-      />
       <PageTemplate
         title="Discover Movies"
         movies={displayedMovies}
@@ -89,7 +84,11 @@ const HomePage: React.FC = () => {
         onBack={onBack}
         onForward={onForward}
       />
-
+      <PaginationUI
+        page={page}
+        handlePageChange={handlePageChange}
+        totalPages={totalPages}
+      />
       <MovieFilterUI
         onFilterValuesChange={changeFilterValues}
         titleFilter={filterValues[0].value}

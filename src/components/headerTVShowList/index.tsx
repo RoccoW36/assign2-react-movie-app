@@ -4,38 +4,53 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import Paper from "@mui/material/Paper";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
 
 interface HeaderTVShowListProps {
   title: string;
-  onBack?: () => void;
-  onForward?: () => void;
+  onBack?: () => void;   
+  onForward?: () => void; 
+  subtitle?: string;
 }
 
-const HeaderTVShowList: React.FC<HeaderTVShowListProps> = ({ title, onBack, onForward }) => {
+const HeaderTVShowList: React.FC<HeaderTVShowListProps> = ({ title, onBack, onForward, subtitle }) => {
   return (
     <Paper
       component="div"
       sx={{
         display: "flex",
-        justifyContent: "space-between",
+        flexDirection: "column",
         alignItems: "center",
-        flexWrap: "wrap",
         padding: 2,
-        mb: 2,
+        marginBottom: 2,
       }}
       elevation={3}
     >
-      <IconButton aria-label="go back" onClick={onBack} disabled={!onBack}>
-        <ArrowBackIcon color="primary" fontSize="large" />
-      </IconButton>
+      <Box sx={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
+        {onBack && (
+          <IconButton aria-label="go back" size="large" onClick={onBack}>
+            <ArrowBackIcon color="primary" fontSize="large" />
+          </IconButton>
+        )}
 
-      <Typography variant="h4" component="h3" sx={{ mx: 2, flexGrow: 1, textAlign: "center" }}>
-        {title}
-      </Typography>
+        <Box sx={{ flexGrow: 1, textAlign: "center" }}>
+          <Typography variant="h5" component="h3" noWrap>
+            {title}
+          </Typography>
 
-      <IconButton aria-label="go forward" onClick={onForward} disabled={!onForward}>
-        <ArrowForwardIcon color="primary" fontSize="large" />
-      </IconButton>
+          {subtitle && (
+            <Typography variant="subtitle1" component="h4" sx={{ color: "gray", marginTop: 1 }}>
+              {subtitle}
+            </Typography>
+          )}
+        </Box>
+
+        {onForward && (
+          <IconButton aria-label="go forward" size="large" onClick={onForward}>
+            <ArrowForwardIcon color="primary" fontSize="large" />
+          </IconButton>
+        )}
+      </Box>
     </Paper>
   );
 };

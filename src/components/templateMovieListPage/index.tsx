@@ -6,7 +6,7 @@ import PaginationUI from "../PaginationUI";
 import { MovieListPageTemplateProps } from "../../types/interfaces";
 
 const styles = {
-  root: { 
+  root: {
     backgroundColor: "#f5f5f5",
     minHeight: "100vh",
     paddingTop: "20px",
@@ -33,17 +33,9 @@ const MovieListPageTemplate: React.FC<MovieListPageTemplateExtendedProps> = ({
 }) => {
   return (
     <Grid container direction="column" sx={styles.root} spacing={2}>
-    
       <Grid item>
         <Header title={title} onBack={onBack} onForward={onForward} />
       </Grid>
-
-      <Grid item sx={{ padding: "0 20px" }}>
-        <Grid container spacing={3} justifyContent="center">
-          <MovieList action={action} movies={movies} />
-        </Grid>
-      </Grid>
-
 
       {page !== undefined && handlePageChange && totalPages !== undefined && (
         <Grid item sx={{ padding: "0 20px" }}>
@@ -54,6 +46,12 @@ const MovieListPageTemplate: React.FC<MovieListPageTemplateExtendedProps> = ({
           />
         </Grid>
       )}
+
+      <Grid item sx={{ padding: "0 20px" }}>
+        <Grid container spacing={3} justifyContent="center">
+          <MovieList action={action} movies={movies} />
+        </Grid>
+      </Grid>
     </Grid>
   );
 };

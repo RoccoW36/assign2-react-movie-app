@@ -5,7 +5,7 @@ import { BrowserRouter, Route, Navigate, Routes } from "react-router-dom";
 import HomePage from "./pages/homePage";
 import MoviePage from "./pages/movieDetailsPage";
 import FavouriteMoviesPage from "./pages/favouriteMoviesPage";
-import MustWatchMoviesPage from "./pages/mustWatchMoviesPage"; // Import Must Watch Movies page
+import MustWatchMoviesPage from "./pages/mustWatchMoviesPage";
 import MovieReviewPage from "./pages/movieReviewPage";
 import SiteHeader from "./components/siteHeader";
 import UpcomingMoviesPage from "./pages/upcomingMoviesPage";
@@ -41,33 +41,27 @@ const App = () => {
           <ActorsContextProvider>
             <TVShowsContextProvider>
               <Routes>
-                {/* Home */}
+                
                 <Route path="/" element={<HomePage />} />
 
-                {/* Movies */}
                 <Route path="/movies/favourites" element={<FavouriteMoviesPage />} />
                 <Route path="/movies/upcoming" element={<UpcomingMoviesPage />} />
-                <Route path="/movies/mustwatch" element={<MustWatchMoviesPage />} /> {/* Added route */}
+                <Route path="/movies/mustwatch" element={<MustWatchMoviesPage />} />
                 <Route path="/movies/:id" element={<MoviePage />} />
 
-                {/* Reviews */}
                 <Route path="/reviews/:id" element={<MovieReviewPage />} />
                 <Route path="/reviews/form" element={<AddMovieReviewPage />} />
 
-                {/* Actors */}
                 <Route path="/actors" element={<PopularActorsPage />} />
                 <Route path="/actors/:id" element={<ActorDetailsPage />} />
                 <Route path="/actors/favourites" element={<FavouriteActorsPage />} />
 
-                {/* TV Shows */}
                 <Route path="/tv" element={<TVShowsPage />} />
                 <Route path="/tv/:id" element={<TVShowDetailsPage />} />
                 <Route path="/tv/favourites" element={<FavouriteTVShowsPage />} />
 
-                {/* Search */}
                 <Route path="/search" element={<SearchPage />} />
 
-                {/* Catch-all */}
                 <Route path="*" element={<Navigate to="/" />} />
               </Routes>
             </TVShowsContextProvider>

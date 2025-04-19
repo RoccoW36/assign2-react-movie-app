@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { BaseTVShowProps, Review } from "../types/interfaces";
 
 interface TVShowContextInterface {
@@ -20,38 +20,34 @@ const initialContextState: TVShowContextInterface = {
 export const TVShowsContext = React.createContext<TVShowContextInterface>(initialContextState);
 
 const TVShowsContextProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
-  // State for favourites
-  const [favourites, setFavourites] = useState<number[]>([]);
+  const [favourites, setFavourites] = useState<number[]>(() => {
+    const stored = localStorage.getItem("tvFavourites");
+    return stored ? JSON.parse(stored) : [];
+  });
 
-  // State for reviews
   const [myReviews, setMyReviews] = useState<Record<number, Review>>({});
 
-  // Add to favourites logic
+  useEffect(() => {
+    localStorage.setItem("tvFavourites", JSON.stringify(favourites));
+  }, [favourites]);
+
   const addToFavourites = useCallback((tvShow: BaseTVShowProps) => {
-    setFavourites((prev) => {
-      const updated = prev.includes(tvShow.id) ? prev : [...prev, tvShow.id];
-      console.log("Prev Favourites:", prev); // Debugging previous state
-      console.log("Updated Favourites Array:", updated); // Debugging updated state
-      return updated;
+    setFavourites((prevFavourites) => {
+      if (!prevFavourites.includes(tvShow.id)) {
+        return [...prevFavourites, tvShow.id];
+      }
+      return prevFavourites;
     });
   }, []);
 
-  // Remove from favourites logic
   const removeFromFavourites = useCallback((tvShow: BaseTVShowProps) => {
-    setFavourites((prev) => {
-      const updated = prev.filter((id) => id !== tvShow.id);
-      console.log("Updated Favourites After Removal:", updated); // Debugging
-      return updated;
-    });
+    setFavourites((prevFavourites) =>
+      prevFavourites.filter((tvShowId) => tvShowId !== tvShow.id)
+    );
   }, []);
 
-  // Add review logic
   const addReview = useCallback((tvShow: BaseTVShowProps, review: Review) => {
-    setMyReviews((prev) => {
-      const updatedReviews = { ...prev, [tvShow.id]: review };
-      console.log("Added Review:", updatedReviews); // Debugging
-      return updatedReviews;
-    });
+    setMyReviews((prevReviews) => ({ ...prevReviews, [tvShow.id]: review }));
   }, []);
 
   return (

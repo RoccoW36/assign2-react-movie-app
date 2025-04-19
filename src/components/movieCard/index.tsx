@@ -20,6 +20,7 @@ import { MoviesContext } from "../../contexts/moviesContext";
 const styles = {
   card: { maxWidth: 345 },
   media: { height: 500 },
+
   avatarFav: {
     backgroundColor: "rgb(255, 0, 0)",
   },

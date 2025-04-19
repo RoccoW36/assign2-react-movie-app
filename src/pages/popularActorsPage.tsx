@@ -1,17 +1,15 @@
-import React, { useEffect } from "react";
-import { useQuery } from "react-query";
-import { getPopularActors } from "../api/tmdb-api";
-import PageTemplate from "../components/templateActorListPage";
-import Spinner from "../components/spinner";
-import Alert from "@mui/material/Alert";
-import ActorCard from "../components/actorCard";
-import AddToActorFavouritesIcon from "../components/cardIcons/addToActorFavourites";
-import Grid from "@mui/material/Grid";
-import useFiltering from "../hooks/useFiltering";
-import FloatingFilterActorsMenu from "../components/actorFilterUI";
-import { DiscoverActors, BaseActorProps } from "../types/interfaces";
-import { usePagination } from "../hooks/usePagination";
-import PaginationUI from "../components/PaginationUI";
+import React, { useEffect } from "react"; 
+import { useQuery } from "react-query"; 
+import { getPopularActors } from "../api/tmdb-api"; 
+import PageTemplate from "../components/templateActorListPage"; 
+import Spinner from "../components/spinner"; 
+import Alert from "@mui/material/Alert"; 
+import AddToActorFavouritesIcon from "../components/cardIcons/addToActorFavourites"; 
+import FloatingFilterActorsMenu from "../components/actorFilterUI"; 
+import PaginationUI from "../components/PaginationUI"; 
+import { DiscoverActors, BaseActorProps } from "../types/interfaces"; 
+import { usePagination } from "../hooks/usePagination"; 
+import useFiltering from "../hooks/useFiltering"; 
 
 const nameFiltering = {
   name: "name",
@@ -66,26 +64,20 @@ const PopularActorsPage: React.FC = () => {
 
   const displayedActors = filterFunction(actors);
 
-  // onBack and onForward handlers
   const onBack = () => {
     if (page > 1) {
-      handlePageChange({} as React.ChangeEvent<unknown>, page - 1); // Passing an empty object as the event
+      handlePageChange({} as React.ChangeEvent<unknown>, page - 1);
     }
   };
 
   const onForward = () => {
     if (page < totalPages) {
-      handlePageChange({} as React.ChangeEvent<unknown>, page + 1); // Passing an empty object as the event
+      handlePageChange({} as React.ChangeEvent<unknown>, page + 1);
     }
   };
 
   return (
     <>
-      <PaginationUI
-        page={page}
-        handlePageChange={handlePageChange}
-        totalPages={totalPages}
-      />
       <PageTemplate
         title="Discover Actors"
         actors={displayedActors}
@@ -95,23 +87,16 @@ const PopularActorsPage: React.FC = () => {
         onBack={onBack}
         onForward={onForward}
       />
+      <PaginationUI
+        page={page}
+        handlePageChange={handlePageChange}
+        totalPages={totalPages}
+      />
       <FloatingFilterActorsMenu
         onFilterValuesChange={changeFilterValues}
         nameFilter={filterValues[0].value}
         genderFilter={Number(filterValues[1].value)}
       />
-      <Grid container spacing={4} sx={{ marginTop: 5, padding: "0 20px" }}>
-        {displayedActors.map((actor: BaseActorProps) => (
-          <Grid item xs={12} sm={6} md={4} lg={3} key={actor.id}>
-            <ActorCard
-              actor={actor}
-              action={(a: BaseActorProps) => (
-                <AddToActorFavouritesIcon actor={a} />
-              )}
-            />
-          </Grid>
-        ))}
-      </Grid>
     </>
   );
 };
