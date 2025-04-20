@@ -1,11 +1,10 @@
-
 export interface BaseMovieProps {
   title: string;
   budget: number;
-  homepage: string | undefined;
+  homepage?: string;
   id: number;
   imdb_id: string;
-  original_language: string;
+  production_country: string;
   overview: string;
   release_date: string;
   vote_average: number;
@@ -23,6 +22,33 @@ export interface BaseMovieListProps {
   movies: BaseMovieProps[];
   action: (m: BaseMovieProps) => React.ReactNode;
 }
+
+export type FilterOption = "title" | "genre" | "rating" | "production country" | "sortOption";
+
+
+export interface Genre {
+  id: string;
+  name: string;
+}
+
+export interface GenreData {
+  genres: {
+    id: string;
+    name: string;
+  }[];
+}
+
+export interface production_country {
+  iso_639_1: string;
+  name: string; 
+}
+
+export interface WatchProvider {
+  provider_id: number;
+  provider_name: string;
+  logo_path?: string;
+}
+
 
 export interface MovieDetailsProps extends BaseMovieProps {
   genres: {
@@ -50,7 +76,7 @@ export interface MoviePageProps {
   images: MovieImage[];
 }
 
-export type FilterOption = "title" | "genre";
+
 
 export interface MovieListPageTemplateProps extends BaseMovieListProps {
   title: string;
@@ -62,14 +88,7 @@ export interface Review {
   agree: boolean;
   rating: number;
   movieId: number;
-  tvShowId: number; 
-}
-
-export interface GenreData {
-  genres: {
-    id: string;
-    name: string;
-  }[];
+  tvShowId: number;
 }
 
 export interface DiscoverMovies {
@@ -77,6 +96,7 @@ export interface DiscoverMovies {
   total_pages: number;
   total_results: number;
   results: BaseMovieProps[];
+  sort_by?: string;
 }
 
 export interface Actor {
@@ -160,21 +180,17 @@ export interface BaseTVShowProps {
   poster_path?: string;
   tagline?: string;
   favourite?: boolean;
-  genre_ids?: number[];
-  isFavourite?: boolean; 
+  genre_ids?: string[];
+  isFavourite?: boolean;
 }
 
-
 export interface BaseTVShowListProps {
-  tvShows: BaseTVShowProps[]; 
+  tvShows: BaseTVShowProps[];
   action: (tv: BaseTVShowProps) => React.ReactNode;
 }
 
 export interface TVShowDetailsProps extends BaseTVShowProps {
-  genres: {
-    id: number;
-    name: string;
-  }[];
+  genres: Genre[];
   origin_country: string[];
   number_of_episodes: number;
   number_of_seasons: number;

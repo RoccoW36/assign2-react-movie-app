@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import { BaseMovieProps, Review } from "../types/interfaces";
 
 interface MovieContextInterface {
@@ -34,19 +34,10 @@ const MoviesContextProvider: React.FC<React.PropsWithChildren> = ({ children }) 
   });
 
   const [myReviews, setMyReviews] = useState<Record<number, Review>>({});
-
   const [mustWatch, setMustWatch] = useState<number[]>(() => {
     const stored = localStorage.getItem("mustWatchMovies");
     return stored ? JSON.parse(stored) : [];
   });
-
-  useEffect(() => {
-    localStorage.setItem("favoriteMovies", JSON.stringify(favourites));
-  }, [favourites]);
-
-  useEffect(() => {
-    localStorage.setItem("mustWatchMovies", JSON.stringify(mustWatch));
-  }, [mustWatch]);
 
   const addToFavourites = useCallback((movie: BaseMovieProps) => {
     setFavourites((prev) => (prev.includes(movie.id) ? prev : [...prev, movie.id]));
