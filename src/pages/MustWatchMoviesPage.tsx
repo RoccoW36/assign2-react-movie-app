@@ -4,22 +4,29 @@ import { MoviesContext } from "../contexts/moviesContext";
 import { useQueries } from "react-query";
 import { getMovie } from "../api/tmdb-api";
 import Spinner from "../components/spinner";
-import MovieFilterUI from "../components/movieFilterUI";
+import useFiltering from "../hooks/useFiltering";
+import MovieFilterUI, { titleFilter, favouritesgenreFilter } from "../components/movieFilterUI";
 import RemoveFromMustWatchIcon from "../components/cardIcons/removeFromMustWatch";
+
+const titleFiltering = {
+  name: "title",
+  value: "",
+  condition: titleFilter,
+};
+
+const genreFiltering = {
+  name: "genre",
+  value: "0",
+  condition: favouritesgenreFilter,
+};
 
 const MustWatchMoviesPage: React.FC = () => {
   const { mustWatch: movieIds } = useContext(MoviesContext);
 
-  const [filters, setFilters] = React.useState({
-    title: "",
-    genre: "0",
-    runtime: "",
-    productionCountry: "",
-    releaseDateFrom: "",
-    releaseDateTo: "",
-    rating: "",
-    language: "",
-  });
+  const { filterValues, setFilterValues, filterFunction } = useFiltering([
+    titleFiltering,
+    genreFiltering,
+  ]);
 
   const mustWatchMovieQueries = useQueries(
     movieIds.map((movieId) => ({
@@ -38,62 +45,20 @@ const MustWatchMoviesPage: React.FC = () => {
     .map((q) => q.data)
     .filter(Boolean);
 
-  const applyFilters = (movies: any[]) => {
-    return movies.filter((movie) => {
-      const matchesTitle =
-        filters.title === "" || movie.title.toLowerCase().includes(filters.title.toLowerCase());
-      const matchesGenre =
-        filters.genre === "0" ||
-        movie.genres.some((genre: any) => genre.id.toString() === filters.genre);
-      const matchesRuntime =
-        !filters.runtime ||
-        (movie.runtime && (
-          filters.runtime === "short" ? movie.runtime < 90 :
-          filters.runtime === "medium" ? movie.runtime >= 90 && movie.runtime <= 120 :
-          filters.runtime === "long" ? movie.runtime > 120 : true
-        ));
-      const matchesProductionCountry =
-        !filters.productionCountry ||
-        (movie.production_countries?.length &&
-          movie.production_countries.some((country: any) => country.iso_3166_1 === filters.productionCountry));
-      const matchesReleaseDate =
-        (!filters.releaseDateFrom || !filters.releaseDateTo) ||
-        (new Date(movie.release_date) >= new Date(filters.releaseDateFrom) &&
-          new Date(movie.release_date) <= new Date(filters.releaseDateTo));
-      const matchesRating =
-        !filters.rating || (movie.vote_average && movie.vote_average >= Number(filters.rating));
-      const matchesLanguage =
-        filters.language === "" || movie.original_language === filters.language;
+  const displayedMovies = filterFunction(allMustWatchMovies);
 
-      return (
-        matchesTitle &&
-        matchesGenre &&
-        matchesRuntime &&
-        matchesProductionCountry &&
-        matchesReleaseDate &&
-        matchesRating &&
-        matchesLanguage
-      );
-    });
-  };
-
-  const displayedMovies = applyFilters(allMustWatchMovies);
-
-  const handleFilterChange = (type: string, value: string | null) => {
-    setFilters({ ...filters, [type]: value });
+  const changeFilterValues = (type: string, value: string) => {
+    const changedFilter = { name: type, value };
+    const updatedFilterSet =
+      type === "title"
+        ? [changedFilter, filterValues[1]]
+        : [filterValues[0], changedFilter];
+    setFilterValues(updatedFilterSet);
   };
 
   const resetFilters = () => {
-    setFilters({
-      title: "",
-      genre: "0",
-      runtime: "",
-      productionCountry: "",
-      releaseDateFrom: "",
-      releaseDateTo: "",
-      rating: "",
-      language: "",
-    });
+    changeFilterValues("title", "");
+    changeFilterValues("genre", "0");
   };
 
   return (
@@ -103,21 +68,14 @@ const MustWatchMoviesPage: React.FC = () => {
         movies={displayedMovies}
         action={(movie) => <RemoveFromMustWatchIcon {...movie} />}
       />
-      {displayedMovies.length === 0 ? (
-        <h1>No must-watch movies found</h1>
-      ) : (
-        <MovieFilterUI
-          onFilterValuesChange={handleFilterChange}
-          titleFilter={filters.title}
-          genreFilter={filters.genre}
-          runtimeFilter={filters.runtime}
-          productionCountryFilter={filters.productionCountry}
-          releaseDateFromFilter={filters.releaseDateFrom}
-          releaseDateToFilter={filters.releaseDateTo}
-          ratingFilter={filters.rating}
-          languageFilter={filters.language}
-        />
-      )}
+      <MovieFilterUI
+        onFilterValuesChange={changeFilterValues}
+        titleFilter={filterValues.find((filter) => filter.name === "title")?.value || ""}
+        genreFilter={filterValues.find((filter) => filter.name === "genre")?.value || "0"}
+        ratingFilter={filterValues.find((filter) => filter.name === "rating")?.value || ""}
+        productionCountryFilter={filterValues.find((filter) => filter.name === "production country")?.value || ""}
+        sortOption="" //placeholder
+      />
       <button
         onClick={resetFilters}
         style={{ marginTop: "20px", padding: "10px 20px", cursor: "pointer" }}
