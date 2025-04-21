@@ -40,18 +40,18 @@ const SiteHeader: React.FC = () => {
   const moviesMenu = [
     { label: "Discover Movies", path: "/movies" },
     { label: "Upcoming Movies", path: "/movies/upcoming" },
-    { label: "Favorite Movies", path: "/movies/favourites" },
+    { label: "Favourite Movies", path: "/movies/favourites" },
     { label: "Must Watch Movies", path: "/movies/mustwatch" },
   ];
 
   const tvShowsMenu = [
     { label: "Discover TV Shows", path: "/tv" },
-    { label: "Favorite TV Shows", path: "/tv/favourites" },
+    { label: "Favourite TV Shows", path: "/tv/favourites" },
   ];
 
   const actorsMenu = [
     { label: "Popular Actors", path: "/actors" },
-    { label: "Favorite Actors", path: "/actors/favourites" },
+    { label: "Favourite Actors", path: "/actors/favourites" },
   ];
 
   const toggleDarkMode = () => {

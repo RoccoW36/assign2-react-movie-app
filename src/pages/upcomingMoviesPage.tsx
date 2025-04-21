@@ -8,52 +8,37 @@ import MovieFilterUI, { titleFilter, genreFilter } from "../components/movieFilt
 import useFiltering from "../hooks/useFiltering";
 import { BaseMovieProps } from "../types/interfaces";
 
-const titleFiltering = {
-  name: "title",
-  value: "",
-  condition: titleFilter,
-};
-const genreFiltering = {
-  name: "genre",
-  value: "0",
-  condition: genreFilter,
-};
+const titleFiltering = { name: "title", value: "", condition: titleFilter };
+const genreFiltering = { name: "genre", value: "0", condition: genreFilter };
+const ratingFiltering = { name: "rating", value: "", condition: (movie: BaseMovieProps, value: string) =>
+  value ? movie.vote_average >= Number(value) : true };
+const productionCountryFiltering = { name: "production country", value: "", condition: (movie: BaseMovieProps, value: string) =>
+  value ? movie.production_country === value : true };
 
 const UpcomingMoviesPage: React.FC = () => {
-  const { data: movies, error, isLoading, isError } = useQuery<BaseMovieProps[], Error>(
+  const { data, error, isLoading, isError } = useQuery<BaseMovieProps[], Error>(
     "upcomingMovies",
     getUpcomingMovies
   );
 
-  const { filterValues, setFilterValues, filterFunction } = useFiltering([titleFiltering, genreFiltering]);
+  const { filterValues, processCollection, changeFilterValues } = useFiltering([
+    titleFiltering,
+    genreFiltering,
+    ratingFiltering,
+    productionCountryFiltering,
+  ]);
 
-  if (isLoading) {
-    return <Spinner />;
-  }
+  if (isLoading) return <Spinner />;
+  if (isError) return <h1>Failed to load movies: {error.message}</h1>;
 
-  if (isError) {
-    return <h1>{error?.message}</h1>;
-  }
-
-  const changeFilterValues = (type: string, value: string) => {
-    const changedFilter = { name: type, value: value };
-    const updatedFilterSet =
-      type === "title"
-        ? [changedFilter, filterValues[1]]
-        : [filterValues[0], changedFilter];
-    setFilterValues(updatedFilterSet);
-  };
-
-  const displayedMovies = movies ? filterFunction(movies) : [];
+  const displayedMovies = processCollection(data || []);
 
   return (
     <>
       <PageTemplate
         title="Upcoming Movies"
         movies={displayedMovies}
-        action={(movie: BaseMovieProps) => (
-          <AddToMustWatchIcon {...movie} />
-        )}
+        action={(movie: BaseMovieProps) => <AddToMustWatchIcon {...movie} />}
       />
       <MovieFilterUI
         onFilterValuesChange={changeFilterValues}
@@ -61,7 +46,7 @@ const UpcomingMoviesPage: React.FC = () => {
         genreFilter={filterValues.find((filter) => filter.name === "genre")?.value || "0"}
         ratingFilter={filterValues.find((filter) => filter.name === "rating")?.value || ""}
         productionCountryFilter={filterValues.find((filter) => filter.name === "production country")?.value || ""}
-        sortOption="" //placeholder
+        sortOption={filterValues.find((filter) => filter.name === "sortOption")?.value || ""}
       />
     </>
   );

@@ -5,7 +5,7 @@ import Drawer from "@mui/material/Drawer";
 import { BaseTVShowProps, TVShowDetailsProps } from "../../types/interfaces";
 
 export const titleFilter = (tvShow: BaseTVShowProps, value: string): boolean => {
-  return tvShow.name.toLowerCase().search(value.toLowerCase()) !== -1;
+  return tvShow.name.toLowerCase().includes(value.toLowerCase());
 };
 
 export const genreFilter = (tvShow: BaseTVShowProps, value: string): boolean => {
@@ -17,18 +17,24 @@ export const genreFilter = (tvShow: BaseTVShowProps, value: string): boolean => 
 export const favouritesGenreFilter = (tvShow: TVShowDetailsProps, value: string): boolean => {
   const genreId = Number(value);
   const genres = tvShow.genres;
-  return genreId > 0 && genres ? genres.some((genre) => genre.id === genreId) : true;
+  return genreId > 0 && genres ? genres.some((genre) => Number(genre.id) === genreId) : true;
+
+};
+
+export const ratingFilter = (tvShow: BaseTVShowProps, value: string): boolean => {
+  return value ? tvShow.vote_average >= Number(value) : true;
+};
+
+export const productionCountryFilter = (tvShow: BaseTVShowProps, value: string): boolean => {
+  return value ? tvShow.production_country.includes(value) : true;
 };
 
 const styles = {
-  root: {
-    backgroundColor: "#bfbfbf",
-  },
   fab: {
-    marginTop: 8,
     position: "fixed",
-    top: 20,
-    right: 2,
+    top: "90px",
+    right: "20px",
+    zIndex: 1300,
   },
 };
 
@@ -36,19 +42,38 @@ interface TVShowFilterUIProps {
   onFilterValuesChange: (f: string, s: string) => void;
   titleFilter: string;
   genreFilter: string;
+  ratingFilter: string;
+  productionCountryFilter: string;
+  sortOption: string;
 }
 
-const TVShowFilterUI: React.FC<TVShowFilterUIProps> = ({ onFilterValuesChange, titleFilter, genreFilter }) => {
+const TVShowFilterUI: React.FC<TVShowFilterUIProps> = ({
+  onFilterValuesChange,
+  titleFilter,
+  genreFilter,
+  ratingFilter,
+  productionCountryFilter,
+  sortOption,
+}) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
-  const getFabLabel = () => {
-    return titleFilter || genreFilter !== "0" ? "Filters Applied" : "Filter TV Shows";
-  };
+  const getFabLabel = () =>
+    titleFilter !== "" ||
+    genreFilter !== "0" ||
+    ratingFilter !== "" ||
+    productionCountryFilter !== "" ||
+    sortOption !== ""
+      ? "Filters Applied"
+      : "Filter TV Shows";
 
   const handleResetFilters = () => {
+    console.log("Resetting filters...");
     onFilterValuesChange("title", "");
     onFilterValuesChange("genre", "0");
-    setDrawerOpen(false); 
+    onFilterValuesChange("rating", "");
+    onFilterValuesChange("production country", "");
+    onFilterValuesChange("sortOption", "");
+    setDrawerOpen(false);
   };
 
   return (
@@ -65,14 +90,17 @@ const TVShowFilterUI: React.FC<TVShowFilterUIProps> = ({ onFilterValuesChange, t
         anchor="left"
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
-        sx={{ width: "75%", maxWidth: 400, backgroundColor: "#fff" }} 
+        PaperProps={{ sx: { backgroundColor: "#fff" } }}
       >
         <FilterCard
           onUserInput={onFilterValuesChange}
           titleFilter={titleFilter}
           genreFilter={genreFilter}
+          ratingFilter={ratingFilter}
+          productionCountryFilter={productionCountryFilter}
+          sortOption={sortOption}
         />
-        <button onClick={handleResetFilters}>Reset Filters</button> 
+        <button onClick={handleResetFilters}>Reset Filters</button>
       </Drawer>
     </>
   );

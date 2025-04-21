@@ -10,48 +10,12 @@ import { DiscoverMovies, BaseMovieProps } from "../types/interfaces";
 import { usePagination } from "../hooks/usePagination";
 import useFiltering from "../hooks/useFiltering";
 
-const titleFiltering = {
-  name: "title",
-  value: "",
-  condition: titleFilter,
-};
-
-const genreFiltering = {
-  name: "genre",
-  value: "0",
-  condition: genreFilter,
-};
-
-const ratingFiltering = {
-  name: "rating",
-  value: "",
-  condition: (movie: BaseMovieProps, value: string) =>
-    value ? movie.vote_average >= Number(value) : true,
-};
-
-const productionCountryFiltering = {
-  name: "production country",
-  value: "",
-  condition: (movie: BaseMovieProps, value: string) =>
-    value ? movie.production_country === value : true,
-};
-
-const sortMovies = (movies: BaseMovieProps[], sortOption: string): BaseMovieProps[] => {
-  console.log("Sort logic: Sorting movies with value:", sortOption);
-  if (sortOption === "vote_average.desc") {
-    return [...movies].sort((a, b) => b.vote_average - a.vote_average);
-  }
-  if (sortOption === "vote_average.asc") {
-    return [...movies].sort((a, b) => a.vote_average - b.vote_average);
-  }
-  if (sortOption === "release_date.desc") {
-    return [...movies].sort((a, b) => Date.parse(b.release_date) - Date.parse(a.release_date));
-  }
-  if (sortOption === "release_date.asc") {
-    return [...movies].sort((a, b) => Date.parse(a.release_date) - Date.parse(b.release_date));
-  }
-  return movies;
-};
+const titleFiltering = { name: "title", value: "", condition: titleFilter };
+const genreFiltering = { name: "genre", value: "0", condition: genreFilter };
+const ratingFiltering = { name: "rating", value: "", condition: (movie: BaseMovieProps, value: string) =>
+  value ? movie.vote_average >= Number(value) : true };
+const productionCountryFiltering = { name: "production country", value: "", condition: (movie: BaseMovieProps, value: string) =>
+  value ? movie.production_country === value : true };
 
 const HomePage: React.FC = () => {
   const { page, handlePageChange, totalPages, updateTotalPages } = usePagination({
@@ -89,13 +53,7 @@ const HomePage: React.FC = () => {
 
   console.log("Filter values:", filterValues);
 
-  const sortOption = filterValues.find((filter) => filter.name === "sortOption")?.value || "";
-  console.log("Selected sort option:", sortOption);
-
-  const displayedMovies = sortMovies(
-    processCollection(uniqueMovies),
-    sortOption 
-  );
+  const displayedMovies = processCollection(uniqueMovies);
 
   console.log("Displayed movies after filtering and sorting:", displayedMovies);
 
@@ -134,7 +92,7 @@ const HomePage: React.FC = () => {
         genreFilter={filterValues.find((filter) => filter.name === "genre")?.value || "0"}
         ratingFilter={filterValues.find((filter) => filter.name === "rating")?.value || ""}
         productionCountryFilter={filterValues.find((filter) => filter.name === "production country")?.value || ""}
-        sortOption={sortOption}
+        sortOption={filterValues.find((filter) => filter.name === "sortOption")?.value || ""}
       />
     </>
   );

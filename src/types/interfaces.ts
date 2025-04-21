@@ -76,8 +76,6 @@ export interface MoviePageProps {
   images: MovieImage[];
 }
 
-
-
 export interface MovieListPageTemplateProps extends BaseMovieListProps {
   title: string;
 }
@@ -180,8 +178,9 @@ export interface BaseTVShowProps {
   poster_path?: string;
   tagline?: string;
   favourite?: boolean;
-  genre_ids?: string[];
+  genre_ids?: number[];
   isFavourite?: boolean;
+  production_country: string;
 }
 
 export interface BaseTVShowListProps {

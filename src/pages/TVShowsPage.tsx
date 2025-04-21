@@ -92,9 +92,12 @@ const TVShowsPage: React.FC = () => {
         totalPages={totalPages}
       />
       <TVShowFilterUI
-        onFilterValuesChange={changeFilterValues}
-        titleFilter={filterValues[0].value}
-        genreFilter={filterValues[1].value}
+       onFilterValuesChange={changeFilterValues}
+       titleFilter={filterValues.find((filter) => filter.name === "title")?.value || ""}
+       genreFilter={filterValues.find((filter) => filter.name === "genre")?.value || "0"}
+       ratingFilter={filterValues.find((filter) => filter.name === "rating")?.value || ""}
+       productionCountryFilter={filterValues.find((filter) => filter.name === "production country")?.value || ""}
+       sortOption={filterValues.find((filter) => filter.name === "sortOption")?.value || ""}
       />
     </>
   );

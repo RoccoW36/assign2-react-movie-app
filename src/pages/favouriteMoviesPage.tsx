@@ -80,7 +80,7 @@ const FavouriteMoviesPage: React.FC = () => {
         genreFilter={filterValues.find((filter) => filter.name === "genre")?.value || "0"}
         ratingFilter={filterValues.find((filter) => filter.name === "rating")?.value || ""}
         productionCountryFilter={filterValues.find((filter) => filter.name === "production country")?.value || ""}
-        sortOption="" //placeholder
+        sortOption={filterValues.find((filter) => filter.name === "sortOption")?.value || ""}
         />
       )}
       <button onClick={resetFilters} style={{ marginTop: "20px", padding: "10px 20px", cursor: "pointer" }}>

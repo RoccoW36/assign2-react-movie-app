@@ -5,25 +5,27 @@ import { useQueries } from "react-query";
 import { getTVShow } from "../api/tmdb-api";
 import Spinner from "../components/spinner";
 import useFiltering from "../hooks/useFiltering";
-import TVShowFilterUI, { titleFilter, genreFilter } from "../components/TVShowFilterUI";
+import TVShowFilterUI, { titleFilter, favouritesGenreFilter } from "../components/TVShowFilterUI";
 import RemoveFromFavouritesTVShow from "../components/cardIcons/removeFromTVShowFavourites";
 import WriteReview from "../components/cardIcons/writeReview";
+import { BaseTVShowProps } from "../types/interfaces";
 
-const titleFiltering = {
-  name: "title",
-  value: "",
-  condition: titleFilter,
-};
-const genreFiltering = {
-  name: "genre",
-  value: "0",
-  condition: genreFilter,
-};
+const titleFiltering = { name: "title", value: "", condition: titleFilter };
+const genreFiltering = { name: "genre", value: "0", condition: favouritesGenreFilter };
+const ratingFiltering = { name: "rating", value: "", condition: (tvShow: BaseTVShowProps, value: string) =>
+  value ? tvShow.vote_average >= Number(value) : true };
+const productionCountryFiltering = { name: "production country", value: "", condition: (tvShow: BaseTVShowProps, value: string) =>
+  value ? tvShow.production_country.includes(value) : true };
 
 const FavouriteTVShowsPage: React.FC = () => {
   const { favourites: tvShowIds } = useContext(TVShowsContext);
 
-  const { filterValues, setFilterValues, filterFunction } = useFiltering([titleFiltering, genreFiltering]);
+  const { filterValues, processCollection, changeFilterValues } = useFiltering([
+    titleFiltering,
+    genreFiltering,
+    ratingFiltering,
+    productionCountryFiltering,
+  ]);
 
   const favouriteTVShowQueries = useQueries(
     tvShowIds.map((id) => ({
@@ -33,29 +35,19 @@ const FavouriteTVShowsPage: React.FC = () => {
   );
 
   const isLoading = favouriteTVShowQueries.some((q) => q.isLoading);
+  if (isLoading) return <Spinner />;
 
-  if (isLoading) {
-    return <Spinner />;
-  }
+  const allFavourites = favouriteTVShowQueries.map((q) => q.data).filter((tvShow) => tvShow !== undefined);
 
-  const allFavourites = favouriteTVShowQueries
-    .map((q) => q.data)
-    .filter((tvShow) => tvShow !== undefined);
-
-  const displayedTVShows = filterFunction(allFavourites);
-
-  const changeFilterValues = (type: string, value: string) => {
-    const changedFilter = { name: type, value };
-    const updatedFilterSet =
-      type === "title"
-        ? [changedFilter, filterValues[1]]
-        : [filterValues[0], changedFilter];
-    setFilterValues(updatedFilterSet);
-  };
+  const sortOption = filterValues.find((filter) => filter.name === "sortOption")?.value || "";
+  const displayedTVShows = processCollection(allFavourites);
 
   const resetFilters = () => {
     changeFilterValues("title", "");
     changeFilterValues("genre", "0");
+    changeFilterValues("rating", "");
+    changeFilterValues("production country", "");
+    changeFilterValues("sortOption", "");
   };
 
   return (
@@ -70,19 +62,15 @@ const FavouriteTVShowsPage: React.FC = () => {
           </>
         )}
       />
-      {displayedTVShows.length === 0 ? (
-        <h1>No favourite TV shows selected</h1>
-      ) : (
-        <TVShowFilterUI
-          onFilterValuesChange={changeFilterValues}
-          titleFilter={filterValues[0].value}
-          genreFilter={filterValues[1].value}
-        />
-      )}
-      <button
-        onClick={resetFilters}
-        style={{ marginTop: "20px", padding: "10px 20px", cursor: "pointer" }}
-      >
+      <TVShowFilterUI
+        onFilterValuesChange={changeFilterValues}
+        titleFilter={filterValues.find((filter) => filter.name === "title")?.value || ""}
+        genreFilter={filterValues.find((filter) => filter.name === "genre")?.value || "0"}
+        ratingFilter={filterValues.find((filter) => filter.name === "rating")?.value || ""}
+        productionCountryFilter={filterValues.find((filter) => filter.name === "production country")?.value || ""}
+        sortOption={sortOption}
+      />
+      <button onClick={resetFilters} style={{ marginTop: "20px", padding: "10px 20px", cursor: "pointer" }}>
         Reset Filters
       </button>
     </>
