@@ -9,22 +9,15 @@ import MovieFilterUI, { titleFilter, favouritesgenreFilter } from "../components
 import RemoveFromFavourites from "../components/cardIcons/removeFromFavourites";
 import WriteReview from "../components/cardIcons/writeReview";
 
-const titleFiltering = {
-  name: "title",
-  value: "",
-  condition: titleFilter,
-};
-const genreFiltering = {
-  name: "genre",
-  value: "0",
-  condition: favouritesgenreFilter,
-};
+const titleFiltering = { name: "title", value: "", condition: titleFilter };
+const genreFiltering = { name: "genre", value: "0", condition: favouritesgenreFilter };
 
 const FavouriteMoviesPage: React.FC = () => {
   const { favourites: movieIds } = useContext(MoviesContext);
-  const { filterValues, setFilterValues, filterFunction } = useFiltering(
-    [titleFiltering, genreFiltering]
-  );
+  const { filterValues, setFilterValues, filterFunction } = useFiltering([
+    titleFiltering,
+    genreFiltering,
+  ]);
 
   const favouriteMovieQueries = useQueries(
     movieIds.map((movieId) => ({
@@ -33,25 +26,16 @@ const FavouriteMoviesPage: React.FC = () => {
     }))
   );
 
-  const isLoading = favouriteMovieQueries.some((q) => q.isLoading);
+  const isLoading = favouriteMovieQueries.some((m) => m.isLoading);
+  if (isLoading) return <Spinner />;
 
-  if (isLoading) {
-    return <Spinner />;
-  }
-
-  const allFavourites = favouriteMovieQueries
-    .map((q) => q.data)
-    .filter((movie) => movie !== undefined);
-
+  const allFavourites = favouriteMovieQueries.map((q) => q.data).filter(Boolean);
   const displayedMovies = filterFunction(allFavourites);
 
   const changeFilterValues = (type: string, value: string) => {
-    const changedFilter = { name: type, value };
-    const updatedFilterSet =
-      type === "title"
-        ? [changedFilter, filterValues[1]]
-        : [filterValues[0], changedFilter];
-    setFilterValues(updatedFilterSet);
+    setFilterValues((prev) =>
+      prev.map((filter) => (filter.name === type ? { ...filter, value } : filter))
+    );
   };
 
   const resetFilters = () => {
@@ -61,29 +45,28 @@ const FavouriteMoviesPage: React.FC = () => {
 
   return (
     <>
-<PageTemplate
-  title="Favourite Movies"
-  movies={displayedMovies}
-  action={(movie) => (
-    <>
-      <RemoveFromFavourites {...movie} />
-      <WriteReview movieId={movie.id} />
-    </>
-  )}
-/>
-      {displayedMovies.length === 0 ? (
-        <h1>No favourite movies selected</h1>
-      ) : (
-        <MovieFilterUI
+      <PageTemplate
+        title="Favourite Movies"
+        movies={displayedMovies}
+        action={(movie) => (
+          <>
+            <RemoveFromFavourites {...movie} />
+            <WriteReview movieId={movie.id} />
+          </>
+        )}
+      />
+      <MovieFilterUI
         onFilterValuesChange={changeFilterValues}
         titleFilter={filterValues.find((filter) => filter.name === "title")?.value || ""}
         genreFilter={filterValues.find((filter) => filter.name === "genre")?.value || "0"}
         ratingFilter={filterValues.find((filter) => filter.name === "rating")?.value || ""}
         productionCountryFilter={filterValues.find((filter) => filter.name === "production country")?.value || ""}
         sortOption={filterValues.find((filter) => filter.name === "sortOption")?.value || ""}
-        />
-      )}
-      <button onClick={resetFilters} style={{ marginTop: "20px", padding: "10px 20px", cursor: "pointer" }}>
+      />
+      <button
+        onClick={resetFilters}
+        style={{ marginTop: "20px", padding: "10px 20px", cursor: "pointer" }}
+      >
         Reset Filters
       </button>
     </>

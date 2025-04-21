@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { BaseMovieProps, Review } from "../types/interfaces";
 
 interface MovieContextInterface {
@@ -13,34 +13,45 @@ interface MovieContextInterface {
   removeFromMustWatch: (movie: BaseMovieProps) => void;
 }
 
-const initialContextState: MovieContextInterface = {
+const loadFromLocalStorage = (key: string): number[] => {
+  try {
+    const stored = localStorage.getItem(key);
+    return stored ? JSON.parse(stored) : [];
+  } catch (error) {
+    console.error(`Error loading ${key} from localStorage`, error);
+    return [];
+  }
+};
+
+export const MoviesContext = React.createContext<MovieContextInterface>({
   favourites: [],
   addToFavourites: () => {},
   removeFromFavourites: () => {},
   addReview: () => {},
   myReviews: {},
-
   mustWatch: [],
   addToMustWatch: () => {},
   removeFromMustWatch: () => {},
-};
-
-export const MoviesContext = React.createContext<MovieContextInterface>(initialContextState);
+});
 
 const MoviesContextProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
-  const [favourites, setFavourites] = useState<number[]>(() => {
-    const stored = localStorage.getItem("favoriteMovies");
-    return stored ? JSON.parse(stored) : [];
-  });
-
+  const [favourites, setFavourites] = useState<number[]>(() => loadFromLocalStorage("favoriteMovies"));
+  const [mustWatch, setMustWatch] = useState<number[]>(() => loadFromLocalStorage("mustWatchMovies"));
   const [myReviews, setMyReviews] = useState<Record<number, Review>>({});
-  const [mustWatch, setMustWatch] = useState<number[]>(() => {
-    const stored = localStorage.getItem("mustWatchMovies");
-    return stored ? JSON.parse(stored) : [];
-  });
+
+  useEffect(() => {
+    localStorage.setItem("favoriteMovies", JSON.stringify(favourites));
+  }, [favourites]);
+
+  useEffect(() => {
+    localStorage.setItem("mustWatchMovies", JSON.stringify(mustWatch));
+  }, [mustWatch]);
 
   const addToFavourites = useCallback((movie: BaseMovieProps) => {
-    setFavourites((prev) => (prev.includes(movie.id) ? prev : [...prev, movie.id]));
+    setFavourites((prev) => {
+      if (prev.includes(movie.id)) return prev;
+      return [...prev, movie.id];
+    });
   }, []);
 
   const removeFromFavourites = useCallback((movie: BaseMovieProps) => {
@@ -52,7 +63,10 @@ const MoviesContextProvider: React.FC<React.PropsWithChildren> = ({ children }) 
   }, []);
 
   const addToMustWatch = useCallback((movie: BaseMovieProps) => {
-    setMustWatch((prev) => (prev.includes(movie.id) ? prev : [...prev, movie.id]));
+    setMustWatch((prev) => {
+      if (prev.includes(movie.id)) return prev;
+      return [...prev, movie.id];
+    });
   }, []);
 
   const removeFromMustWatch = useCallback((movie: BaseMovieProps) => {
