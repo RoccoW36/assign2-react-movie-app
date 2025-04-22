@@ -7,6 +7,7 @@ import CardHeader from "@mui/material/CardHeader";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import PlaylistPlayIcon from "@mui/icons-material/PlaylistPlay";
 import CalendarIcon from "@mui/icons-material/CalendarTodayTwoTone";
 import StarRateIcon from "@mui/icons-material/StarRate";
 import Grid from "@mui/material/Grid";
@@ -23,6 +24,9 @@ const styles = {
   avatarFav: {
     backgroundColor: "rgb(255, 0, 0)",
   },
+  avatarMustWatch: {
+    backgroundColor: "rgb(0, 128, 0)",
+  },
 };
 
 interface TVShowCardProps {
@@ -31,11 +35,12 @@ interface TVShowCardProps {
 }
 
 const TVShowCard: React.FC<TVShowCardProps> = ({ tvShow, action }) => {
-  const { favourites } = useContext(TVShowsContext);
+  const { favourites, mustWatch } = useContext(TVShowsContext);
   console.log("Favourites in TVShowsPage:", favourites);
   console.log("Rendering TVShowCard for ID:", tvShow.id);
 
   const isFavourite = favourites.includes(tvShow.id);
+  const isMustWatch = mustWatch.includes(tvShow.id);
 
   console.log("TVShowCard Debug:", { tvShowId: tvShow.id, isFavourite, favourites });
 
@@ -45,7 +50,11 @@ const TVShowCard: React.FC<TVShowCardProps> = ({ tvShow, action }) => {
         avatar={
           isFavourite ? (
             <Avatar sx={styles.avatarFav}>
-              <FavoriteIcon fontSize="small" />
+              <FavoriteIcon />
+            </Avatar>
+          ) : isMustWatch ? (
+            <Avatar sx={styles.avatarMustWatch}>
+              <PlaylistPlayIcon />
             </Avatar>
           ) : null
         }

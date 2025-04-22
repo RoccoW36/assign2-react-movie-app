@@ -10,18 +10,25 @@ const fetchData = (url: string) => {
       return response.json();
     })
     .catch((error) => {
+      console.error("API fetch error:", error);
       throw error;
     });
 };
 
-export const getMovies = (page: number = 1) => {
-  const pageNumber = page <= 500 ? page : 1;
-  return fetchData(
-    `${BASE_URL}/discover/movie?api_key=${API_KEY}&language=en-US&include_adult=false&include_video=false&page=${pageNumber}`
-  );
-};
+// Movies
+export const getMovies = (page: number = 1) =>
+  fetchData(`${BASE_URL}/discover/movie?api_key=${API_KEY}&language=en-US&page=${Math.min(page, 500)}`);
 
-export const getMovie = (id: string) =>
+export const getUpcomingMovies = (page: number = 1) =>
+  fetchData(`${BASE_URL}/movie/upcoming?api_key=${API_KEY}&language=en-US&page=${Math.min(page, 500)}`);
+
+export const getNowPlayingMovies = (page: number = 1) =>
+  fetchData(`${BASE_URL}/movie/now_playing?api_key=${API_KEY}&language=en-US&page=${Math.min(page, 500)}`);
+
+export const getTopRatedMovies = (page: number = 1) =>
+  fetchData(`${BASE_URL}/movie/top_rated?api_key=${API_KEY}&language=en-US&page=${Math.min(page, 500)}`);
+
+export const getMovie = (id: string | number) =>
   fetchData(`${BASE_URL}/movie/${id}?api_key=${API_KEY}`);
 
 export const getMovieImages = (id: string | number) =>
@@ -30,42 +37,44 @@ export const getMovieImages = (id: string | number) =>
 export const getMovieReviews = (id: string | number) =>
   fetchData(`${BASE_URL}/movie/${id}/reviews?api_key=${API_KEY}`).then((json) => json.results);
 
-export const getUpcomingMovies = () =>
-  fetchData(`${BASE_URL}/movie/upcoming?api_key=${API_KEY}`).then((json) => json.results);
-
+// Actors
 export const getActor = (id: string | number) =>
   fetchData(`${BASE_URL}/person/${id}?api_key=${API_KEY}`);
 
 export const getActorImages = (id: string | number) =>
   fetchData(`${BASE_URL}/person/${id}/images?api_key=${API_KEY}`);
 
-export const getPopularActors = (page: number) =>
-  fetchData(`${BASE_URL}/person/popular?api_key=${API_KEY}&language=en-US&page=${page}`);
+export const getPopularActors = (page: number = 1) =>
+  fetchData(`${BASE_URL}/person/popular?api_key=${API_KEY}&language=en-US&page=${Math.min(page, 500)}`);
 
-export const searchMovies = (query: string) =>
-  fetchData(`${BASE_URL}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}&language=en-US&include_adult=false`);
+// TV Shows
+export const getTVShows = (page: number = 1) =>
+  fetchData(`${BASE_URL}/discover/tv?api_key=${API_KEY}&language=en-US&page=${Math.min(page, 500)}`);
 
-export const searchActors = (query: string) =>
-  fetchData(`${BASE_URL}/search/person?api_key=${API_KEY}&language=en-US&query=${query}&page=1`);
+export const getAiringTodayTVShows = (page: number = 1) =>
+  fetchData(`${BASE_URL}/tv/airing_today?api_key=${API_KEY}&language=en-US&page=${Math.min(page, 500)}`);
 
-export const getTVShows = (page: number = 1) => {
-  const pageNumber = page <= 500 ? page : 1;
-  return fetchData(
-    `${BASE_URL}/discover/tv?api_key=${API_KEY}&language=en-US&include_adult=false&page=${pageNumber}`
-  );
-};
+export const getTopRatedTVShows = (page: number = 1) =>
+  fetchData(`${BASE_URL}/tv/top_rated?api_key=${API_KEY}&language=en-US&page=${Math.min(page, 500)}`);
 
 export const getTVShow = (id: string | number) =>
   fetchData(`${BASE_URL}/tv/${id}?api_key=${API_KEY}`);
-
-export const searchTVShows = (query: string) =>
-  fetchData(`${BASE_URL}/search/tv?api_key=${API_KEY}&query=${encodeURIComponent(query)}&language=en-US&page=1`);
 
 export const getTVShowImages = (id: string | number) =>
   fetchData(`${BASE_URL}/tv/${id}/images?api_key=${API_KEY}`).then((json) => json.posters);
 
 export const getTVShowReviews = (id: string | number) =>
   fetchData(`${BASE_URL}/tv/${id}/reviews?api_key=${API_KEY}`).then((json) => json.results);
+
+// Search
+export const searchMovies = (query: string) =>
+  fetchData(`${BASE_URL}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}&language=en-US&page=1`);
+
+export const searchActors = (query: string) =>
+  fetchData(`${BASE_URL}/search/person?api_key=${API_KEY}&query=${encodeURIComponent(query)}&language=en-US&page=1`);
+
+export const searchTVShows = (query: string) =>
+  fetchData(`${BASE_URL}/search/tv?api_key=${API_KEY}&query=${encodeURIComponent(query)}&language=en-US&page=1`);
 
 export const getGenres = () =>
   fetchData(`${BASE_URL}/genre/movie/list?api_key=${API_KEY}&language=en-US`);

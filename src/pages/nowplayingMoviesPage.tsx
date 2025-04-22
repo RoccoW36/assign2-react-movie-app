@@ -1,6 +1,6 @@
 import React from "react";
 import { useQuery } from "react-query";
-import { getUpcomingMovies } from "../api/tmdb-api"; 
+import { getNowPlayingMovies } from "../api/tmdb-api"; 
 import PageTemplate from "../components/templateMovieListPage"; 
 import Spinner from "../components/spinner";
 import AddToMustWatchIcon from "../components/cardIcons/addToMustWatch";
@@ -17,15 +17,16 @@ const ratingFiltering = { name: "rating", value: "", condition: (movie: BaseMovi
 const productionCountryFiltering = { name: "production country", value: "", condition: (movie: BaseMovieProps, value: string) =>
   value ? movie.production_country === value : true };
 
-const UpcomingMoviesPage: React.FC = () => {
+const NowPlayingMoviesPage: React.FC = () => {
+  
   const { page, handlePageChange, totalPages, updateTotalPages } = usePagination({
     initialPage: 1,
     initialTotalPages: 1,
   });
 
   const { data, error, isLoading, isError } = useQuery<DiscoverMovies, Error>(
-    ["discover", page],
-    () => getUpcomingMovies(page),
+    ["nowPlayingMovies", page],
+    () => getNowPlayingMovies(page),
     {
       keepPreviousData: true,
       onSuccess: (data) => {
@@ -34,15 +35,15 @@ const UpcomingMoviesPage: React.FC = () => {
     }
   );
 
-  const movies = data ? data.results : [];
+  const movies = data?.results ?? [];
 
-  console.log("Fetched upcoming movies:", movies);
+  console.log("Fetched now playing movies:", movies);
 
   const uniqueMovies = Array.from(new Set(movies.map((movie: BaseMovieProps) => movie.id))).map(
     (id) => movies.find((movie: BaseMovieProps) => movie.id === id)
   );
 
-  console.log("Unique upcoming movies:", uniqueMovies);
+  console.log("Unique now playing movies:", uniqueMovies);
 
   const { filterValues, processCollection, changeFilterValues } = useFiltering([
     titleFiltering,
@@ -55,7 +56,7 @@ const UpcomingMoviesPage: React.FC = () => {
 
   const displayedMovies = processCollection(uniqueMovies);
 
-  console.log("Displayed upcoming movies after filtering and sorting:", displayedMovies);
+  console.log("Displayed now playing movies after filtering and sorting:", displayedMovies);
 
   if (isLoading) return <Spinner />;
   if (isError) return <h1>Failed to load movies: {error.message}</h1>;
@@ -72,14 +73,12 @@ const UpcomingMoviesPage: React.FC = () => {
     }
   };
 
-
   return (
     <>
       <PageTemplate
-        title="Upcoming Movies"
+        title="Now Playing Movies"
         movies={displayedMovies}
-        action={(movie: BaseMovieProps) => <AddToMustWatchIcon {...movie} />
-      }
+        action={(movie: BaseMovieProps) => <AddToMustWatchIcon {...movie} />}
         onBack={onBack} 
         onForward={onForward} 
       />
@@ -100,4 +99,4 @@ const UpcomingMoviesPage: React.FC = () => {
   );
 };
 
-export default UpcomingMoviesPage;
+export default NowPlayingMoviesPage;

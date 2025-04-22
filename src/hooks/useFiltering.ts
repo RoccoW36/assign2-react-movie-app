@@ -14,7 +14,6 @@ const useFiltering = <T extends Filter[]>(filters: T) => {
     }))
   );
 
-  // UseMemo ensures filtering conditions update when filterValues change
   const filteringConditions = useMemo(
     () =>
       filters.map((f) => ({
@@ -28,7 +27,7 @@ const useFiltering = <T extends Filter[]>(filters: T) => {
     if (!collection || collection.length === 0) return [];
   
     return filteringConditions.reduce((filteredData, { name, condition }) => {
-      const filterValue = filterValues.find((f) => f.name === name)?.value ?? ""; // Ensure default value
+      const filterValue = filterValues.find((f) => f.name === name)?.value ?? ""; 
       return filteredData.filter((item) => condition(item, filterValue));
     }, collection);
   };

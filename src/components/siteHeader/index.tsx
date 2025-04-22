@@ -40,13 +40,18 @@ const SiteHeader: React.FC = () => {
   const moviesMenu = [
     { label: "Discover Movies", path: "/movies" },
     { label: "Upcoming Movies", path: "/movies/upcoming" },
+    { label: "Now Playing Movies", path: "/movies/nowplaying" },
+    { label: "Top Rated Movies", path: "/movies/toprated" },
     { label: "Favourite Movies", path: "/movies/favourites" },
     { label: "Must Watch Movies", path: "/movies/mustwatch" },
   ];
 
   const tvShowsMenu = [
     { label: "Discover TV Shows", path: "/tv" },
+    { label: "TV Shows Airing Today", path: "/tv/airingtoday" },
+    { label: "Top Rated TV Shows", path: "/tv/toprated" },
     { label: "Favourite TV Shows", path: "/tv/favourites" },
+    { label: "Must Watch TV Shows", path: "/tv/mustwatch" },
   ];
 
   const actorsMenu = [
@@ -206,40 +211,14 @@ const SiteHeader: React.FC = () => {
               </Menu>
             </>
           ) : (
-            <>
-              <IconButton
-                aria-label="menu"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleMoviesMenuOpen}
-                color="inherit"
-                size="large"
-              >
-                <MenuIcon />
-              </IconButton>
-              <Menu
-                anchorEl={moviesMenuAnchorEl}
-                open={Boolean(moviesMenuAnchorEl)}
-                onClose={() => setMoviesMenuAnchorEl(null)}
-              >
-                <MenuItem onClick={() => handleMenuSelect(homeOption.path)}>Home</MenuItem>
-                {moviesMenu.map((opt) => (
-                  <MenuItem key={opt.label} onClick={() => handleMenuSelect(opt.path)}>
-                    {opt.label}
-                  </MenuItem>
-                ))}
-                {tvShowsMenu.map((opt) => (
-                  <MenuItem key={opt.label} onClick={() => handleMenuSelect(opt.path)}>
-                    {opt.label}
-                  </MenuItem>
-                ))}
-                {actorsMenu.map((opt) => (
-                  <MenuItem key={opt.label} onClick={() => handleMenuSelect(opt.path)}>
-                    {opt.label}
-                  </MenuItem>
-                ))}
-              </Menu>
-            </>
+            <IconButton
+              aria-label="menu"
+              onClick={handleMoviesMenuOpen}
+              color="inherit"
+              size="large"
+            >
+              <MenuIcon />
+            </IconButton>
           )}
         </Toolbar>
       </AppBar>

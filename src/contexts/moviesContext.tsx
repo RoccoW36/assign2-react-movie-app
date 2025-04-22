@@ -3,12 +3,11 @@ import { BaseMovieProps, Review } from "../types/interfaces";
 
 interface MovieContextInterface {
   favourites: number[];
+  myReviews: Record<number, Review>;
+  mustWatch: number[];
   addToFavourites: (movie: BaseMovieProps) => void;
   removeFromFavourites: (movie: BaseMovieProps) => void;
   addReview: (movie: BaseMovieProps, review: Review) => void;
-  myReviews: Record<number, Review>;
-
-  mustWatch: number[];
   addToMustWatch: (movie: BaseMovieProps) => void;
   removeFromMustWatch: (movie: BaseMovieProps) => void;
 }
