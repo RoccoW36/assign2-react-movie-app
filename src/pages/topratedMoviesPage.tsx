@@ -18,11 +18,7 @@ const productionCountryFiltering = { name: "production country", value: "", cond
   value ? movie.production_country === value : true };
 
 const TopRatedMoviesPage: React.FC = () => {
-  
-  const { page, handlePageChange, totalPages, updateTotalPages } = usePagination({
-    initialPage: 1,
-    initialTotalPages: 1,
-  });
+const { page, handlePageChange, totalPages, updateTotalPages } = usePagination({});
 
   const { data, error, isLoading, isError } = useQuery<DiscoverMovies, Error>(
     ["topRatedMovies", page],

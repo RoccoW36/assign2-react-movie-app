@@ -19,13 +19,13 @@ const fetchData = (url: string) => {
 export const getMovies = (page: number = 1) =>
   fetchData(`${BASE_URL}/discover/movie?api_key=${API_KEY}&language=en-US&page=${Math.min(page, 500)}`);
 
-export const getUpcomingMovies = (page: number = 1) =>
+export const getUpcomingMovies = (page: number) =>
   fetchData(`${BASE_URL}/movie/upcoming?api_key=${API_KEY}&language=en-US&page=${Math.min(page, 500)}`);
 
-export const getNowPlayingMovies = (page: number = 1) =>
+export const getNowPlayingMovies = (page: number) =>
   fetchData(`${BASE_URL}/movie/now_playing?api_key=${API_KEY}&language=en-US&page=${Math.min(page, 500)}`);
 
-export const getTopRatedMovies = (page: number = 1) =>
+export const getTopRatedMovies = (page: number) =>
   fetchData(`${BASE_URL}/movie/top_rated?api_key=${API_KEY}&language=en-US&page=${Math.min(page, 500)}`);
 
 export const getMovie = (id: string | number) =>
@@ -44,14 +44,14 @@ export const getActor = (id: string | number) =>
 export const getActorImages = (id: string | number) =>
   fetchData(`${BASE_URL}/person/${id}/images?api_key=${API_KEY}`);
 
-export const getPopularActors = (page: number = 1) =>
+export const getPopularActors = (page: number) =>
   fetchData(`${BASE_URL}/person/popular?api_key=${API_KEY}&language=en-US&page=${Math.min(page, 500)}`);
 
 // TV Shows
-export const getTVShows = (page: number = 1) =>
+export const getTVShows = (page: number) =>
   fetchData(`${BASE_URL}/discover/tv?api_key=${API_KEY}&language=en-US&page=${Math.min(page, 500)}`);
 
-export const getAiringTodayTVShows = (page: number = 1) =>
+export const getAiringTodayTVShows = (page: number) =>
   fetchData(`${BASE_URL}/tv/airing_today?api_key=${API_KEY}&language=en-US&page=${Math.min(page, 500)}`);
 
 export const getTopRatedTVShows = (page: number = 1) =>

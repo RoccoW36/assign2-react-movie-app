@@ -11,12 +11,13 @@ const PaginationUI: React.FC<PaginationUIProps> = ({ page, handlePageChange, tot
   return (
     <div style={{ display: "flex", justifyContent: "center", margin: "20px 0" }}>
       <Pagination
-        count={totalPages}
+        count={totalPages > 0 ? totalPages : 1}
         page={page}
         onChange={handlePageChange}
         color="primary"
         siblingCount={1}
         boundaryCount={1}
+        aria-label="Movie pagination"
       />
     </div>
   );

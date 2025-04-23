@@ -15,11 +15,7 @@ const titleFiltering = { name: "title", value: "", condition: titleFilter };
 const genreFiltering = { name: "genre", value: "0", condition: genreFilter };
 
 const AiringTodayTVShowsPage: React.FC = () => {
-  
-  const { page, handlePageChange, totalPages, updateTotalPages } = usePagination({
-    initialPage: 1,
-    initialTotalPages: 1,
-  });
+const { page, handlePageChange, totalPages, updateTotalPages } = usePagination({});
 
   const { data, error, isLoading, isError } = useQuery<DiscoverTVShows, Error>(
     ["airingTodayTVShows", page],
