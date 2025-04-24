@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useQuery } from "react-query";
 import { getTopRatedTVShows } from "../api/tmdb-api"; 
 import PageTemplate from "../components/templateTVShowListPage"; 
@@ -38,18 +38,19 @@ const productionCountryFiltering = {
 };
 
 const TopRatedTVShowsPage: React.FC = () => {
-const { page, handlePageChange, totalPages, updateTotalPages } = usePagination({});
+  const { page, handlePageChange, totalPages, updateTotalPages } = usePagination({});
 
   const { data, error, isLoading, isError } = useQuery<DiscoverTVShows, Error>(
     ["topRatedTVShows", page],
     () => getTopRatedTVShows(page),
     {
       keepPreviousData: true,
-      onSuccess: (data) => {
-        updateTotalPages(Math.min(data.total_pages, 500));
-      },
     }
   );
+
+  useEffect(() => {
+    updateTotalPages(Math.min(data?.total_pages || 1, 500));
+  }, [data?.total_pages, updateTotalPages]);
 
   const tvShows = data ? data.results : [];
 

@@ -8,6 +8,7 @@ interface PaginationUIProps {
 }
 
 const PaginationUI: React.FC<PaginationUIProps> = ({ page, handlePageChange, totalPages }) => {
+  console.log("pagination:", {page, totalPages});
   return (
     <div style={{ display: "flex", justifyContent: "center", margin: "20px 0" }}>
       <Pagination

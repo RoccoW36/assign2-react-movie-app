@@ -16,7 +16,7 @@ const fetchData = (url: string) => {
 };
 
 // Movies
-export const getMovies = (page: number = 1) =>
+export const getMovies = (page: number) =>
   fetchData(`${BASE_URL}/discover/movie?api_key=${API_KEY}&language=en-US&page=${Math.min(page, 500)}`);
 
 export const getUpcomingMovies = (page: number) =>

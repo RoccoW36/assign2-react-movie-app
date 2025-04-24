@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useQuery } from "react-query";
 import { getTopRatedMovies } from "../api/tmdb-api"; 
 import PageTemplate from "../components/templateMovieListPage"; 
@@ -18,28 +18,25 @@ const productionCountryFiltering = { name: "production country", value: "", cond
   value ? movie.production_country === value : true };
 
 const TopRatedMoviesPage: React.FC = () => {
-const { page, handlePageChange, totalPages, updateTotalPages } = usePagination({});
+  const { page, handlePageChange, totalPages, updateTotalPages } = usePagination({});
 
   const { data, error, isLoading, isError } = useQuery<DiscoverMovies, Error>(
     ["topRatedMovies", page],
     () => getTopRatedMovies(page),
     {
       keepPreviousData: true,
-      onSuccess: (data) => {
-        updateTotalPages(Math.min(data.total_pages, 500));
-      },
     }
   );
 
-  const movies = data?.results ?? [];
+  useEffect(() => {
+    updateTotalPages(Math.min(data?.total_pages || 1, 500));
+  }, [data?.total_pages, updateTotalPages]);
 
-  console.log("Fetched top-rated movies:", movies);
+  const movies = data?.results ?? [];
 
   const uniqueMovies = Array.from(new Set(movies.map((movie: BaseMovieProps) => movie.id))).map(
     (id) => movies.find((movie: BaseMovieProps) => movie.id === id)
   );
-
-  console.log("Unique top-rated movies:", uniqueMovies);
 
   const { filterValues, processCollection, changeFilterValues } = useFiltering([
     titleFiltering,
@@ -48,11 +45,7 @@ const { page, handlePageChange, totalPages, updateTotalPages } = usePagination({
     productionCountryFiltering,
   ]);
 
-  console.log("Filter values:", filterValues);
-
   const displayedMovies = processCollection(uniqueMovies);
-
-  console.log("Displayed top-rated movies after filtering and sorting:", displayedMovies);
 
   if (isLoading) return <Spinner />;
   if (isError) return <h1>Failed to load movies: {error.message}</h1>;

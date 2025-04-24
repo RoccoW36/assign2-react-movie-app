@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useQuery } from "react-query";
 import { getMovies } from "../api/tmdb-api";
 import PageTemplate from "../components/templateMovieListPage";
@@ -25,21 +25,18 @@ const HomePage: React.FC = () => {
     () => getMovies(page),
     {
       keepPreviousData: true,
-      onSuccess: (data) => {
-        updateTotalPages(Math.min(data.total_pages, 500));
-      },
     }
   );
 
-  const movies = data ? data.results : [];
+  useEffect(() => {
+    updateTotalPages(Math.min(data?.total_pages || 1, 500));
+  }, [data?.total_pages, updateTotalPages]);
 
-  console.log("Fetched movies:", movies);
+  const movies = data ? data.results : [];
 
   const uniqueMovies = Array.from(new Set(movies.map((movie) => movie.id))).map(
     (id) => movies.find((movie) => movie.id === id)
   );
-
-  console.log("Unique movies:", uniqueMovies);
 
   const { filterValues, processCollection, changeFilterValues } = useFiltering([
     titleFiltering,
@@ -48,11 +45,7 @@ const HomePage: React.FC = () => {
     productionCountryFiltering,
   ]);
 
-  console.log("Filter values:", filterValues);
-
   const displayedMovies = processCollection(uniqueMovies);
-
-  console.log("Displayed movies after filtering and sorting:", displayedMovies);
 
   if (isLoading) return <Spinner />;
   if (isError) return <h1>Failed to load movies: {error.message}</h1>;

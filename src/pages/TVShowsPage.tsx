@@ -32,6 +32,7 @@ const { page, handlePageChange, totalPages, updateTotalPages } = usePagination({
     {
       keepPreviousData: true,
       onSuccess: (data) => {
+        console.log("previouspage log:", data);
         updateTotalPages(Math.min(data.total_pages, 500));
       },
     }

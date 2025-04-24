@@ -25,7 +25,7 @@ export const usePagination = ({ initialTotalPages }: PaginationProps = {}) => {
       console.log("Syncing page state with URL:", pageFromURL);
       setPage(pageFromURL);
     }
-  }, [location.search]);
+  }, [location.search, pageFromURL]); 
 
   useEffect(() => {
     if (page !== pageFromURL) {
@@ -47,9 +47,15 @@ export const usePagination = ({ initialTotalPages }: PaginationProps = {}) => {
   };
 
   const updateTotalPages = (total: number) => {
-    console.log(`Updating total pages to: ${total}`);
-    setTotalPages(total);
+    setTotalPages((prev) => {
+      console.log(`Updating total pages from ${prev} to ${total}`);
+      return total !== prev ? total : prev;
+    });
   };
+
+  useEffect(() => {
+    console.log("Total pages updated:", totalPages);
+  }, [totalPages]);
 
   return { page, handlePageChange, totalPages, updateTotalPages };
 };

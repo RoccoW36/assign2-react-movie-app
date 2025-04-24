@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useQuery } from "react-query";
 import { getAiringTodayTVShows } from "../api/tmdb-api"; 
 import PageTemplate from "../components/templateTVShowListPage"; 
@@ -15,36 +15,29 @@ const titleFiltering = { name: "title", value: "", condition: titleFilter };
 const genreFiltering = { name: "genre", value: "0", condition: genreFilter };
 
 const AiringTodayTVShowsPage: React.FC = () => {
-const { page, handlePageChange, totalPages, updateTotalPages } = usePagination({});
+  const { page, handlePageChange, totalPages, updateTotalPages } = usePagination({});
 
   const { data, error, isLoading, isError } = useQuery<DiscoverTVShows, Error>(
     ["airingTodayTVShows", page],
     () => getAiringTodayTVShows(page),
     {
       keepPreviousData: true,
-      onSuccess: (data) => {
-        updateTotalPages(Math.min(data.total_pages, 500));
-      },
     }
   );
 
-  const tvShows = data?.results ?? [];
+  useEffect(() => {
+    updateTotalPages(Math.min(data?.total_pages || 1, 500));
+  }, [data?.total_pages, updateTotalPages]);
 
-  console.log("Fetched airing today TV shows:", tvShows);
+  const tvShows = data?.results ?? [];
 
   const uniqueTVShows = Array.from(new Set(tvShows.map((tvShow: BaseTVShowProps) => tvShow.id))).map(
     (id) => tvShows.find((tvShow: BaseTVShowProps) => tvShow.id === id)
   );
 
-  console.log("Unique airing today TV shows:", uniqueTVShows);
-
   const { filterValues, setFilterValues, filterFunction } = useFiltering([titleFiltering, genreFiltering]);
 
-  console.log("Filter values:", filterValues);
-
   const displayedTVShows = filterFunction(uniqueTVShows);
-
-  console.log("Displayed airing today TV shows after filtering and sorting:", displayedTVShows);
 
   if (isLoading) return <Spinner />;
   if (isError) return <Alert severity="error">Failed to load TV shows: {error.message}</Alert>;

@@ -1,5 +1,5 @@
-import React, { useEffect } from "react"; 
-import { useQuery } from "react-query"; 
+import React, { useEffect } from "react";
+import { useQuery } from "react-query";
 import { getPopularActors } from "../api/tmdb-api"; 
 import PageTemplate from "../components/templateActorListPage"; 
 import Spinner from "../components/spinner"; 
@@ -26,18 +26,19 @@ const genderFiltering = {
 };
 
 const PopularActorsPage: React.FC = () => {
-const { page, handlePageChange, totalPages, updateTotalPages } = usePagination({});
+  const { page, handlePageChange, totalPages, updateTotalPages } = usePagination({});
 
   const { data, error, isLoading, isError } = useQuery<DiscoverActors, Error>(
     ["popularActors", page],
     () => getPopularActors(page),
     {
       keepPreviousData: true,
-      onSuccess: (data) => {
-        updateTotalPages(Math.min(data.total_pages, 500));
-      },
     }
   );
+
+  useEffect(() => {
+    updateTotalPages(Math.min(data?.total_pages || 1, 500));
+  }, [data?.total_pages, updateTotalPages]);
 
   const actors = data?.results || [];
   const { filterValues, setFilterValues, filterFunction } = useFiltering([nameFiltering, genderFiltering]);

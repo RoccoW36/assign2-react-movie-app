@@ -1,14 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useQuery } from "react-query";
-import { getUpcomingMovies } from "../api/tmdb-api"; 
 import PageTemplate from "../components/templateMovieListPage"; 
+import { getUpcomingMovies } from "../api/tmdb-api"; 
 import Spinner from "../components/spinner";
 import AddToMustWatchIcon from "../components/cardIcons/addToMustWatch";
 import MovieFilterUI, { titleFilter, genreFilter } from "../components/movieFilterUI";
-import PaginationUI from "../components/PaginationUI"; 
-import { DiscoverMovies, BaseMovieProps } from "../types/interfaces"; 
-import { usePagination } from "../hooks/usePagination"; 
-import useFiltering from "../hooks/useFiltering"; 
+import PaginationUI from "../components/PaginationUI";
+import { DiscoverMovies, BaseMovieProps } from "../types/interfaces";
+import { usePagination } from "../hooks/usePagination";
+import useFiltering from "../hooks/useFiltering";
 
 const titleFiltering = { name: "title", value: "", condition: titleFilter };
 const genreFiltering = { name: "genre", value: "0", condition: genreFilter };
@@ -21,25 +21,23 @@ const UpcomingMoviesPage: React.FC = () => {
   const { page, handlePageChange, totalPages, updateTotalPages } = usePagination({});
 
   const { data, error, isLoading, isError } = useQuery<DiscoverMovies, Error>(
-    ["discover", page],
+    ["upcomingMovies", page],
     () => getUpcomingMovies(page),
+    
     {
       keepPreviousData: true,
-      onSuccess: (data) => {
-        updateTotalPages(Math.min(data.total_pages, 500));
-      },
     }
   );
 
+  useEffect(() => {
+    updateTotalPages(Math.min(data?.total_pages || 1, 500));
+  }, [data?.total_pages, updateTotalPages]);
+
   const movies = data ? data.results : [];
 
-  console.log("Fetched upcoming movies:", movies);
-
-  const uniqueMovies = Array.from(new Set(movies.map((movie: BaseMovieProps) => movie.id))).map(
-    (id) => movies.find((movie: BaseMovieProps) => movie.id === id)
+  const uniqueMovies = Array.from(new Set(movies.map((movie) => movie.id))).map(
+    (id) => movies.find((movie) => movie.id === id)
   );
-
-  console.log("Unique upcoming movies:", uniqueMovies);
 
   const { filterValues, processCollection, changeFilterValues } = useFiltering([
     titleFiltering,
@@ -48,14 +46,10 @@ const UpcomingMoviesPage: React.FC = () => {
     productionCountryFiltering,
   ]);
 
-  console.log("Filter values:", filterValues);
-
-  const displayedMovies = processCollection(uniqueMovies);
-
-  console.log("Displayed upcoming movies after filtering and sorting:", displayedMovies);
-
   if (isLoading) return <Spinner />;
   if (isError) return <h1>Failed to load movies: {error.message}</h1>;
+
+  const displayedMovies = processCollection(uniqueMovies);
 
   const onBack = () => {
     if (page > 1) {
@@ -69,14 +63,12 @@ const UpcomingMoviesPage: React.FC = () => {
     }
   };
 
-
   return (
     <>
       <PageTemplate
         title="Upcoming Movies"
         movies={displayedMovies}
-        action={(movie: BaseMovieProps) => <AddToMustWatchIcon {...movie} />
-      }
+        action={(movie: BaseMovieProps) => <AddToMustWatchIcon {...movie} />}
         onBack={onBack} 
         onForward={onForward} 
       />
