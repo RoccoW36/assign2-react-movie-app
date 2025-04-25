@@ -1,29 +1,35 @@
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import Typography from "@mui/material/Typography";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import TextField from "@mui/material/TextField";
+import React, { ChangeEvent } from "react";
+import { useQuery } from "react-query";
+import { getGenres, getCountries } from "../../api/tmdb-api";
+import { FilterOption, GenreData } from "../../types/interfaces";
+import {
+  Card,
+  CardMedia,
+  CardContent,
+  Typography,
+  InputLabel,
+  MenuItem,
+  TextField,
+  FormControl,
+  Select,
+  SelectChangeEvent,
+} from "@mui/material";
+import Spinner from "../spinner";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import SortIcon from "@mui/icons-material/Sort";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
-import React, { ChangeEvent } from "react";
-import { FilterOption, GenreData } from "../../types/interfaces";
-import { SelectChangeEvent } from "@mui/material";
-import { getGenres } from "../../api/tmdb-api";
-import { useQuery } from "react-query";
-import Spinner from "../spinner";
+import img from '../../images/TVShowfilterCard.png';
 
 const styles = {
   root: {
     maxWidth: 345,
   },
-  media: { height: 300 },
   formControl: {
     margin: 1,
     minWidth: 220,
     backgroundColor: "rgb(255, 255, 255)",
+  },
+  media: {
+    height: 300,
   },
 };
 
@@ -44,15 +50,22 @@ const FilterTVShowsCard: React.FC<FilterTVShowsCardProps> = ({
   sortOption,
   onUserInput,
 }) => {
-  const { data, error, isLoading, isError } = useQuery<GenreData, Error>("genres", getGenres);
+  const { data: genresData, isLoading: genresLoading, isError: genresError } = useQuery<GenreData, Error>(
+    "genres",
+    getGenres
+  );
 
-  if (isLoading) return <Spinner />;
-  if (isError) return <h1>{(error as Error).message}</h1>;
+  const {
+    data: countriesData,
+    isLoading: countriesLoading,
+    isError: countriesError,
+  } = useQuery<Array<{ iso_3166_1: string; english_name: string }>, Error>("countries", getCountries);
 
-  const genres = data?.genres || [];
-  if (!genres.some((g) => g.name === "All")) {
-    genres.unshift({ id: "0", name: "All" });
-  }
+  if (genresLoading || countriesLoading) return <Spinner />;
+  if (genresError || countriesError) return <h1>Error loading data</h1>;
+
+  const genres = genresData?.genres || [];
+  if (!genres.some((g) => g.name === "All")) genres.unshift({ id: "0", name: "All" });
 
   const handleTextChange = (e: ChangeEvent<HTMLInputElement>) => {
     onUserInput("title", e.target.value);
@@ -75,8 +88,8 @@ const FilterTVShowsCard: React.FC<FilterTVShowsCardProps> = ({
             id="filled-search"
             label="Search by TV Show name"
             type="search"
-            value={titleFilter}
             variant="filled"
+            value={titleFilter}
             onChange={handleTextChange}
           />
           <FormControl sx={styles.formControl}>
@@ -94,7 +107,6 @@ const FilterTVShowsCard: React.FC<FilterTVShowsCardProps> = ({
               ))}
             </Select>
           </FormControl>
-
           <FormControl sx={styles.formControl}>
             <InputLabel id="rating-label">Rating greater than...</InputLabel>
             <Select
@@ -110,7 +122,6 @@ const FilterTVShowsCard: React.FC<FilterTVShowsCardProps> = ({
               ))}
             </Select>
           </FormControl>
-
           <FormControl sx={styles.formControl}>
             <InputLabel id="production-country-label">Production Country</InputLabel>
             <Select
@@ -120,15 +131,16 @@ const FilterTVShowsCard: React.FC<FilterTVShowsCardProps> = ({
               onChange={(e) => handleSelectChange(e, "production country")}
             >
               <MenuItem value="">All</MenuItem>
-              {["US", "GB", "CA", "FR", "JP"].map((country) => (
-                <MenuItem key={country} value={country}>
-                  {country}
+              {countriesData?.map((country) => (
+                <MenuItem key={country.iso_3166_1} value={country.iso_3166_1}>
+                  {country.english_name}
                 </MenuItem>
               ))}
             </Select>
           </FormControl>
         </CardContent>
       </Card>
+
       <Card sx={styles.root} variant="outlined">
         <CardContent>
           <Typography variant="h5" component="h1">
@@ -143,14 +155,15 @@ const FilterTVShowsCard: React.FC<FilterTVShowsCardProps> = ({
               value={sortOption}
               onChange={(e) => handleSelectChange(e, "sortOption")}
             >
-              <MenuItem value="vote_average.desc">Rating (High → Low)</MenuItem>
-              <MenuItem value="vote_average.asc">Rating (Low → High)</MenuItem>
-              <MenuItem value="first_air_date.desc">Release Date (Newest → Oldest)</MenuItem>
-              <MenuItem value="first_air_date.asc">Release Date (Oldest → Newest)</MenuItem>
+              <MenuItem value="vote_average.desc">Top Rated</MenuItem>
+              <MenuItem value="popularity.desc">Most Popular</MenuItem>
+              <MenuItem value="first_air_date.desc">Newest</MenuItem>
             </Select>
           </FormControl>
         </CardContent>
       </Card>
+      
+      <CardMedia sx={styles.media} image={img} title="TV Show Filter" />
     </>
   );
 };

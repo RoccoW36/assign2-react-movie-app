@@ -1,15 +1,15 @@
 import React from "react";
 import { useQuery } from "react-query";
-import { getTVShows } from "../api/tmdb-api"; 
-import PageTemplate from "../components/templateTVShowListPage"; 
-import Spinner from "../components/spinner"; 
-import Alert from "@mui/material/Alert"; 
-import TVShowFilterUI, { titleFilter, genreFilter } from "../components/TVShowFilterUI"; 
+import { getTVShows } from "../api/tmdb-api";
+import PageTemplate from "../components/templateTVShowListPage";
+import Spinner from "../components/spinner";
+import Alert from "@mui/material/Alert";
+import TVShowFilterUI, { titleFilter, genreFilter } from "../components/TVShowFilterUI";
 import AddToTVShowFavouritesIcon from "../components/cardIcons/addToTVShowFavourites";
-import PaginationUI from "../components/PaginationUI"; 
-import { DiscoverTVShows, BaseTVShowProps } from "../types/interfaces"; 
-import { usePagination } from "../hooks/usePagination"; 
-import useFiltering from "../hooks/useFiltering"; 
+import PaginationUI from "../components/PaginationUI";
+import { DiscoverTVShows, BaseTVShowProps } from "../types/interfaces";
+import { usePagination } from "../hooks/usePagination";
+import useFiltering from "../hooks/useFiltering";
 
 const titleFiltering = {
   name: "title",
@@ -23,8 +23,28 @@ const genreFiltering = {
   condition: genreFilter,
 };
 
+const ratingFiltering = {
+  name: "rating",
+  value: "",
+  condition: (tvShow: BaseTVShowProps, value: string) =>
+    value ? tvShow.vote_average >= Number(value) : true,
+};
+
+const productionCountryFiltering = {
+  name: "production country",
+  value: "",
+  condition: (tvShow: BaseTVShowProps, value: string) =>
+    value ? tvShow.production_country.includes(value) : true,
+};
+
+const sortOptionFiltering = {
+  name: "sortOption",
+  value: "",
+  condition: () => true,
+};
+
 const TVShowsPage: React.FC = () => {
-const { page, handlePageChange, totalPages, updateTotalPages } = usePagination({});
+  const { page, handlePageChange, totalPages, updateTotalPages } = usePagination({});
 
   const { data, error, isLoading, isError } = useQuery<DiscoverTVShows, Error>(
     ["discoverTVShows", page],
@@ -44,13 +64,20 @@ const { page, handlePageChange, totalPages, updateTotalPages } = usePagination({
     (id) => tvShows.find((tvShow) => tvShow.id === id)
   );
 
-  const { filterValues, setFilterValues, filterFunction } = useFiltering([titleFiltering, genreFiltering]);
+  const { filterValues, setFilterValues, filterFunction } = useFiltering([
+    titleFiltering,
+    genreFiltering,
+    ratingFiltering,
+    productionCountryFiltering,
+    sortOptionFiltering,
+  ]);
+
+  const filteredAndSortedTVShows = filterFunction(uniqueTVShows); 
 
   if (isLoading) return <Spinner />;
   if (isError) return <Alert severity="error">Failed to load TV shows: {error.message}</Alert>;
 
-  const displayedTVShows = filterFunction(uniqueTVShows);
-
+ 
   const onBack = () => {
     if (page > 1) {
       handlePageChange({} as React.ChangeEvent<unknown>, page - 1);
@@ -76,12 +103,12 @@ const { page, handlePageChange, totalPages, updateTotalPages } = usePagination({
     <>
       <PageTemplate
         title="Discover TV Shows"
-        tvShows={displayedTVShows}
+        tvShows={filteredAndSortedTVShows}
         action={(tvShow: BaseTVShowProps) => (
           <AddToTVShowFavouritesIcon {...tvShow} />
         )}
-        onBack={onBack} 
-        onForward={onForward} 
+        onBack={onBack}
+        onForward={onForward}
       />
       <PaginationUI
         page={page}
@@ -89,12 +116,12 @@ const { page, handlePageChange, totalPages, updateTotalPages } = usePagination({
         totalPages={totalPages}
       />
       <TVShowFilterUI
-       onFilterValuesChange={changeFilterValues}
-       titleFilter={filterValues.find((filter) => filter.name === "title")?.value || ""}
-       genreFilter={filterValues.find((filter) => filter.name === "genre")?.value || "0"}
-       ratingFilter={filterValues.find((filter) => filter.name === "rating")?.value || ""}
-       productionCountryFilter={filterValues.find((filter) => filter.name === "production country")?.value || ""}
-       sortOption={filterValues.find((filter) => filter.name === "sortOption")?.value || ""}
+        onFilterValuesChange={changeFilterValues}
+        titleFilter={filterValues.find((filter) => filter.name === "title")?.value || ""}
+        genreFilter={filterValues.find((filter) => filter.name === "genre")?.value || "0"}
+        ratingFilter={filterValues.find((filter) => filter.name === "rating")?.value || ""}
+        productionCountryFilter={filterValues.find((filter) => filter.name === "production country")?.value || ""}
+        sortOption={filterValues.find((filter) => filter.name === "sortOption")?.value || ""}
       />
     </>
   );

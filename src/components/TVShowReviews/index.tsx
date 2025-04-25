@@ -46,7 +46,7 @@ const TVShowReviews: React.FC<TVShowDetailsProps> = ({ id, ...props }) => {
             reviews.map((r: Review) => (
               <TableRow key={r.tvShowId}>
                 <TableCell component="th" scope="row">
-                  {r.author}
+                  {r.reviewerId}
                 </TableCell>
                 <TableCell>{excerpt(r.content)}</TableCell>
                 <TableCell>

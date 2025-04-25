@@ -25,7 +25,6 @@ export interface BaseMovieListProps {
 
 export type FilterOption = "title" | "genre" | "rating" | "production country" | "sortOption";
 
-
 export interface Genre {
   id: string;
   name: string;
@@ -42,13 +41,6 @@ export interface production_country {
   iso_639_1: string;
   name: string; 
 }
-
-export interface WatchProvider {
-  provider_id: number;
-  provider_name: string;
-  logo_path?: string;
-}
-
 
 export interface MovieDetailsProps extends BaseMovieProps {
   genres: {
@@ -81,12 +73,13 @@ export interface MovieListPageTemplateProps extends BaseMovieListProps {
 }
 
 export interface Review {
-  author: string;
+  reviewerId: string;
   content: string;
   agree: boolean;
   rating: number;
   movieId: number;
   tvShowId: number;
+  reviewDate: string;
 }
 
 export interface DiscoverMovies {
@@ -222,4 +215,27 @@ export interface DiscoverTVShows {
   total_pages: number;
   total_results: number;
   results: BaseTVShowProps[];
+}
+
+export interface AuthContextType {
+  token?: string;
+  isSignedin: boolean;
+  signin: (token: string) => void;
+  signout: () => void;
+}
+
+export interface SignupDetails {
+  email: string;
+  username: string;
+  password: string;
+}
+
+export interface ConfirmSignupDetails {
+  username: string;
+  code: string;
+}
+
+export interface SigninDetails {
+  username: string;
+  password: string;
 }

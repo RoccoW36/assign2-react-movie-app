@@ -4,6 +4,7 @@ import { getGenres, getCountries } from "../../api/tmdb-api";
 import { FilterOption, GenreData } from "../../types/interfaces";
 import {
   Card,
+  CardMedia,
   CardContent,
   Typography,
   InputLabel,
@@ -16,6 +17,7 @@ import {
 import Spinner from "../spinner";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import SortIcon from "@mui/icons-material/Sort";
+import img from '../../images/movieFilterCard.png';
 
 const styles = {
   root: {
@@ -150,14 +152,14 @@ const FilterMoviesCard: React.FC<FilterMoviesCardProps> = ({
               value={sortOption}
               onChange={(e) => handleSelectChange(e, "sortOption")}
             >
-              <MenuItem value="vote_average.desc">Rating (High → Low)</MenuItem>
-              <MenuItem value="vote_average.asc">Rating (Low → High)</MenuItem>
-              <MenuItem value="release_date.desc">Release Date (Newest → Oldest)</MenuItem>
-              <MenuItem value="release_date.asc">Release Date (Oldest → Newest)</MenuItem>
+              <MenuItem value="vote_average.desc">Top Rated</MenuItem>
+              <MenuItem value="popularity.desc">Most Popular</MenuItem>
+              <MenuItem value="release_date.desc">Newest</MenuItem>
             </Select>
           </FormControl>
         </CardContent>
       </Card>
+      <CardMedia sx={{ height: 300 }} image={img} title="Movie Filter" />
     </>
   );
 };

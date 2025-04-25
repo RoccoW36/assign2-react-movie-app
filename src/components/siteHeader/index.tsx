@@ -57,7 +57,6 @@ const SiteHeader: React.FC = () => {
   };
 
   const handleSignOut = () => {
-    // Your sign out logic
     handleAuthMenuClose();
     console.log("User signed out");
   };
@@ -71,6 +70,7 @@ const SiteHeader: React.FC = () => {
     { label: "Top Rated Movies", path: "/movies/toprated" },
     { label: "Favourite Movies", path: "/movies/favourites" },
     { label: "Must Watch Movies", path: "/movies/mustwatch" },
+    { label: "Fantasy Movies", path: "/movies/fantasy" }
   ];
 
   const tvShowsMenu = [

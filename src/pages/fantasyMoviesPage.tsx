@@ -1,13 +1,8 @@
 import React, { useContext } from "react";
-import PageTemplate from "../components/templateMovieListPage";
-import { MoviesContext } from "../contexts/moviesContext";
-import { useQueries } from "react-query";
-import { getMovie } from "../api/tmdb-api";
-import Spinner from "../components/spinner";
+import PageTemplate from "../components/templateFantasyMovieListPage";
+import { FantasyMoviesContext } from "../contexts/fantasyMoviesContext";
 import useFiltering from "../hooks/useFiltering";
 import MovieFilterUI, { titleFilter, favouritesgenreFilter } from "../components/movieFilterUI";
-import RemoveFromFavourites from "../components/cardIcons/removeFromFavourites";
-import WriteReview from "../components/cardIcons/writeReview";
 import { BaseMovieProps } from "../types/interfaces";
 import { applySort } from "../util";
 
@@ -23,8 +18,9 @@ const sortOptionFiltering = {
   condition: () => true,
 };
 
-const FavouriteMoviesPage: React.FC = () => {
-  const { favourites: movieIds } = useContext(MoviesContext);
+const FantasyMoviesPage: React.FC = () => {
+  const context = useContext(FantasyMoviesContext);
+  const movies = context.fantasy;
 
   const { filterValues, processCollection, changeFilterValues } = useFiltering([
     titleFiltering,
@@ -34,36 +30,8 @@ const FavouriteMoviesPage: React.FC = () => {
     sortOptionFiltering,
   ]);
 
-  const favouriteMovieQueries = useQueries(
-    movieIds
-      .map((movieId) => {
-        const validMovieId = Number(movieId);
-        if (isNaN(validMovieId) || validMovieId <= 0) {
-          console.error("Invalid movie ID detected:", movieId);
-          return null;
-        }
-        return {
-          queryKey: ["movie", validMovieId],
-          queryFn: async () => {
-            try {
-              return await getMovie(validMovieId.toString());
-            } catch (error) {
-              console.error(`Failed to fetch movie with ID ${validMovieId}:`, error);
-              return undefined;
-            }
-          },
-        };
-      })
-      .filter((query) => query !== null)
-  );
-
-  const isLoading = favouriteMovieQueries.some((q) => q.isLoading);
-  if (isLoading) return <Spinner />;
-
-  const allFavourites = favouriteMovieQueries.map((q) => q.data).filter(Boolean);
   const sortOption = filterValues.find((filter) => filter.name === "sortOption")?.value || "";
-
-  const displayedMovies = applySort(processCollection(allFavourites), sortOption);
+  const sortedMovies = applySort(processCollection(movies), sortOption);
 
   const resetFilters = () => {
     changeFilterValues("title", "");
@@ -76,14 +44,8 @@ const FavouriteMoviesPage: React.FC = () => {
   return (
     <>
       <PageTemplate
-        title="Favourite Movies"
-        movies={displayedMovies}
-        action={(movie) => (
-          <>
-            <RemoveFromFavourites {...movie} />
-            <WriteReview movieId={movie.id} />
-          </>
-        )}
+        title="Fantasy Movies"
+        movies={sortedMovies}
       />
       <MovieFilterUI
         onFilterValuesChange={changeFilterValues}
@@ -100,4 +62,4 @@ const FavouriteMoviesPage: React.FC = () => {
   );
 };
 
-export default FavouriteMoviesPage;
+export default FantasyMoviesPage;

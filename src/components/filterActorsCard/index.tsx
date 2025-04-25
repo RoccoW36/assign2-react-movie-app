@@ -1,5 +1,6 @@
 import React, { ChangeEvent } from "react";
 import Card from "@mui/material/Card";
+import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import InputLabel from "@mui/material/InputLabel";
@@ -8,12 +9,14 @@ import TextField from "@mui/material/TextField";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
+import img from "../../images/actorFilterCard.png";
 
 const styles = {
   root: {
     maxWidth: 345,
     margin: "0 auto",
   },
+  media: { height: 300 },
   formControl: {
     margin: 1,
     minWidth: 220,
@@ -72,6 +75,7 @@ const FilterActorsCard: React.FC<FilterActorsCardProps> = ({
           </Select>
         </FormControl>
       </CardContent>
+      <CardMedia sx={styles.media} image={img} title="Actor Filter" />
     </Card>
   );
 };

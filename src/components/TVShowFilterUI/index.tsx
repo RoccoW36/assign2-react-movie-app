@@ -18,7 +18,6 @@ export const favouritesGenreFilter = (tvShow: TVShowDetailsProps, value: string)
   const genreId = Number(value);
   const genres = tvShow.genres;
   return genreId > 0 && genres ? genres.some((genre) => Number(genre.id) === genreId) : true;
-
 };
 
 export const ratingFilter = (tvShow: BaseTVShowProps, value: string): boolean => {

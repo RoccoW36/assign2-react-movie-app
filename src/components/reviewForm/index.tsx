@@ -17,7 +17,7 @@ import Alert from "@mui/material/Alert";
 const ReviewForm: React.FC<BaseMovieProps> = (movie) => {
     const defaultValues = {
         defaultValues: {
-          author: "",
+          reviewerId: "",
           review: "",
           agree: false,
           rating: 3,
@@ -78,7 +78,7 @@ const ReviewForm: React.FC<BaseMovieProps> = (movie) => {
       
           <form style={styles.form} onSubmit={handleSubmit(onSubmit)} noValidate>
             <Controller
-              name="author"
+              name="reviewerId"
               control={control}
               rules={{ required: "Name is required" }}
               defaultValue=""
@@ -96,9 +96,9 @@ const ReviewForm: React.FC<BaseMovieProps> = (movie) => {
                 />
               )}
             />
-            {errors.author && (
+            {errors.reviewerId && (
               <Typography variant="h6" component="p">
-                {errors.author.message}
+                {errors.reviewerId.message}
               </Typography>
             )}
             <Controller
@@ -169,7 +169,7 @@ const ReviewForm: React.FC<BaseMovieProps> = (movie) => {
                 sx={styles.submit}
                 onClick={() => {
                   reset({
-                    author: "",
+                    reviewerId: "",
                     content: "",
                   });
                 }}

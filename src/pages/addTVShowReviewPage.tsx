@@ -10,7 +10,7 @@ import { TVShowDetailsProps, BaseTVShowProps } from "../types/interfaces";
 const WriteTVShowReviewPage: React.FC = () => {
     const location = useLocation();
     const { tvShowId } = location.state;
-    
+
     const { data: tvShow, error, isLoading, isError } = useQuery<TVShowDetailsProps, Error>(
         ["TV Show", tvShowId],
         () => getTVShow(tvShowId)
@@ -28,7 +28,6 @@ const WriteTVShowReviewPage: React.FC = () => {
         <>
             {tvShow ? (
                 <PageTemplate tvShow={tvShow}>
-
                     <ReviewForm media={tvShow as BaseTVShowProps} />
                 </PageTemplate>
             ) : (

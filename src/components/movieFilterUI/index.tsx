@@ -4,9 +4,8 @@ import Fab from "@mui/material/Fab";
 import Drawer from "@mui/material/Drawer";
 import { BaseMovieProps, MovieDetailsProps } from "../../types/interfaces";
 
-export const titleFilter = (movie: BaseMovieProps, value: string): boolean => {
-  return movie.title.toLowerCase().includes(value.toLowerCase());
-};
+export const titleFilter = (movie: BaseMovieProps, value: string): boolean =>
+  movie.title.toLowerCase().includes(value.toLowerCase());
 
 export const genreFilter = (movie: BaseMovieProps, value: string): boolean => {
   const genreId = Number(value);
@@ -20,13 +19,11 @@ export const favouritesgenreFilter = (movie: MovieDetailsProps, value: string): 
   return genreId > 0 && genres ? genres.some((genre) => genre.id === genreId) : true;
 };
 
-export const ratingFilter = (movie: BaseMovieProps, value: string): boolean => {
-  return value ? movie.vote_average >= Number(value) : true;
-};
+export const ratingFilter = (movie: BaseMovieProps, value: string): boolean =>
+  value ? movie.vote_average >= Number(value) : true;
 
-export const productionCountryFilter = (movie: BaseMovieProps, value: string): boolean => {
-  return value ? movie.production_country === value : true;
-};
+export const productionCountryFilter = (movie: BaseMovieProps, value: string): boolean =>
+  value ? movie.production_country === value : true;
 
 const styles = {
   fab: {
@@ -38,7 +35,7 @@ const styles = {
 };
 
 interface MovieFilterUIProps {
-  onFilterValuesChange: (f: string, s: string) => void;
+  onFilterValuesChange: (name: string, value: string) => void;
   titleFilter: string;
   genreFilter: string;
   ratingFilter: string;
@@ -66,11 +63,10 @@ const MovieFilterUI: React.FC<MovieFilterUIProps> = ({
       : "Filter Movies";
 
   const handleResetFilters = () => {
-    console.log("Resetting filters...");
     onFilterValuesChange("title", "");
     onFilterValuesChange("genre", "0");
     onFilterValuesChange("rating", "");
-    onFilterValuesChange("language", "");
+    onFilterValuesChange("production country", "");
     onFilterValuesChange("sortOption", "");
     setDrawerOpen(false);
   };

@@ -9,6 +9,7 @@ import PaginationUI from "../components/PaginationUI";
 import { DiscoverMovies, BaseMovieProps } from "../types/interfaces"; 
 import { usePagination } from "../hooks/usePagination"; 
 import useFiltering from "../hooks/useFiltering"; 
+import { applySort } from "../util";
 
 const titleFiltering = { name: "title", value: "", condition: titleFilter };
 const genreFiltering = { name: "genre", value: "0", condition: genreFilter };
@@ -16,6 +17,11 @@ const ratingFiltering = { name: "rating", value: "", condition: (movie: BaseMovi
   value ? movie.vote_average >= Number(value) : true };
 const productionCountryFiltering = { name: "production country", value: "", condition: (movie: BaseMovieProps, value: string) =>
   value ? movie.production_country === value : true };
+const sortOptionFiltering = {
+  name: "sortOption",
+  value: "",
+  condition: () => true,
+};
 
 const NowPlayingMoviesPage: React.FC = () => {
   const { page, handlePageChange, totalPages, updateTotalPages } = usePagination({});
@@ -43,9 +49,12 @@ const NowPlayingMoviesPage: React.FC = () => {
     genreFiltering,
     ratingFiltering,
     productionCountryFiltering,
+    sortOptionFiltering,
   ]);
 
-  const displayedMovies = processCollection(uniqueMovies);
+  const sortOption = filterValues.find((f) => f.name === "sortOption")?.value || "";
+
+  const displayedMovies = applySort(processCollection(uniqueMovies), sortOption);
 
   if (isLoading) return <Spinner />;
   if (isError) return <h1>Failed to load movies: {error.message}</h1>;
@@ -82,7 +91,7 @@ const NowPlayingMoviesPage: React.FC = () => {
         genreFilter={filterValues.find((filter) => filter.name === "genre")?.value || "0"}
         ratingFilter={filterValues.find((filter) => filter.name === "rating")?.value || ""}
         productionCountryFilter={filterValues.find((filter) => filter.name === "production country")?.value || ""}
-        sortOption={filterValues.find((filter) => filter.name === "sortOption")?.value || ""}
+        sortOption={sortOption}
       />
     </>
   );
