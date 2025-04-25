@@ -73,7 +73,7 @@ const FilterTVShowsCard: React.FC<FilterTVShowsCardProps> = ({
           <TextField
             sx={styles.formControl}
             id="filled-search"
-            label="Search field"
+            label="Search by TV Show name"
             type="search"
             value={titleFilter}
             variant="filled"

@@ -51,7 +51,7 @@ const FilterActorsCard: React.FC<FilterActorsCardProps> = ({
         <TextField
           sx={styles.formControl}
           id="filled-search"
-          label="Search by Name"
+          label="Search by Actor Name"
           type="search"
           value={nameFilter}
           variant="filled"

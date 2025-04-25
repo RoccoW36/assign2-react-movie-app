@@ -10,15 +10,25 @@ import {
   Switch,
   InputBase,
   Box,
+  Avatar,
+  Tooltip,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import MovieIcon from "@mui/icons-material/Movie";
 import TvIcon from "@mui/icons-material/Tv";
 import PersonIcon from "@mui/icons-material/Person";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { styled, alpha } from "@mui/material/styles";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTheme, createTheme, ThemeProvider } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
+
+// Dummy auth hook (replace with real logic)
+const useAuth = () => {
+  const isAuthenticated = true; // or false
+  const user = { name: "John Doe", email: "john@example.com" };
+  return { isAuthenticated, user };
+};
 
 const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 
@@ -31,9 +41,26 @@ const SiteHeader: React.FC = () => {
   const [moviesMenuAnchorEl, setMoviesMenuAnchorEl] = useState<null | HTMLElement>(null);
   const [tvShowsMenuAnchorEl, setTVShowsMenuAnchorEl] = useState<null | HTMLElement>(null);
   const [actorsMenuAnchorEl, setActorsMenuAnchorEl] = useState<null | HTMLElement>(null);
+  const [authMenuAnchorEl, setAuthMenuAnchorEl] = useState<null | HTMLElement>(null);
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
+
+  const { isAuthenticated, user } = useAuth();
+
+  const handleAuthMenuOpen = (event: MouseEvent<HTMLElement>) => {
+    setAuthMenuAnchorEl(event.currentTarget);
+  };
+
+  const handleAuthMenuClose = () => {
+    setAuthMenuAnchorEl(null);
+  };
+
+  const handleSignOut = () => {
+    // Your sign out logic
+    handleAuthMenuClose();
+    console.log("User signed out");
+  };
 
   const homeOption = { label: "Home", path: "/" };
 
@@ -153,11 +180,7 @@ const SiteHeader: React.FC = () => {
                 Home
               </Button>
 
-              <Button
-                color="inherit"
-                startIcon={<MovieIcon />}
-                onClick={handleMoviesMenuOpen}
-              >
+              <Button color="inherit" startIcon={<MovieIcon />} onClick={handleMoviesMenuOpen}>
                 Movies
               </Button>
               <Menu
@@ -172,11 +195,7 @@ const SiteHeader: React.FC = () => {
                 ))}
               </Menu>
 
-              <Button
-                color="inherit"
-                startIcon={<TvIcon />}
-                onClick={handleTVShowsMenuOpen}
-              >
+              <Button color="inherit" startIcon={<TvIcon />} onClick={handleTVShowsMenuOpen}>
                 TV Shows
               </Button>
               <Menu
@@ -191,11 +210,7 @@ const SiteHeader: React.FC = () => {
                 ))}
               </Menu>
 
-              <Button
-                color="inherit"
-                startIcon={<PersonIcon />}
-                onClick={handleActorsMenuOpen}
-              >
+              <Button color="inherit" startIcon={<PersonIcon />} onClick={handleActorsMenuOpen}>
                 Actors
               </Button>
               <Menu
@@ -209,14 +224,42 @@ const SiteHeader: React.FC = () => {
                   </MenuItem>
                 ))}
               </Menu>
+
+              <Tooltip title={isAuthenticated ? user.name : "Account"}>
+                <IconButton
+                  onClick={handleAuthMenuOpen}
+                  color="inherit"
+                  size="large"
+                  sx={{ ml: 2 }}
+                >
+                  {isAuthenticated ? (
+                    <Avatar>{user.name.charAt(0)}</Avatar>
+                  ) : (
+                    <AccountCircleIcon />
+                  )}
+                </IconButton>
+              </Tooltip>
+
+              <Menu
+                anchorEl={authMenuAnchorEl}
+                open={Boolean(authMenuAnchorEl)}
+                onClose={handleAuthMenuClose}
+              >
+                {isAuthenticated ? (
+                  <>
+                    <MenuItem onClick={() => navigate("/profile")}>Profile</MenuItem>
+                    <MenuItem onClick={handleSignOut}>Sign Out</MenuItem>
+                  </>
+                ) : (
+                  <>
+                    <MenuItem onClick={() => navigate("/auth/signin")}>Sign In</MenuItem>
+                    <MenuItem onClick={() => navigate("/auth/signup")}>Sign Up</MenuItem>
+                  </>
+                )}
+              </Menu>
             </>
           ) : (
-            <IconButton
-              aria-label="menu"
-              onClick={handleMoviesMenuOpen}
-              color="inherit"
-              size="large"
-            >
+            <IconButton aria-label="menu" onClick={handleMoviesMenuOpen} color="inherit" size="large">
               <MenuIcon />
             </IconButton>
           )}

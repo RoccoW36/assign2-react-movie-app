@@ -82,7 +82,7 @@ const FilterMoviesCard: React.FC<FilterMoviesCardProps> = ({
           <TextField
             sx={styles.formControl}
             id="filled-search"
-            label="Title"
+            label="Search by Movie Name"
             type="search"
             variant="filled"
             value={titleFilter}
