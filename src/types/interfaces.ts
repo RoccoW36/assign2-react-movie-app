@@ -16,6 +16,7 @@ export interface BaseMovieProps {
   favourite?: boolean;
   genre_ids?: number[];
   production_country: string;
+  image?: string; 
 }
 
 export interface BaseMovieListProps {
@@ -245,9 +246,10 @@ export interface FantasyMovie extends BaseMovieProps {
   actors: Actor[];
   directors: Actor[];
   genres: Genre[];
+  company: string;
   productionCountries?: production_country[];
+  
 }
-
 
 
 export interface FormValues {

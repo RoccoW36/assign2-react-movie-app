@@ -23,7 +23,6 @@ const FantasyMovieDetails: React.FC<FantasyMovieDetailsProps> = ({ movie }) => {
 
   return (
     <>
-      {/* Movie Poster */}
       <Box display="flex" justifyContent="center" mt={3}>
         <CardMedia
           component="img"
@@ -33,7 +32,6 @@ const FantasyMovieDetails: React.FC<FantasyMovieDetailsProps> = ({ movie }) => {
         />
       </Box>
 
-      {/* Overview */}
       <Typography variant="h5" component="h3" mt={3}>
         Overview
       </Typography>
@@ -41,7 +39,6 @@ const FantasyMovieDetails: React.FC<FantasyMovieDetailsProps> = ({ movie }) => {
         {movie.overview}
       </Typography>
 
-      {/* Genres */}
       <Paper component="ul" sx={root}>
         <li>
           <Chip label="Genres" sx={chip} color="primary" />
@@ -55,12 +52,10 @@ const FantasyMovieDetails: React.FC<FantasyMovieDetailsProps> = ({ movie }) => {
         )}
       </Paper>
 
-      {/* Release Date */}
       <Paper component="ul" sx={root}>
         <Chip icon={<CalendarIcon fontSize="small" />} label={`Released: ${movie.release_date}`} />
       </Paper>
 
-      {/* Actors */}
       <Paper component="ul" sx={root}>
         <li>
           <Chip label="Cast" sx={chip} color="primary" />
@@ -74,10 +69,9 @@ const FantasyMovieDetails: React.FC<FantasyMovieDetailsProps> = ({ movie }) => {
         )}
       </Paper>
 
-      {/* Directors */}
       <Paper component="ul" sx={root}>
         <li>
-          <Chip label="Directors" sx={chip} color="primary" />
+          <Chip label="Director" sx={chip} color="primary" />
         </li>
         {movie?.directors?.map((d, index) =>
           typeof d === "object" && d.name ? (
@@ -88,7 +82,6 @@ const FantasyMovieDetails: React.FC<FantasyMovieDetailsProps> = ({ movie }) => {
         )}
       </Paper>
 
-      {/* Production Company */}
       <Paper component="ul" sx={root}>
         <li>
           <Chip label="Production Company" sx={chip} color="primary" />

@@ -73,15 +73,25 @@ const FantasyMovieForm: React.FC = () => {
         ? Math.max(...context.fantasy.map((m: FantasyMovie) => m.id)) + 1 
         : 0;
 
-    const formattedFantasyMovie: FantasyMovie = {
-        ...fantasyFormData,
-        id: newId,
-        genres: selectedGenres.map(g => ({ id: g.id, name: g.name })),
-        actors: selectedActors.map(a => ({ id: a.id, name: a.name })),
-        directors: selectedDirectors.map(d => ({ id: d.id, name: d.name })),
-        image: image ?? "",
-    };
-
+        const formattedFantasyMovie: FantasyMovie = {
+          ...fantasyFormData,
+          id: newId,
+          genres: selectedGenres.map(g => ({ id: g.id, name: g.name })),
+          actors: selectedActors.map(a => ({ id: a.id, name: a.name })),
+          directors: selectedDirectors.map(d => ({ id: d.id, name: d.name })),
+          image: image ?? "",
+          production_country: fantasyFormData.productionCountries ?? [],
+          budget: 0,
+          imdb_id: "",
+          vote_average: 0,
+          popularity: 0,
+          tagline: "",
+          runtime: 0,
+          revenue: 0,
+          vote_count: 0,
+          favourite: false,
+      };
+      
     context.addToFantasy(formattedFantasyMovie);
     setOpen(true);
 };
