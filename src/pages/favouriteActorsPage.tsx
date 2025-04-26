@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import PageTemplate from "../components/templateActorListPage";
 import { ActorsContext } from "../contexts/actorsContext";
 import { useQueries } from "react-query";
-import { getActor, searchActors } from "../api/tmdb-api";
+import { getActor, searchPeople } from "../api/tmdb-api";
 import Spinner from "../components/spinner";
 import RemoveFromActorFavourites from "../components/cardIcons/removeFromActorFavourites";
 import useFiltering from "../hooks/useFiltering";
@@ -37,7 +37,7 @@ const FavouriteActorsPage: React.FC = () => {
       queryFn: async () => {
         const actor = await getActor(actorId.toString());
         if (!actor.known_for || actor.known_for.length === 0) {
-          const searchResults = await searchActors(actor.name);
+          const searchResults = await searchPeople(actor.name);
           const searchActor = searchResults.results.find((a: any) => a.id === actorId);
           return { ...actor, known_for: searchActor?.known_for || [] };
         }

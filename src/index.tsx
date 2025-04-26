@@ -29,7 +29,7 @@ import FavouriteTVShowsPage from "./pages/favouriteTVShowsPage";
 import MustWatchTVShowsPage from "./pages/mustWatchTVShowsPage";
 import AddTVShowReviewPage from "./pages/addTVShowReviewPage";
 import FantasyMoviesPage from "./pages/fantasyMoviesPage";
-import FantasyMoviesContextProvider from "./contexts/fantasyMoviesContext";
+import { FantasyMoviesContextProvider } from "./contexts/fantasyMoviesContext";
 import AddFantasyMoviePage from "./pages/addFantasyMoviePage";
 import FantasyMovieDetailsPage from "./pages/fantasyMovieDetailsPage";
 import UsersContextProvider from "./contexts/usersContext";

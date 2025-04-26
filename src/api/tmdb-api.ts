@@ -70,7 +70,7 @@ export const getTVShowReviews = (id: string | number) =>
 export const searchMovies = (query: string) =>
   fetchData(`${BASE_URL}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}&language=en-US&page=1`);
 
-export const searchActors = (query: string) =>
+export const searchPeople = (query: string) =>
   fetchData(`${BASE_URL}/search/person?api_key=${API_KEY}&query=${encodeURIComponent(query)}&language=en-US&page=1`);
 
 export const searchTVShows = (query: string) =>

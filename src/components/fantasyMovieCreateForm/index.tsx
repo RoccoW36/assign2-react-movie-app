@@ -1,397 +1,270 @@
-import React, { useContext, useState } from "react";
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
-import MenuItem from "@mui/material/MenuItem";
-import Typography from "@mui/material/Typography";
-import Box from "@mui/material/Box";
-import { useForm, Controller } from "react-hook-form";
-import { FantasyMoviesContext } from "../../contexts/fantasyMoviesContext";
+import React, { useState, useContext, useRef } from "react";
+import {
+  Box, Button, TextField, MenuItem, Typography, Snackbar, Alert, Chip
+} from "@mui/material";
+import CancelIcon from '@mui/icons-material/Cancel';
+import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import styles from "./styles";
-import Snackbar from "@mui/material/Snackbar";
-import Alert from "@mui/material/Alert";
-import { getGenres } from "../../api/tmdb-api";
 import { useQuery } from "react-query";
-import Spinner from '../spinner'
-import Fab from "@mui/material/Fab";
-import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
-import { ActorsContext } from "../../contexts/actorsContext";
-import { SubmitHandler } from 'react-hook-form';
-import { FantasyMovie, Genre, Actor, FormValues} from "../../types/interfaces"; 
+
+import { FantasyMoviesContext } from "../../contexts/fantasyMoviesContext";
+import { getGenres, searchPeople, } from "../../api/tmdb-api";
+import Spinner from "../spinner";
+import styles from "./styles";
+import { FantasyMovie, Genre, Actor, FormValues, PersonResult } from "../../types/interfaces";
 
 const FantasyMovieForm: React.FC = () => {
-  const defaultValues: Partial<FormValues> = {
-    id: 0,
-    title: "",
-    overview: "",
-    release_date: "",
-    genres: [],
-    actors: [],
-    image: null,
-    mode: "onSubmit",
-    disabled: false,
-    reValidateMode: "onSubmit",
-    company: "",
-  };
-
   const {
-    control,
-    formState: { errors },
-    handleSubmit,
-    reset,
+    control, handleSubmit, formState: { errors }, reset, setValue,
   } = useForm<FormValues>({
-    defaultValues,
+    defaultValues: {
+      id: 0, title: "", overview: "", release_date: "", genres: [], actors: [], directors: [], image: null, company: ""
+    },
   });
 
   const navigate = useNavigate();
   const context = useContext(FantasyMoviesContext);
-  const actorContext = useContext(ActorsContext)
-  const [id, setId] = useState<number>(0);
-  const [actor, setActor] = useState<Actor | null>(null)
+
   const [selectedGenres, setSelectedGenres] = useState<Genre[]>([]);
   const [selectedActors, setSelectedActors] = useState<Actor[]>([]);
+  const [selectedDirectors, setSelectedDirectors] = useState<Actor[]>([]);
   const [image, setImage] = useState<string | null>(null);
-  const [imageName, setImageName] = useState<string>("")
-  const [open, setOpen] = React.useState<boolean>(false);
+  const [imageName, setImageName] = useState<string>("");
+  const [open, setOpen] = useState<boolean>(false);
 
-  console.error = console.warn = () => { };
+  const [actorSearchQuery, setActorSearchQuery] = useState<string>("");
+  const [directorSearchQuery, setDirectorSearchQuery] = useState<string>("");
 
-  const { data, error, isLoading, isError } = useQuery("fantasyGenres", getGenres);
+  const actorImageInputRef = useRef<HTMLInputElement>(null);
 
-  if (isLoading) {
-    return <Spinner />;
-  }
+  const { data: genreData, isLoading, isError, error } = useQuery("genres", getGenres);
+  const { data: actorData, refetch: refetchActors } = useQuery(
+    ["searchActors", actorSearchQuery],
+    () => searchPeople(actorSearchQuery),
+    { enabled: false }
+  );
+  const { data: directorData, refetch: refetchDirectors } = useQuery(
+    ["searchDirectors", directorSearchQuery],
+    () => searchPeople(directorSearchQuery),
+    { enabled: false }
+  );
 
-  if (isError) {
-    return <h1>{(error as Error).message}</h1>;
-  }
-  const genres: Genre[] = data.genres;
-
-  const imageSelect = document.createElement('input');
-  imageSelect.type = 'file';
-
-  imageSelect.onchange = e => {
-    const file = (e.target as HTMLInputElement).files![0];
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-
-    reader.onload = readerEvent => {
-      const content = readerEvent.target!.result as string;
-      setImage(content);
-      setImageName(file.name);
-    }
-  }
-
-  function addToSelectedGenres(id: number) {
-    if (!(id === 0)) {
-      const elemMatch = genres[genres.findIndex(e => e.id === parseInt(id.toString()))];
-
-      let matchFound = false;
-
-      for (let i = 0; i < selectedGenres.length; i++) {
-        if (selectedGenres[i].id === elemMatch.id) {
-          matchFound = true;
-        }
-      }
-      if (!matchFound) {
-        setSelectedGenres([...selectedGenres, elemMatch])
-      }
-    }
-  }
-
-  function addToSelectedActors(actor: Actor) {
-    if (!selectedActors.includes(actor)) {
-      setSelectedActors([...selectedActors, actor])
-    }
-  }
+  const genres = genreData?.genres || [];
 
   const handleSnackClose = () => {
     setOpen(false);
     navigate("/movies/fantasy");
   };
 
-  const onSubmit: SubmitHandler<FantasyMovie> = (fantasy) => {
-    let id = 0;
-    let idClear = false;
-
-    while (!idClear) {
-      if (context.fantasy.find(e => e.id === id) === undefined) {
-        idClear = true;
-      } else {
-        id++;
-      }
-    }
-
-    fantasy.id = id
-    fantasy.genres = selectedGenres;
-    fantasy.actors = selectedActors;
-    fantasy.image = image;
-    const reg = new RegExp("([0-9]{4})-([0-9]{2})-([0-9]{2})");
-    if (reg.test(fantasy.release_date)) {
-      if (fantasy.genres.length !== 0) {
-        context.addToFantasyMovies(fantasy);
-        setOpen(true);
-      } else {
-        window.alert("No genres have been selected! \nPlease selected at least one genre to proceed")
-      }
-    } else {
-      alert("Release date does not match the required format.\nFormat: YYYY-MM-DD")
+  const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImage(reader.result as string);
+        setImageName(file.name);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
-  function genreBoxName(g: Genre[]) {
-    if (g.length > 0) {
-      return g[g.length - 1].name
-    }
-  }
+  const onSubmit: SubmitHandler<FormValues> = (fantasyFormData) => {
+    const newId = context.fantasy.length 
+        ? Math.max(...context.fantasy.map((m: FantasyMovie) => m.id)) + 1 
+        : 0;
+
+    const formattedFantasyMovie: FantasyMovie = {
+        ...fantasyFormData,
+        id: newId,
+        genres: selectedGenres.map(g => ({ id: g.id, name: g.name })),
+        actors: selectedActors.map(a => ({ id: a.id, name: a.name })),
+        directors: selectedDirectors.map(d => ({ id: d.id, name: d.name })),
+        image: image ?? "",
+    };
+
+    context.addToFantasy(formattedFantasyMovie);
+    setOpen(true);
+};
+
+
+  if (isLoading) return <Spinner />;
+  if (isError) return <Typography color="error">{(error as Error).message}</Typography>;
 
   return (
     <Box component="div" sx={styles.root}>
-      <Snackbar
-        sx={styles.snack}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-        open={open}
-        onClose={handleSnackClose}
-      >
-        <Alert
-          severity="success"
-          variant="filled"
-          onClose={handleSnackClose}
-        >
-          <Typography variant="h4">
-            Fantasy movie submitted!
-          </Typography>
+      <Snackbar open={open} autoHideDuration={4000} onClose={handleSnackClose}>
+        <Alert severity="success" onClose={handleSnackClose}>
+          <Typography variant="h6">Fantasy movie submitted!</Typography>
         </Alert>
       </Snackbar>
+
       <form style={styles.form} onSubmit={handleSubmit(onSubmit)} noValidate>
-        <Controller
-          name="title"
-          control={control}
-          rules={{ required: "Title is required" }}
-          defaultValue=""
-          render={({ field: { onChange, value } }) => (
-            <TextField
-              sx={{ width: "40ch" }}
-              variant="outlined"
-              margin="normal"
-              required
-              onChange={onChange}
-              value={value}
-              id="title"
-              label="Movie title"
-              autoFocus
-            />
+        <Controller name="title" control={control} rules={{ required: "Title is required" }}
+          render={({ field }) => (
+            <TextField {...field} label="Movie Title" variant="outlined" fullWidth margin="normal" error={!!errors.title} helperText={errors.title?.message} />
           )}
         />
-        {errors.title && (
-          <Typography variant="h6" component="p" style={{ color: 'red' }}>
-            {typeof errors.title.message === 'string' ? errors.title.message : ''}
-          </Typography>
-        )}
-        <Controller
-          name="overview"
-          control={control}
-          rules={{
-            required: "Overview cannot be empty.",
-            minLength: { value: 10, message: "Overview is too short" },
-          }}
-          defaultValue=""
-          render={({ field: { onChange, value } }) => (
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              value={value}
-              onChange={onChange}
-              label="Overview text"
-              id="overview"
-              multiline
-              minRows={10}
-            />
+        <Controller name="overview" control={control} rules={{ required: "Overview is required", minLength: { value: 10, message: "Minimum 10 characters" } }}
+          render={({ field }) => (
+            <TextField {...field} label="Overview" variant="outlined" fullWidth margin="normal" multiline rows={6} error={!!errors.overview} helperText={errors.overview?.message} />
           )}
         />
-        {errors.overview && (
-          <Typography variant="h6" component="p" style={{ color: 'red' }}>
-            {typeof errors.overview.message === 'string' ? errors.overview.message : ''}
-          </Typography>
-        )}
-        <div>
-          <Controller
-            control={control}
-            name="genres"
-            render={({ field }) => (
-              <TextField
-                id="select-genre"
-                select
-                variant="outlined"
-                label="Genre Select"
-                value={genreBoxName(selectedGenres)}
-                onChange={e => setId(parseInt(e.target.value))}
-                helperText="Select one or more genres"
-              >
-                {genres.map((option) => (
-                  <MenuItem key={option.id} value={option.id} >
-                    {option.name}
-                  </MenuItem>
-                ))}
-              </TextField>
-            )}
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            sx={styles.genre}
-            onClick={() => addToSelectedGenres(id)}>
-            Add genre
-          </Button>
-          {selectedGenres.map(genre => (
-            <Fab onClick={() => (
-              setSelectedGenres(
-                selectedGenres.filter(g =>
-                  g.id !== genre.id)
-              )
-            )}
-              color="secondary"
-              variant="extended"
-              sx={styles.fab}
-              key={genre.id}
-            >
-              <RemoveCircleIcon />
-              {genre.name}
-            </Fab>
-          ))}
-        </div>
-        <Controller
-          name="release_date"
-          control={control}
-          rules={{ required: "Date is required." }}
-          defaultValue=""
-          render={({ field: { onChange, value } }) => (
-            <TextField
-              sx={{ width: "40ch" }}
-              variant="outlined"
-              margin="normal"
-              inputProps={{ pattern: "([0-9]{4})/([0-9]{2})/([0-9]{2})" }}
-              required
-              onChange={onChange}
-              value={value}
-              id="date"
-              label="Release Date (YYYY-MM-DD)"
-              autoFocus
-            />
+        <Controller name="release_date" control={control} rules={{ required: "Release date is required" }}
+          render={({ field }) => (
+            <TextField {...field} label="Release Date (YYYY-MM-DD)" variant="outlined" fullWidth margin="normal" error={!!errors.release_date} helperText={errors.release_date?.message} />
           )}
         />
-        {errors.release_date && (
-          <Typography variant="h6" component="p" style={{ color: 'red' }}>
-            {typeof errors.release_date.message === 'string' ? errors.release_date.message : ''}
-          </Typography>
-        )}
-        <div>
-          <div>
-            <Controller
-              control={control}
-              name="actors"
-              render={({ field }) => (
-                <TextField
-                  id="select-actor"
-                  select
-                  variant="outlined"
-                  label="Select Cast Members"
-                  value={genreBoxName(selectedGenres)}
-                  onChange={(e) => setActor(e.target.value as unknown as Actor)}
-                  helperText="Select one or more cast members from favourite actors"
-                >
-                  {actorContext && actorContext.favouritesWithNames.map((option) => (
-                    <MenuItem key={option.id} value={option} >
-                      {option.name}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              )}
-            />
-            <Button
-              variant="contained"
-              color="primary"
-              sx={styles.genre}
-              onClick={() => addToSelectedActors(actor as Actor)}>
-              Add actor
-            </Button>
-            {selectedActors.map(actor => (
-              <Fab onClick={() => (
-                setSelectedActors(
-                  selectedActors.filter(g =>
-                    g !== actor)
-                )
-              )}
-                color="secondary"
-                variant="extended"
-                sx={styles.fab}
-                key={actor.id}
-              >
-                <RemoveCircleIcon />
-                {actor.name}
-              </Fab>
-            ))}
-          </div>
-          <Controller
-            name="company"
-            control={control}
-            rules={{ required: "Production company is required" }}
-            defaultValue=""
-            render={({ field: { onChange, value } }) => (
-              <TextField
-                sx={{ width: "40ch" }}
-                variant="outlined"
-                margin="normal"
-                required
-                onChange={onChange}
-                value={value}
-                id="company"
-                label="Production Company"
-              />
-            )}
-          />
-          {errors.company && (
-            <Typography variant="h6" component="p" style={{ color: 'red' }}>
-              {typeof errors.company.message === 'string' ? errors.company.message : ''}
-            </Typography>
+        <Controller name="company" control={control} rules={{ required: "Production company is required" }}
+          render={({ field }) => (
+            <TextField {...field} label="Production Company" variant="outlined" fullWidth margin="normal" error={!!errors.company} helperText={errors.company?.message} />
           )}
-        </div>
-        <div >
-          <Box sx={styles.imageBox}>
-            <Button
-              variant="contained"
-              color="primary"
-              sx={styles.imageButton}
-              onClick={() => imageSelect.click()}>
-              Add image
-            </Button>
-            <Typography sx={styles.imageText}>
-              {imageName}
-            </Typography>
-          </Box>
-        </div>
+        />
+
         <Box>
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            sx={styles.submit}
-          >
-            Submit
+          <TextField select label="Select Genre" value="" onChange={(e) => {
+         const selectedGenreId = Number(e.target.value);
+         const genre = genres.find((g: Genre) => Number(g.id) === selectedGenreId);     
+            if (genre && !selectedGenres.some(g => g.id === genre.id)) {
+              const updatedGenres = [...selectedGenres, genre];
+              setSelectedGenres(updatedGenres);
+              setValue("genres", updatedGenres);
+            }
+          }} fullWidth margin="normal">
+            {genres.map((genre: Genre) => (
+              <MenuItem key={genre.id} value={genre.id}>
+                {genre.name}
+              </MenuItem>
+            ))}
+          </TextField>
+
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', mt: 1 }}>
+            {selectedGenres.map((genre) => (
+              <Chip
+                key={genre.id}
+                label={genre.name}
+                onDelete={() => {
+                  const updatedGenres = selectedGenres.filter(g => g.id !== genre.id);
+                  setSelectedGenres(updatedGenres);
+                  setValue("genres", updatedGenres);
+                }}
+                color="secondary"
+                sx={{ m: 0.5 }}
+              />
+            ))}
+          </Box>
+        </Box>
+
+        <Typography variant="h6" mt={3}>Add Actors</Typography>
+        <TextField
+          label="Search for People"
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          value={actorSearchQuery}
+          onChange={(e) => setActorSearchQuery(e.target.value)}
+          onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); refetchActors(); }}}
+        />
+        <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
+          {actorData?.results.map((person: PersonResult) => (
+            <Button
+              key={person.id}
+              variant="outlined"
+              size="small"
+              onClick={() => {
+                if (!selectedActors.some(a => a.id === person.id)) {
+                  const updated = [...selectedActors, { id: person.id, name: person.name }];
+                  setSelectedActors(updated);
+                  setValue("actors", updated);
+                }
+              }}
+              sx={{ m: 0.5 }}
+            >
+              {person.name}
+            </Button>
+          ))}
+        </Box>
+
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', mt: 1 }}>
+          {selectedActors.map((actor) => (
+            <Chip
+              key={actor.id}
+              label={actor.name}
+              onDelete={() => {
+                const updated = selectedActors.filter(a => a.id !== actor.id);
+                setSelectedActors(updated);
+                setValue("actors", updated);
+              }}
+              color="primary"
+              deleteIcon={<CancelIcon />}
+              sx={{ m: 0.5 }}
+            />
+          ))}
+        </Box>
+
+        <Typography variant="h6" mt={3}>Add Director</Typography>
+        <TextField
+          label="Search for People"
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          value={directorSearchQuery}
+          onChange={(e) => setDirectorSearchQuery(e.target.value)}
+          onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); refetchDirectors(); }}}
+        />
+        <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
+          {directorData?.results.map((person: PersonResult) => (
+            <Button
+              key={person.id}
+              variant="outlined"
+              size="small"
+              onClick={() => {
+                if (!selectedDirectors.some(d => d.id === person.id)) {
+                  const updated = [...selectedDirectors, { id: person.id, name: person.name }];
+                  setSelectedDirectors(updated);
+                  setValue("directors", updated);
+                }
+              }}
+              sx={{ m: 0.5 }}
+            >
+              {person.name}
+            </Button>
+          ))}
+        </Box>
+
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', mt: 1 }}>
+          {selectedDirectors.map((director) => (
+            <Chip
+              key={director.id}
+              label={director.name}
+              onDelete={() => {
+                const updated = selectedDirectors.filter(d => d.id !== director.id);
+                setSelectedDirectors(updated);
+                setValue("directors", updated);
+              }}
+              color="primary"
+              deleteIcon={<CancelIcon />}
+              sx={{ m: 0.5 }}
+            />
+          ))}
+        </Box>
+
+        <Box mt={3}>
+          <input
+            type="file"
+            accept="image/*"
+            ref={actorImageInputRef}
+            style={{ display: "none" }}
+            onChange={handleImageSelect}
+          />
+          <Button variant="contained" color="primary" onClick={() => actorImageInputRef.current?.click()}>
+            Upload Poster
           </Button>
-          <Button
-            type="reset"
-            variant="contained"
-            color="secondary"
-            sx={styles.submit}
-            onClick={() => {
-              reset({});
-            }}
-          >
-            Reset
-          </Button>
+          <Typography mt={1}>{imageName}</Typography>
+        </Box>
+
+        <Box mt={4} display="flex" gap={2}>
+          <Button type="submit" variant="contained" color="primary">Submit</Button>
+          <Button type="reset" variant="outlined" color="secondary" onClick={() => reset()}>Reset</Button>
         </Box>
       </form>
     </Box>

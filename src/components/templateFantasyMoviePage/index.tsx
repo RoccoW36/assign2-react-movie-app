@@ -1,31 +1,38 @@
 import FantasyMovieHeader from "../fantasyMovieHeader";
 import Grid from "@mui/material/Grid";
-import { useNavigate } from "react-router-dom";
+import Box from "@mui/material/Box";
+import { FantasyMovie } from "../../types/interfaces"; 
 
+interface TemplateFantasyMoviePageProps {
+  movie?: FantasyMovie | null;
+  children: React.ReactNode;
+}
 
-const TemplateMoviePage = ({ movie, children }) => {
-  const navigate = useNavigate();
-
+const TemplateFantasyMoviePage: React.FC<TemplateFantasyMoviePageProps> = ({ movie, children }) => {
   return (
     <>
-      <FantasyMovieHeader movie={movie} />
+      <FantasyMovieHeader movie={movie ?? { title: "New Fantasy Movie" }} /> 
 
-      <Grid container sx={{ padding: "15px" }}>
-        <Grid item xs={1}>
-          <div sx={{
-            display: "flex",
-            flexWrap: "wrap",
-            justifyContent: "space-around",
-          }}>
-          </div>
-        </Grid>
-
-        <Grid item xs={10}>
-          {children}
+      <Grid container justifyContent="center" sx={{ padding: "16px" }}>
+        <Grid item xs={12} md={8}>
+          <Box
+            sx={{
+              padding: 3,
+              backgroundColor: "#ffffff",
+              borderRadius: 2,
+              boxShadow: 2,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              marginTop: 2,
+            }}
+          >
+            {children}
+          </Box>
         </Grid>
       </Grid>
     </>
   );
 };
 
-export default TemplateMoviePage;
+export default TemplateFantasyMoviePage;

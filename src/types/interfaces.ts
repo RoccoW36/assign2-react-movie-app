@@ -4,7 +4,6 @@ export interface BaseMovieProps {
   homepage?: string;
   id: number;
   imdb_id: string;
-  production_country: string;
   overview: string;
   release_date: string;
   vote_average: number;
@@ -16,6 +15,7 @@ export interface BaseMovieProps {
   vote_count: number;
   favourite?: boolean;
   genre_ids?: number[];
+  production_country: string;
 }
 
 export interface BaseMovieListProps {
@@ -238,4 +238,39 @@ export interface ConfirmSignupDetails {
 export interface SigninDetails {
   username: string;
   password: string;
+}
+
+
+export interface FantasyMovie extends BaseMovieProps {
+  actors: Actor[];
+  directors: Actor[];
+  genres: Genre[];
+  productionCountries?: production_country[];
+}
+
+
+
+export interface FormValues {
+  id: number;
+  title: string;
+  overview: string;
+  release_date: string;
+  genres: Genre[];
+  actors: Actor[];
+  directors: Actor[];
+  image: string | null;
+  company: string;
+  productionCountries: production_country[];
+}
+
+
+export interface PersonResult {
+  id: number;
+  name: string;
+}
+
+export interface FantasyMovieContextType {
+  fantasy: FantasyMovie[];
+  addToFantasy: (movie: FantasyMovie) => void;
+  removeFromFantasy: (id: number) => void;
 }

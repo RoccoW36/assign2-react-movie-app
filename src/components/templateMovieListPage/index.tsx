@@ -31,6 +31,7 @@ const MovieListPageTemplate: React.FC<MovieListPageTemplateExtendedProps> = ({
   handlePageChange,
   totalPages,
 }) => {
+  
   return (
     <Grid container direction="column" sx={styles.root} spacing={2}>
       <Grid item>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
-import { searchMovies, searchActors, searchTVShows } from "../api/tmdb-api";
+import { searchMovies, searchPeople, searchTVShows } from "../api/tmdb-api";
 import {
   Grid,
   Card,
@@ -44,7 +44,7 @@ const SearchPage: React.FC = () => {
       if (type === "movie") {
         data = await searchMovies(query);
       } else if (type === "actor") {
-        data = await searchActors(query);
+        data = await searchPeople(query);
       } else if (type === "tv") {
         data = await searchTVShows(query);
       }

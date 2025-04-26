@@ -3,7 +3,7 @@ import FantasyMovieForm from "../components/fantasyMovieCreateForm";
 
 const AddFantasyMoviePage: React.FC = () => {
   return (
-    <PageTemplate movie={null}>
+    <PageTemplate movie={{ title: "New Fantasy Movie" }}>
       <FantasyMovieForm />
     </PageTemplate>
   );

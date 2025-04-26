@@ -11,8 +11,8 @@ import PlaylistPlayIcon from "@mui/icons-material/PlaylistPlay";
 import CalendarIcon from "@mui/icons-material/CalendarTodayTwoTone";
 import StarRateIcon from "@mui/icons-material/StarRate";
 import Grid from "@mui/material/Grid";
-import img from '../../images/film-poster-placeholder.png';
-import { BaseMovieProps } from "../../types/interfaces"; 
+import img from '../../images/fantasyMovieCard.png';
+import { FantasyMovie } from "../../types/interfaces"; 
 import { Link } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
 import { MoviesContext } from "../../contexts/moviesContext";
@@ -20,7 +20,6 @@ import { MoviesContext } from "../../contexts/moviesContext";
 const styles = {
   card: { maxWidth: 345 },
   media: { height: 500 },
-
   avatarFav: {
     backgroundColor: "rgb(255, 0, 0)",
   },
@@ -29,12 +28,12 @@ const styles = {
   },
 };
 
-interface MovieCardProps  {
-  movie: BaseMovieProps;
-  action: (m: BaseMovieProps) => React.ReactNode;
+interface FantasyMovieCardProps {
+  movie: FantasyMovie;
+  action?: (m: FantasyMovie) => React.ReactNode;
 }
 
-const MovieCard: React.FC<MovieCardProps> = ({ movie, action }) => {
+const FantasyMovieCard: React.FC<FantasyMovieCardProps> = ({ movie, action = () => <></> }) => {
   const { favourites, mustWatch } = useContext(MoviesContext);
 
   const isFavourite = favourites.includes(movie.id);
@@ -56,18 +55,14 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, action }) => {
         }
         title={
           <Typography variant="h5" component="p">
-            {movie.title}{" "}
+            {movie.title}
           </Typography>
         }
       />
 
       <CardMedia
         sx={styles.media}
-        image={
-          movie.poster_path
-            ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}`
-            : img
-        }
+        image={movie.poster_path ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}` : img}
       />
       <CardContent>
         <Grid container>
@@ -80,14 +75,14 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, action }) => {
           <Grid item xs={6}>
             <Typography variant="h6" component="p">
               <StarRateIcon fontSize="small" />
-              {"  "} {movie.vote_average}{" "}
+              {"  "} {movie.vote_average}
             </Typography>
           </Grid>
         </Grid>
       </CardContent>
       <CardActions disableSpacing>
-        {action(movie)}
-        <Link to={`/movies/${movie.id}`}>
+        {action && typeof action === "function" ? action(movie) : <></>} 
+        <Link to={`/movies/fantasy/${movie.id}`}>
           <Button variant="outlined" size="medium" color="primary">
             More Info ...
           </Button>
@@ -97,4 +92,4 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, action }) => {
   );
 };
 
-export default MovieCard;
+export default FantasyMovieCard;

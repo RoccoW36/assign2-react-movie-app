@@ -1,68 +1,109 @@
-import { useState } from "react";
-import Header from "../headerMovieList";
-import FilterCard from "../filterFantasyMoviesCard";
+import React, { useState } from "react";
+import FantasyMovieHeader from "../fantasyMovieHeader";
+import MovieFilterUI from "../movieFilterUI";
 import FantasyMovieList from "../fantasyMovieList";
 import Grid from "@mui/material/Grid";
-import AddIcon from '@mui/icons-material/Add';
 import Fab from "@mui/material/Fab";
+import AddIcon from "@mui/icons-material/Add";
 import { Link } from "react-router-dom";
+import { FantasyMovie } from "../../types/interfaces";
 
 const styles = {
-  root: { 
-    backgroundColor: "#1E1E1E",
-  }
+  root: {
+    backgroundColor: "#f5f5f5",
+    minHeight: "100vh",
+    padding: "20px",
+  },
+  floatingButton: {
+    position: "fixed",
+    bottom: "2rem",
+    right: "2rem",
+    zIndex: 1050,
+    boxShadow: "0px 6px 12px rgba(0, 0, 0, 0.3)",
+    transition: "all 0.3s ease-in-out",
+    "&:hover": {
+      transform: "scale(1.1)",
+      boxShadow: "0px 8px 16px rgba(0, 0, 0, 0.4)",
+    },
+    "@media (max-width: 768px)": {
+      bottom: "1rem",
+    },
+    "@media (max-width: 480px)": {
+      bottom: "0.8rem",
+      right: "0.8rem",
+    },
+  },
 };
 
-function FantasyMovieListPageTemplate({ movies, title }) {
+export interface FantasyMovieListPageTemplateProps {
+  movies: FantasyMovie[];
+  title: string;
+  action?: (m: FantasyMovie) => React.ReactNode;
+}
+
+
+const TemplateFantasyMovieListPage: React.FC<FantasyMovieListPageTemplateProps> = ({ movies }) => {
   const [nameFilter, setNameFilter] = useState("");
   const [genreFilter, setGenreFilter] = useState("0");
-  const genreId = Number(genreFilter);
+  const [ratingFilter, setRatingFilter] = useState("");
+  const [productionCountryFilter, setProductionCountryFilter] = useState("");
+  const [sortOption, setSortOption] = useState("");
 
-  const displayedMovies = movies
-    .filter((m) => {
-      return m.title.toLowerCase().search(nameFilter.toLowerCase()) !== -1;
-    })
-    .filter((m) => {
-      return genreId > 0 ? m.genres.filter(e => e.id === genreId).length > 0 : true; 
-    });
-
-  const handleChange = (type, value) => {
-    if (type === "name") setNameFilter(value);
-    else setGenreFilter(value);
+  const handleFilterChange = (name: string, value: string) => {
+    switch (name) {
+      case "title":
+        setNameFilter(value);
+        break;
+      case "genre":
+        setGenreFilter(value);
+        break;
+      case "rating":
+        setRatingFilter(value);
+        break;
+      case "production country":
+        setProductionCountryFilter(value);
+        break;
+      case "sortOption":
+        setSortOption(value);
+        break;
+    }
   };
 
-  return (
-    <Grid container sx={styles.root}>
-      <Grid item xs={12}>
-        <Header title={title} />
-      </Grid>
-      <Grid item container spacing={5}>
-        <Grid key="find" item xs={12} sm={6} md={4} lg={3} xl={2}>
-          <FilterCard
-            onUserInput={handleChange}
-            titleFilter={nameFilter}
-            genreFilter={genreFilter}
-          />
-        </Grid>
-        <FantasyMovieList movies={displayedMovies}></FantasyMovieList>
+  // Ensure genreFilter is converted correctly before filtering
+  const genreId = isNaN(Number(genreFilter)) ? 0 : parseInt(genreFilter, 10);
+  const displayedMovies = movies
+    .filter((m) => m.title.toLowerCase().includes(nameFilter.toLowerCase()))
+    .filter((m) => genreId > 0 ? m.genres?.some((e) => Number(e.id) === genreId) : true);
 
+  return (
+    <>
+      {/* Page Header */}
+      <FantasyMovieHeader />
+
+      {/* Filtering UI */}
+      <MovieFilterUI
+        onFilterValuesChange={handleFilterChange}
+        titleFilter={nameFilter}
+        genreFilter={genreFilter}
+        ratingFilter={ratingFilter}
+        productionCountryFilter={productionCountryFilter}
+        sortOption={sortOption}
+      />
+
+      <Grid container spacing={5} sx={styles.root}>
+        <Grid item xs={12}>
+          <FantasyMovieList movies={displayedMovies} />
+        </Grid>
       </Grid>
-      <Link to={`/movies/fantasy/new`}>
-        <Fab
-          color="secondary"
-          variant="extended"
-          sx={{
-            position: 'fixed',
-            bottom: '1em',
-            right: '1em'
-          }}
-        >
-          <AddIcon />
+
+      <Link to="/movies/fantasy/new" style={{ textDecoration: "none" }}>
+        <Fab color="secondary" variant="extended" sx={styles.floatingButton}>
+          <AddIcon sx={{ mr: 1 }} />
           New Fantasy Movie
         </Fab>
       </Link>
-    </Grid>
-
+    </>
   );
-}
-export default FantasyMovieListPageTemplate;
+};
+
+export default TemplateFantasyMovieListPage;
