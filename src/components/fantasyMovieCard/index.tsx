@@ -5,7 +5,6 @@ import {
   Typography, Grid, IconButton, Button, Chip, Box
 } from "@mui/material";
 import CalendarIcon from "@mui/icons-material/CalendarTodayTwoTone";
-import StarRateIcon from "@mui/icons-material/StarRate";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 import { FantasyMoviesContext } from "../../contexts/fantasyMoviesContext";
@@ -15,10 +14,12 @@ import { FantasyMovie } from "../../types/interfaces";
 const styles = {
   card: {
     maxWidth: 345,
-    transition: "transform 0.3s",
+    transition: "transform 0.3s ease-in-out",
     "&:hover": {
-      transform: "scale(1.03)",
+      transform: "scale(1.05)",
     },
+    borderRadius: "12px",
+    boxShadow: "0px 6px 12px rgba(0, 0, 0, 0.2)",
   },
   media: {
     height: 500,
@@ -32,6 +33,11 @@ const styles = {
     gap: 0.5,
     justifyContent: "center",
     mt: 1,
+    maxWidth: "90%",
+  },
+  moreInfoButton: {
+    borderRadius: "8px",
+    fontWeight: "bold",
   }
 };
 
@@ -67,7 +73,6 @@ const FantasyMovieCard: React.FC<FantasyMovieCardProps> = ({ movie }) => {
         alt={movie.title}
       />
       
-      {/* GENRES SECTION */}
       <Box sx={styles.chipContainer}>
         {movie.genres?.slice(0, 2).map((g, idx) =>
           typeof g === "object" && g.name ? (
@@ -78,14 +83,9 @@ const FantasyMovieCard: React.FC<FantasyMovieCardProps> = ({ movie }) => {
 
       <CardContent>
         <Grid container>
-          <Grid item xs={6}>
+          <Grid item xs={12}>
             <Typography variant="subtitle2" component="p">
               <CalendarIcon fontSize="small" /> {movie.release_date}
-            </Typography>
-          </Grid>
-          <Grid item xs={6}>
-            <Typography variant="subtitle2" component="p">
-              <StarRateIcon fontSize="small" /> {movie.vote_average}
             </Typography>
           </Grid>
         </Grid>
@@ -93,7 +93,7 @@ const FantasyMovieCard: React.FC<FantasyMovieCardProps> = ({ movie }) => {
 
       <CardActions disableSpacing>
         <Link to={`/movies/fantasy/${movie.id}`} style={{ textDecoration: 'none' }}>
-          <Button variant="outlined" size="medium" color="primary">
+          <Button variant="outlined" size="medium" color="primary" sx={styles.moreInfoButton}>
             More Info
           </Button>
         </Link>
