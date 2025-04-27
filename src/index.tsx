@@ -32,7 +32,7 @@ import FantasyMoviesPage from "./pages/fantasyMoviesPage";
 import { FantasyMoviesContextProvider } from "./contexts/fantasyMoviesContext";
 import AddFantasyMoviePage from "./pages/addFantasyMoviePage";
 import FantasyMovieDetailsPage from "./pages/fantasyMovieDetailsPage";
-import UsersContextProvider from "./contexts/usersContext";
+import AuthContextProvider from "./contexts/authContext";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -52,7 +52,7 @@ const App = () => {
           <ActorsContextProvider>
             <TVShowsContextProvider>
             <FantasyMoviesContextProvider>
-            <UsersContextProvider>
+            <AuthContextProvider>
               <Routes>
 
                 <Route path="/" element={<HomePage />} />
@@ -95,7 +95,7 @@ const App = () => {
                 <Route path="*" element={<Navigate to="/" />} />
 
               </Routes>
-              </UsersContextProvider>
+              </AuthContextProvider>
               </FantasyMoviesContextProvider>
             </TVShowsContextProvider>
           </ActorsContextProvider>

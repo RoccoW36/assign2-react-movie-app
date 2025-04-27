@@ -23,7 +23,7 @@ const productionCountryFiltering = {
   name: "production country",
   value: "",
   condition: (movie: BaseMovieProps, value: string) =>
-    value ? movie.production_country === value : true,
+    value ? movie.production_country.some(country => country.name === value) : true,
 };
 const sortOptionFiltering = {
   name: "sortOption",

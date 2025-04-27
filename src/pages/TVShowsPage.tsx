@@ -34,7 +34,8 @@ const productionCountryFiltering = {
   name: "production country",
   value: "",
   condition: (tvShow: BaseTVShowProps, value: string) =>
-    value ? tvShow.production_country.includes(value) : true,
+    value ? tvShow.production_country.some(country => country.name === value) : true,
+
 };
 
 const sortOptionFiltering = {

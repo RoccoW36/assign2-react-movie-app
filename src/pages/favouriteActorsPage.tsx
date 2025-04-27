@@ -67,12 +67,7 @@ const FavouriteActorsPage: React.FC = () => {
     );
   };
 
-  if (displayedActors.length === 0) {
-    return <h1>No favourite actors match your filter</h1>;
-  }
-
   const onBack = () => {};
-
   const onForward = () => {};
 
   return (

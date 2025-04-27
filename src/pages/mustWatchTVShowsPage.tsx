@@ -14,7 +14,8 @@ const genreFiltering = { name: "genre", value: "0", condition: favouritesGenreFi
 const ratingFiltering = { name: "rating", value: "", condition: (tvShow: BaseTVShowProps, value: string) =>
   value ? tvShow.vote_average >= Number(value) : true };
 const productionCountryFiltering = { name: "production country", value: "", condition: (tvShow: BaseTVShowProps, value: string) =>
-  value ? tvShow.production_country.includes(value) : true };
+  value ? tvShow.production_country.some(country => country.name === value) : true,
+};
 
 const MustWatchTVShowsPage: React.FC = () => {
   const { mustWatch: tvShowIds } = useContext(TVShowsContext);

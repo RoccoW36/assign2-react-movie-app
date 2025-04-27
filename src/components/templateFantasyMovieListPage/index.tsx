@@ -69,7 +69,6 @@ const TemplateFantasyMovieListPage: React.FC<FantasyMovieListPageTemplateProps> 
     }
   };
 
-  // Ensure genreFilter is converted correctly before filtering
   const genreId = isNaN(Number(genreFilter)) ? 0 : parseInt(genreFilter, 10);
   const displayedMovies = movies
     .filter((m) => m.title.toLowerCase().includes(nameFilter.toLowerCase()))
@@ -77,10 +76,8 @@ const TemplateFantasyMovieListPage: React.FC<FantasyMovieListPageTemplateProps> 
 
   return (
     <>
-      {/* Page Header */}
       <FantasyMovieHeader />
 
-      {/* Filtering UI */}
       <MovieFilterUI
         onFilterValuesChange={handleFilterChange}
         titleFilter={nameFilter}

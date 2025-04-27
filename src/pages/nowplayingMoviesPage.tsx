@@ -16,7 +16,8 @@ const genreFiltering = { name: "genre", value: "0", condition: genreFilter };
 const ratingFiltering = { name: "rating", value: "", condition: (movie: BaseMovieProps, value: string) =>
   value ? movie.vote_average >= Number(value) : true };
 const productionCountryFiltering = { name: "production country", value: "", condition: (movie: BaseMovieProps, value: string) =>
-  value ? movie.production_country === value : true };
+  value ? movie.production_country.some(country => country.name === value) : true,
+};
 const sortOptionFiltering = {
   name: "sortOption",
   value: "",

@@ -43,9 +43,10 @@ const styles = {
 
 interface FantasyMovieCardProps {
   movie: FantasyMovie;
+  action?: (m: FantasyMovie) => React.ReactNode;
 }
 
-const FantasyMovieCard: React.FC<FantasyMovieCardProps> = ({ movie }) => {
+const FantasyMovieCard: React.FC<FantasyMovieCardProps> = ({ movie, action }) => {
   const { removeFromFantasy } = useContext(FantasyMoviesContext);
 
   const handleRemove = () => {
@@ -59,11 +60,6 @@ const FantasyMovieCard: React.FC<FantasyMovieCardProps> = ({ movie }) => {
           <Typography variant="h6" component="p" noWrap>
             {movie.title}
           </Typography>
-        }
-        action={
-          <IconButton aria-label="remove" onClick={handleRemove}>
-            <DeleteIcon color="error" />
-          </IconButton>
         }
       />
       <CardMedia
@@ -91,12 +87,17 @@ const FantasyMovieCard: React.FC<FantasyMovieCardProps> = ({ movie }) => {
         </Grid>
       </CardContent>
 
-      <CardActions disableSpacing>
+      <CardActions disableSpacing sx={{ display: "flex", justifyContent: "space-between" }}>
         <Link to={`/movies/fantasy/${movie.id}`} style={{ textDecoration: 'none' }}>
           <Button variant="outlined" size="medium" color="primary" sx={styles.moreInfoButton}>
             More Info
           </Button>
         </Link>
+        {action ? action(movie) : (
+          <IconButton aria-label="remove" onClick={handleRemove}>
+            <DeleteIcon color="error" />
+          </IconButton>
+        )}
       </CardActions>
     </Card>
   );

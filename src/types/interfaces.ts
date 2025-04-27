@@ -15,7 +15,7 @@ export interface BaseMovieProps {
   vote_count: number;
   favourite?: boolean;
   genre_ids?: number[];
-  production_country: string;
+  production_country: production_country[];
   image?: string; 
 }
 
@@ -39,7 +39,7 @@ export interface GenreData {
 }
 
 export interface production_country {
-  iso_639_1: string;
+  iso_3166_1: string;
   name: string; 
 }
 
@@ -174,7 +174,7 @@ export interface BaseTVShowProps {
   favourite?: boolean;
   genre_ids?: number[];
   isFavourite?: boolean;
-  production_country: string;
+  production_country: production_country[];
 }
 
 export interface BaseTVShowListProps {
@@ -247,8 +247,6 @@ export interface FantasyMovie extends BaseMovieProps {
   directors: Actor[];
   genres: Genre[];
   company: string;
-  productionCountries?: production_country[];
-  
 }
 
 

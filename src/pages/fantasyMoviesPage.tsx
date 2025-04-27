@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { FantasyMoviesContext } from "../contexts/fantasyMoviesContext";
 import FantasyMovieListPageTemplate from "../components/templateFantasyMovieListPage";
-import AddToFavouritesIcon from "../components/cardIcons/addToFavourites";
+import RemoveFromFantasyMoviesIcon from "../components/cardIcons/RemoveFromFantasyMovies";
 
 const FantasyMoviesPage: React.FC = () => {
   const { fantasy } = useContext(FantasyMoviesContext);
@@ -10,7 +10,7 @@ const FantasyMoviesPage: React.FC = () => {
     <FantasyMovieListPageTemplate
       title="Fantasy Movies"
       movies={fantasy}
-      action={(movie) => <AddToFavouritesIcon {...movie} />}
+      action={(movie) => <RemoveFromFantasyMoviesIcon {...movie} />}
     />
   );
 };
