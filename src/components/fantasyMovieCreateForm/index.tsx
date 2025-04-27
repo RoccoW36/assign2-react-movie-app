@@ -131,7 +131,7 @@ const FantasyMovieForm: React.FC = () => {
         />
 
         <Box>
-          <TextField select label="Select Genre" value="" onChange={(e) => {
+          <TextField select label="Select Genre(s)" value="" onChange={(e) => {
          const selectedGenreId = Number(e.target.value);
          const genre = genres.find((g: Genre) => Number(g.id) === selectedGenreId);     
             if (genre && !selectedGenres.some(g => g.id === genre.id)) {
@@ -211,7 +211,7 @@ const FantasyMovieForm: React.FC = () => {
           ))}
         </Box>
 
-        <Typography variant="h6" mt={3}>Add Director</Typography>
+        <Typography variant="h6" mt={3}>Add Director(s)</Typography>
         <TextField
           label="Search for People"
           variant="outlined"

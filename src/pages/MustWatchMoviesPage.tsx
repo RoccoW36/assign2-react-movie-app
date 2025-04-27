@@ -8,7 +8,7 @@ import useFiltering from "../hooks/useFiltering";
 import MovieFilterUI, { titleFilter, favouritesgenreFilter } from "../components/movieFilterUI";
 import RemoveFromMustWatchIcon from "../components/cardIcons/removeFromMustWatch";
 import { BaseMovieProps } from "../types/interfaces";
-import { applySort } from "../util"; // Import the sorting function
+import { applySort } from "../util";
 
 const titleFiltering = { name: "title", value: "", condition: titleFilter };
 const genreFiltering = { name: "genre", value: "0", condition: favouritesgenreFilter };
@@ -30,7 +30,7 @@ const MustWatchMoviesPage: React.FC = () => {
     genreFiltering,
     ratingFiltering,
     productionCountryFiltering,
-    sortOptionFiltering, // Add the sort option filter here
+    sortOptionFiltering,
   ]);
 
   const mustWatchMovieQueries = useQueries(
@@ -62,7 +62,6 @@ const MustWatchMoviesPage: React.FC = () => {
   const allMustWatchMovies = mustWatchMovieQueries.map((q) => q.data).filter(Boolean);
   const sortOption = filterValues.find((filter) => filter.name === "sortOption")?.value || "";
 
-  // Apply sorting based on the selected sort option
   const displayedMovies = applySort(processCollection(allMustWatchMovies), sortOption);
 
   const resetFilters = () => {
@@ -86,7 +85,7 @@ const MustWatchMoviesPage: React.FC = () => {
         genreFilter={filterValues.find((filter) => filter.name === "genre")?.value || "0"}
         ratingFilter={filterValues.find((filter) => filter.name === "rating")?.value || ""}
         productionCountryFilter={filterValues.find((filter) => filter.name === "production country")?.value || ""}
-        sortOption={sortOption} // Pass sortOption to the filter UI
+        sortOption={sortOption}
       />
       <button onClick={resetFilters} style={{ marginTop: "20px", padding: "10px 20px", cursor: "pointer" }}>
         Reset Filters
