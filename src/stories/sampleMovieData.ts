@@ -10,25 +10,12 @@ export default {
   budget: 200000000,
   genre_ids: [28, 12, 14, 878],
   genres: [
-    {
-      id: 14,
-      name: "Fantasy",
-    },
-    {
-      id: 12,
-      name: "Adventure",
-    },
-    {
-      id: 878,
-      name: "Science Fiction",
-    },
-    {
-      id: 28,
-      name: "Action",
-    },
+    { id: 14, name: "Fantasy" },
+    { id: 12, name: "Adventure" },
+    { id: 878, name: "Science Fiction" },
+    { id: 28, name: "Action" },
   ],
-  homepage:
-    "https://www.starwars.com/films/star-wars-episode-viii-the-last-jedi",
+  homepage: "https://www.starwars.com/films/star-wars-episode-viii-the-last-jedi",
   id: 181808,
   imdb_id: "tt2527336",
   original_language: "en",
@@ -67,10 +54,7 @@ export default {
   revenue: 1332459537,
   runtime: 152,
   spoken_languages: [
-    {
-      iso_639_1: "en",
-      name: "English",
-    },
+    { iso_639_1: "en", name: "English" },
   ],
   status: "Released",
   tagline: "Darkness rises... and light to meet it",
@@ -78,4 +62,8 @@ export default {
   video: false,
   vote_average: 7,
   vote_count: 9692,
+  
+  production_country: [
+    { iso_3166_1: "US", name: "United States of America" },
+  ],
 };

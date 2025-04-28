@@ -7,8 +7,18 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 
-const HeaderTVShowList: React.FC<{ title: string; subtitle?: string }> = ({ title, subtitle }) => {
+interface HeaderTVShowListProps {
+  title: string;
+  subtitle?: string;
+  onBack?: () => void;
+  onForward?: () => void;
+}
+
+const HeaderTVShowList: React.FC<HeaderTVShowListProps> = ({ title, subtitle, onBack, onForward }) => {
   const navigate = useNavigate();
+
+  const handleBack = onBack || (() => navigate(-1));
+  const handleForward = onForward || (() => navigate(1));
 
   return (
     <Paper
@@ -23,7 +33,7 @@ const HeaderTVShowList: React.FC<{ title: string; subtitle?: string }> = ({ titl
       elevation={3}
     >
       <Box sx={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
-        <IconButton aria-label="go back" size="large" onClick={() => navigate(-1)}>
+        <IconButton aria-label="go back" size="large" onClick={handleBack}>
           <ArrowBackIcon color="primary" fontSize="large" />
         </IconButton>
 
@@ -38,7 +48,7 @@ const HeaderTVShowList: React.FC<{ title: string; subtitle?: string }> = ({ titl
           )}
         </Box>
 
-        <IconButton aria-label="go forward" size="large" onClick={() => navigate(1)}>
+        <IconButton aria-label="go forward" size="large" onClick={handleForward}>
           <ArrowForwardIcon color="primary" fontSize="large" />
         </IconButton>
       </Box>

@@ -7,7 +7,14 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 
-const HeaderActorList: React.FC<{ title: string; subtitle?: string }> = ({ title, subtitle }) => {
+interface HeaderActorListProps {
+  title: string;
+  subtitle?: string;
+  onBack?: () => void;
+  onForward?: () => void;
+}
+
+const HeaderActorList: React.FC<HeaderActorListProps> = ({ title, subtitle, onBack, onForward }) => {
   const navigate = useNavigate();
 
   return (
@@ -23,9 +30,16 @@ const HeaderActorList: React.FC<{ title: string; subtitle?: string }> = ({ title
       elevation={3}
     >
       <Box sx={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
-        <IconButton aria-label="go back" size="large" onClick={() => navigate(-1)}>
-          <ArrowBackIcon color="primary" fontSize="large" />
-        </IconButton>
+        {onBack && (
+          <IconButton aria-label="go back" size="large" onClick={onBack}>
+            <ArrowBackIcon color="primary" fontSize="large" />
+          </IconButton>
+        )}
+        {onForward && (
+          <IconButton aria-label="go forward" size="large" onClick={onForward}>
+            <ArrowForwardIcon color="primary" fontSize="large" />
+          </IconButton>
+        )}
 
         <Box sx={{ flexGrow: 1, textAlign: "center" }}>
           <Typography variant="h5" component="h3" noWrap>
@@ -38,9 +52,17 @@ const HeaderActorList: React.FC<{ title: string; subtitle?: string }> = ({ title
           )}
         </Box>
 
-        <IconButton aria-label="go forward" size="large" onClick={() => navigate(1)}>
-          <ArrowForwardIcon color="primary" fontSize="large" />
-        </IconButton>
+        {!onBack && (
+          <IconButton aria-label="go back" size="large" onClick={() => navigate(-1)}>
+            <ArrowBackIcon color="primary" fontSize="large" />
+          </IconButton>
+        )}
+
+        {!onForward && (
+          <IconButton aria-label="go forward" size="large" onClick={() => navigate(1)}>
+            <ArrowForwardIcon color="primary" fontSize="large" />
+          </IconButton>
+        )}
       </Box>
     </Paper>
   );

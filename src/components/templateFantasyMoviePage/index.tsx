@@ -1,17 +1,18 @@
 import FantasyMovieHeader from "../fantasyMovieHeader";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import { FantasyMovie } from "../../types/interfaces"; 
+import { FantasyMovie } from "../../types/interfaces";
+import { ReactNode } from "react";
 
 interface TemplateFantasyMoviePageProps {
   movie?: FantasyMovie | null;
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 const TemplateFantasyMoviePage: React.FC<TemplateFantasyMoviePageProps> = ({ movie, children }) => {
   return (
     <>
-      <FantasyMovieHeader movie={movie ?? { title: "New Fantasy Movie" }} /> 
+      <FantasyMovieHeader movie={movie} />
 
       <Grid container justifyContent="center" sx={{ padding: "16px" }}>
         <Grid item xs={12} md={8}>

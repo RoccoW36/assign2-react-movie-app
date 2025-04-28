@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import PageTemplate from "../components/templateMovieListPage";
 import { MoviesContext } from "../contexts/moviesContext";
-import { useQueries } from "react-query";
+import { useQueries} from "react-query";
 import { getMovie } from "../api/tmdb-api";
 import Spinner from "../components/spinner";
 import useFiltering from "../hooks/useFiltering";
@@ -55,7 +55,7 @@ const FavouriteMoviesPage: React.FC = () => {
           },
         };
       })
-      .filter((query) => query !== null)
+      .filter((query) => query !== null) as { queryKey: (string | number)[]; queryFn: () => Promise<any> }[]
   );
 
   const isLoading = favouriteMovieQueries.some((q) => q.isLoading);

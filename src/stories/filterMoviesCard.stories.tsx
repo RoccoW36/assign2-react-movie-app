@@ -20,8 +20,9 @@ const meta = {
   component: FilterMoviesCard,
   decorators: [
     (Story: React.FC) => <MemoryRouter initialEntries={["/"]}><Story /></MemoryRouter>,
-    (Story: React.FC) => (<QueryClientProvider client={queryClient}><Story /></QueryClientProvider>
-    )
+    (Story: React.FC) => (
+      <QueryClientProvider client={queryClient}><Story /></QueryClientProvider>
+    ),
   ],
 } satisfies Meta<typeof FilterMoviesCard>;
 
@@ -34,6 +35,9 @@ export const Basic: Story = {
     onUserInput: action("filter input"),
     titleFilter: "",
     genreFilter: "All",
+    ratingFilter: "PG",
+    productionCountryFilter: "USA",
+    sortOption: "popularity",
   },
 };
 Basic.storyName = "Default";

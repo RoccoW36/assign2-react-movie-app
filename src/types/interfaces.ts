@@ -75,6 +75,7 @@ export interface MovieListPageTemplateProps extends BaseMovieListProps {
 
 export interface Review {
   movieId: number;
+  tvShowId: number;
   reviewId: number;
   reviewerId: string;
   reviewDate: string;

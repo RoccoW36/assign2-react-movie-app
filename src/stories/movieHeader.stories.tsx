@@ -2,7 +2,6 @@ import type { Meta, StoryObj } from '@storybook/react';
 import MovieHeader from "../components/headerMovie";
 import SampleMovie from "./sampleMovieData";
 import { MemoryRouter } from "react-router";
-
 import React from 'react';
 
 const meta = {
@@ -12,12 +11,14 @@ const meta = {
         (Story: React.FC) => <MemoryRouter initialEntries={["/"]}><Story /></MemoryRouter>,
     ],
 } satisfies Meta<typeof MovieHeader>;
+
 export default meta;
 
 type Story = StoryObj<typeof meta>;
+
 export const Basic: Story = {
     args: {
-        ...SampleMovie
+        movie: SampleMovie
     }
 };
 Basic.storyName = "Default";

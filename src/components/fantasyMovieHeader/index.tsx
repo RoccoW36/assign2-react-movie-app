@@ -5,6 +5,7 @@ import Paper from "@mui/material/Paper";
 import IconButton from "@mui/material/IconButton";
 import { useNavigate } from "react-router-dom";
 import Typography from "@mui/material/Typography";
+import { FantasyMovie } from "../../types/interfaces";
 
 const styles = {
   root: {
@@ -16,7 +17,11 @@ const styles = {
   },
 };
 
-const FantasyMovieHeader: React.FC = () => {
+interface FantasyMovieHeaderProps {
+  movie?: FantasyMovie | null;
+}
+
+const FantasyMovieHeader: React.FC<FantasyMovieHeaderProps> = ({ movie }) => {
   const navigate = useNavigate();
 
   return (
@@ -26,7 +31,7 @@ const FantasyMovieHeader: React.FC = () => {
       </IconButton>
 
       <Typography variant="h4" component="h3" align="center">
-        Fantasy Movies
+        {movie?.title || "Fantasy Movies"}
       </Typography>
 
       <IconButton aria-label="go forward" onClick={() => navigate(+1)}>

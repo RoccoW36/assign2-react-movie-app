@@ -1,11 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import MovieCard from "../components/movieCard";
-import SampleMovie from "./sampleMovieData";
+import SampleMovie from "./sampleMovieData"; 
 import { MemoryRouter } from "react-router";
 import MoviesContextProvider from "../contexts/moviesContext";
-import { action } from "@storybook/addon-actions";
 import AddToFavouritesIcon from "../components/cardIcons/addToFavourites";
-import React from 'react';
 
 const meta = {
   title: 'Home Page/MovieCard',
@@ -20,21 +18,25 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
+const sampleMovieWithProductionCountry = {
+  ...SampleMovie,
+  production_country: [SampleMovie.production_countries[0]],
+};
+
 export const Basic: Story = {
   args: {
-    action: (movie ) => <AddToFavouritesIcon {...movie} />,
-    movie: SampleMovie,
-
+    action: (movie) => <AddToFavouritesIcon {...movie} />,
+    movie: sampleMovieWithProductionCountry,
   }
-
 };
 Basic.storyName = "Default";
 
-const sampleNoPoster = { ...SampleMovie, poster_path: undefined };
+const sampleNoPoster = { ...sampleMovieWithProductionCountry, poster_path: undefined };
 export const Exceptional: Story = {
   args: {
     movie: sampleNoPoster,
-    action: (movie ) => <AddToFavouritesIcon {...movie} />,
+    action: (movie) => <AddToFavouritesIcon {...movie} />,
   }
 };
 Exceptional.storyName = "Exception";
+

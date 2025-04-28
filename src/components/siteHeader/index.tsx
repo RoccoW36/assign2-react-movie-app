@@ -89,9 +89,9 @@ const SiteHeader: React.FC = () => {
     { label: "Discover Movies", path: "/movies" },
     { label: "Upcoming Movies", path: "/movies/upcoming" },
     { label: "Now Playing", path: "/movies/nowplaying" },
-    { label: "Top Rated", path: "/movies/toprated" },
+    { label: "Top Rated Movies", path: "/movies/toprated" },
     { label: "Favourite Movies", path: "/movies/favourites" },
-    { label: "Must Watch", path: "/movies/mustwatch" },
+    { label: "Must Watch Movies", path: "/movies/mustwatch" },
     { label: "Fantasy Movies", path: "/movies/fantasy" },
   ];
 
