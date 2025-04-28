@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import Paper from "@mui/material/Paper";
@@ -26,6 +27,7 @@ const styles = {
 const MovieHeader: React.FC<{ movie: MovieDetailsProps }> = ({ movie }) => {
   const { favourites, addToFavourites, removeFromFavourites } = useContext(MoviesContext);
   const [isFavorite, setIsFavorite] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setIsFavorite(favourites.includes(movie.id));
@@ -42,7 +44,7 @@ const MovieHeader: React.FC<{ movie: MovieDetailsProps }> = ({ movie }) => {
 
   return (
     <Paper component="div" sx={styles.root}>
-      <IconButton aria-label="go back">
+      <IconButton aria-label="go back" onClick={() => navigate(-1)}>
         <ArrowBackIcon color="primary" fontSize="large" />
       </IconButton>
 
@@ -63,7 +65,7 @@ const MovieHeader: React.FC<{ movie: MovieDetailsProps }> = ({ movie }) => {
         <span>{movie.tagline || "No tagline available"}</span>
       </Typography>
 
-      <IconButton aria-label="go forward">
+      <IconButton aria-label="go forward" onClick={() => navigate(1)}>
         <ArrowForwardIcon color="primary" fontSize="large" />
       </IconButton>
     </Paper>

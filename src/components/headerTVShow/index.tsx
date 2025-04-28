@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import Paper from "@mui/material/Paper";
@@ -18,18 +19,12 @@ const styles = {
     flexWrap: "wrap", 
     padding: 1.5,
   },
-  avatar: {
-    backgroundColor: "rgb(255, 0, 0)", 
-  },
 };
 
-const TVShowHeader: React.FC<{ tvShow: TVShowDetailsProps; onBack?: () => void; onForward?: () => void }> = ({
-  tvShow,
-  onBack,
-  onForward,
-}) => {
+const TVShowHeader: React.FC<{ tvShow: TVShowDetailsProps }> = ({ tvShow }) => {
   const { favourites, addToFavourites, removeFromFavourites } = useContext(TVShowsContext);
   const [isFavorite, setIsFavorite] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setIsFavorite(favourites.includes(tvShow.id));
@@ -46,11 +41,9 @@ const TVShowHeader: React.FC<{ tvShow: TVShowDetailsProps; onBack?: () => void; 
 
   return (
     <Paper component="div" sx={styles.root}>
-      {onBack && (
-        <IconButton aria-label="go back" onClick={onBack}>
-          <ArrowBackIcon color="primary" fontSize="large" />
-        </IconButton>
-      )}
+      <IconButton aria-label="go back" onClick={() => navigate(-1)}>
+        <ArrowBackIcon color="primary" fontSize="large" />
+      </IconButton>
 
       <Avatar
         onClick={toggleFavorite}
@@ -73,11 +66,9 @@ const TVShowHeader: React.FC<{ tvShow: TVShowDetailsProps; onBack?: () => void; 
         <span>{tvShow.tagline || "No tagline available"}</span>
       </Typography>
 
-      {onForward && (
-        <IconButton aria-label="go forward" onClick={onForward}>
-          <ArrowForwardIcon color="primary" fontSize="large" />
-        </IconButton>
-      )}
+      <IconButton aria-label="go forward" onClick={() => navigate(1)}>
+        <ArrowForwardIcon color="primary" fontSize="large" />
+      </IconButton>
     </Paper>
   );
 };
