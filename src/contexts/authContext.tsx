@@ -1,5 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { AuthContextType } from "../types/interfaces"; 
+import { AuthContextType } from "../types/interfaces";
+
+const TOKEN_KEY = "token";
 
 const AuthContext = createContext({} as AuthContextType);
 
@@ -10,25 +12,24 @@ export default function AuthProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [token, setToken] = useState("");
+  const [token, setToken] = useState<string>("");
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const storedToken = localStorage.getItem(TOKEN_KEY);
 
-    if (!token) return;
-
-    setToken(token);
+    if (storedToken) {
+      setToken(storedToken);
+    }
   }, []);
 
   const signin = (token: string) => {
-    localStorage.setItem("token", token);
+    localStorage.setItem(TOKEN_KEY, token);
     setToken(token);
   };
 
   const signout = () => {
-    localStorage.clear();
+    localStorage.removeItem(TOKEN_KEY);
     setToken("");
-    window.location.reload();
   };
 
   const isSignedin = !!token;

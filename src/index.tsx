@@ -27,12 +27,12 @@ import TVShowsPage from "./pages/TVShowsPage";
 import TVShowDetailsPage from "./pages/TVShowDetailsPage";
 import FavouriteTVShowsPage from "./pages/favouriteTVShowsPage";
 import MustWatchTVShowsPage from "./pages/mustWatchTVShowsPage";
-import AddTVShowReviewPage from "./pages/addTVShowReviewPage";
 import FantasyMoviesPage from "./pages/fantasyMoviesPage";
 import { FantasyMoviesContextProvider } from "./contexts/fantasyMoviesContext";
 import AddFantasyMoviePage from "./pages/addFantasyMoviePage";
 import FantasyMovieDetailsPage from "./pages/fantasyMovieDetailsPage";
 import AuthContextProvider from "./contexts/authContext";
+import LoginPage from "./pages/loginPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -68,7 +68,6 @@ const App = () => {
                 {/* Review Routes */}
                 <Route path="/reviews/:id" element={<MovieReviewPage />} />
                 <Route path="/reviews/form" element={<AddMovieReviewPage />} />
-                <Route path="/tvreviews/form" element={<AddTVShowReviewPage />} />
 
                 {/* Actor Routes */}
                 <Route path="/actors" element={<PopularActorsPage />} />
@@ -90,6 +89,11 @@ const App = () => {
                 <Route path="/movies/fantasy" element={<FantasyMoviesPage />} />
                 <Route path="/movies/fantasy/new" element={<AddFantasyMoviePage />} />
                 <Route path="/movies/fantasy/:id" element={<FantasyMovieDetailsPage />} />
+
+                {/* Auth Routes */}
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/signup" element={<LoginPage />} />
+
 
                 {/* Default Redirect */}
                 <Route path="*" element={<Navigate to="/" />} />

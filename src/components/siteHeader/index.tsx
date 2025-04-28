@@ -25,7 +25,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 
 // Dummy auth hook (replace with real logic)
 const useAuth = () => {
-  const isAuthenticated = true; // or false
+  const isAuthenticated = false; // <- Assume logged out for now
   const user = { name: "John Doe", email: "john@example.com" };
   return { isAuthenticated, user };
 };
@@ -61,31 +61,6 @@ const SiteHeader: React.FC = () => {
     console.log("User signed out");
   };
 
-  const homeOption = { label: "Home", path: "/" };
-
-  const moviesMenu = [
-    { label: "Discover Movies", path: "/movies" },
-    { label: "Upcoming Movies", path: "/movies/upcoming" },
-    { label: "Now Playing Movies", path: "/movies/nowplaying" },
-    { label: "Top Rated Movies", path: "/movies/toprated" },
-    { label: "Favourite Movies", path: "/movies/favourites" },
-    { label: "Must Watch Movies", path: "/movies/mustwatch" },
-    { label: "Fantasy Movies", path: "/movies/fantasy" }
-  ];
-
-  const tvShowsMenu = [
-    { label: "Discover TV Shows", path: "/tv" },
-    { label: "TV Shows Airing Today", path: "/tv/airingtoday" },
-    { label: "Top Rated TV Shows", path: "/tv/toprated" },
-    { label: "Favourite TV Shows", path: "/tv/favourites" },
-    { label: "Must Watch TV Shows", path: "/tv/mustwatch" },
-  ];
-
-  const actorsMenu = [
-    { label: "Popular Actors", path: "/actors" },
-    { label: "Favourite Actors", path: "/actors/favourites" },
-  ];
-
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
   };
@@ -108,17 +83,30 @@ const SiteHeader: React.FC = () => {
     setActorsMenuAnchorEl(null);
   };
 
-  const handleMoviesMenuOpen = (event: MouseEvent<HTMLButtonElement>) => {
-    setMoviesMenuAnchorEl(event.currentTarget);
-  };
+  const homeOption = { label: "Home", path: "/" };
 
-  const handleTVShowsMenuOpen = (event: MouseEvent<HTMLButtonElement>) => {
-    setTVShowsMenuAnchorEl(event.currentTarget);
-  };
+  const moviesMenu = [
+    { label: "Discover Movies", path: "/movies" },
+    { label: "Upcoming Movies", path: "/movies/upcoming" },
+    { label: "Now Playing", path: "/movies/nowplaying" },
+    { label: "Top Rated", path: "/movies/toprated" },
+    { label: "Favourite Movies", path: "/movies/favourites" },
+    { label: "Must Watch", path: "/movies/mustwatch" },
+    { label: "Fantasy Movies", path: "/movies/fantasy" },
+  ];
 
-  const handleActorsMenuOpen = (event: MouseEvent<HTMLButtonElement>) => {
-    setActorsMenuAnchorEl(event.currentTarget);
-  };
+  const tvShowsMenu = [
+    { label: "Discover TV Shows", path: "/tv" },
+    { label: "Airing Today", path: "/tv/airingtoday" },
+    { label: "Top Rated TV", path: "/tv/toprated" },
+    { label: "Favourite TV", path: "/tv/favourites" },
+    { label: "Must Watch TV", path: "/tv/mustwatch" },
+  ];
+
+  const actorsMenu = [
+    { label: "Popular Actors", path: "/actors" },
+    { label: "Favourite Actors", path: "/actors/favourites" },
+  ];
 
   const customTheme = createTheme({
     palette: {
@@ -180,7 +168,7 @@ const SiteHeader: React.FC = () => {
                 Home
               </Button>
 
-              <Button color="inherit" startIcon={<MovieIcon />} onClick={handleMoviesMenuOpen}>
+              <Button color="inherit" startIcon={<MovieIcon />} onClick={(e) => setMoviesMenuAnchorEl(e.currentTarget)}>
                 Movies
               </Button>
               <Menu
@@ -195,7 +183,7 @@ const SiteHeader: React.FC = () => {
                 ))}
               </Menu>
 
-              <Button color="inherit" startIcon={<TvIcon />} onClick={handleTVShowsMenuOpen}>
+              <Button color="inherit" startIcon={<TvIcon />} onClick={(e) => setTVShowsMenuAnchorEl(e.currentTarget)}>
                 TV Shows
               </Button>
               <Menu
@@ -210,7 +198,7 @@ const SiteHeader: React.FC = () => {
                 ))}
               </Menu>
 
-              <Button color="inherit" startIcon={<PersonIcon />} onClick={handleActorsMenuOpen}>
+              <Button color="inherit" startIcon={<PersonIcon />} onClick={(e) => setActorsMenuAnchorEl(e.currentTarget)}>
                 Actors
               </Button>
               <Menu
@@ -252,14 +240,14 @@ const SiteHeader: React.FC = () => {
                   </>
                 ) : (
                   <>
-                    <MenuItem onClick={() => navigate("/auth/signin")}>Sign In</MenuItem>
-                    <MenuItem onClick={() => navigate("/auth/signup")}>Sign Up</MenuItem>
+                    <MenuItem onClick={() => navigate("/login")}>Login</MenuItem>
+                    <MenuItem onClick={() => navigate("/signup")}>Signup</MenuItem>
                   </>
                 )}
               </Menu>
             </>
           ) : (
-            <IconButton aria-label="menu" onClick={handleMoviesMenuOpen} color="inherit" size="large">
+            <IconButton aria-label="menu" onClick={(e) => setMoviesMenuAnchorEl(e.currentTarget)} color="inherit" size="large">
               <MenuIcon />
             </IconButton>
           )}

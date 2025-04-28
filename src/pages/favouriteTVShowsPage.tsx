@@ -7,7 +7,6 @@ import Spinner from "../components/spinner";
 import useFiltering from "../hooks/useFiltering";
 import TVShowFilterUI, { titleFilter, favouritesGenreFilter } from "../components/TVShowFilterUI";
 import RemoveFromFavouritesTVShow from "../components/cardIcons/removeFromTVShowFavourites";
-import WriteReview from "../components/cardIcons/writeReview";
 import { BaseTVShowProps } from "../types/interfaces";
 
 const titleFiltering = { name: "title", value: "", condition: titleFilter };
@@ -17,6 +16,7 @@ const ratingFiltering = { name: "rating", value: "", condition: (tvShow: BaseTVS
 const productionCountryFiltering = { name: "production country", value: "", condition: (tvShow: BaseTVShowProps, value: string) =>
   value ? tvShow.production_country.some(country => country.name === value) : true,
 };
+
 const FavouriteTVShowsPage: React.FC = () => {
   const { favourites: tvShowIds } = useContext(TVShowsContext);
 
@@ -55,12 +55,7 @@ const FavouriteTVShowsPage: React.FC = () => {
       <PageTemplate
         title="Favourite TV Shows"
         tvShows={displayedTVShows}
-        action={(tvShow) => (
-          <>
-            <RemoveFromFavouritesTVShow tvShow={tvShow} />
-            <WriteReview tvShowId={tvShow.id} />
-          </>
-        )}
+        action={(tvShow) => <RemoveFromFavouritesTVShow tvShow={tvShow} />}
       />
       <TVShowFilterUI
         onFilterValuesChange={changeFilterValues}
