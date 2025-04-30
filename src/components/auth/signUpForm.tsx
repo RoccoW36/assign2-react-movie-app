@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button, TextField, Stack } from "@mui/material";
-import { signup } from "../../api/auth-api";
+import { signup } from "../../api/backend-api";
 import { SignupDetails } from "../../types/interfaces";
 
 const SignupForm: React.FC = () => {
