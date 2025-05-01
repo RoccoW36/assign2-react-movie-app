@@ -25,7 +25,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 
 // Dummy auth hook (replace with real logic)
 const useAuth = () => {
-  const isAuthenticated = false; // <- Assume logged out for now
+  const isAuthenticated = false;
   const user = { name: "John Doe", email: "john@example.com" };
   return { isAuthenticated, user };
 };

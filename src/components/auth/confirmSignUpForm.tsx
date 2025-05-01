@@ -1,21 +1,21 @@
 import React, { useState } from "react";
-import { SignupDetails } from "../../types/interfaces";
+import { ConfirmSignupDetails } from "../../types/interfaces";
 import { TextField, Button, CircularProgress } from "@mui/material";
 
-interface SignUpFormProps {
-  form: SignupDetails;
+interface ConfirmSignUpFormProps {
+  form: ConfirmSignupDetails;
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleSubmit: (e: React.FormEvent) => void;
 }
 
-const SignUpForm: React.FC<SignUpFormProps> = ({ form, handleChange, handleSubmit }) => {
+const ConfirmSignUpForm: React.FC<ConfirmSignUpFormProps> = ({ form, handleChange, handleSubmit }) => {
   const [loading, setLoading] = useState(false);
 
   const handleSubmitWithLoading = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!form.email || !form.username || !form.password) {
-      alert("All fields are required.");
+    if (!form.username || !form.code) {
+      alert("Both fields are required.");
       return;
     }
 
@@ -27,15 +27,6 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ form, handleChange, handleSubmi
   return (
     <form onSubmit={handleSubmitWithLoading} style={{ display: "flex", flexDirection: "column", gap: "16px", maxWidth: "400px", margin: "auto" }}>
       <TextField
-        name="email"
-        value={form.email}
-        placeholder="Email"
-        label="Email"
-        variant="outlined"
-        onChange={handleChange}
-        required
-      />
-      <TextField
         name="username"
         value={form.username}
         placeholder="Username"
@@ -45,20 +36,19 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ form, handleChange, handleSubmi
         required
       />
       <TextField
-        type="password"
-        name="password"
-        value={form.password}
-        placeholder="Password"
-        label="Password"
+        name="code"
+        value={form.code}
+        placeholder="Confirmation Code"
+        label="Confirmation Code"
         variant="outlined"
         onChange={handleChange}
         required
       />
       <Button type="submit" variant="contained" color="primary" disabled={loading}>
-        {loading ? <CircularProgress size={24} /> : "Sign Up"}
+        {loading ? <CircularProgress size={24} /> : "Confirm"}
       </Button>
     </form>
   );
 };
 
-export default SignUpForm;
+export default ConfirmSignUpForm;
