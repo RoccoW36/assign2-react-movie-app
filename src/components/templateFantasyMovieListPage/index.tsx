@@ -1,11 +1,13 @@
 import React, { useState } from "react";
+import { useAuth } from "../../contexts/authContext";
+import { useNavigate } from "react-router-dom";
 import FantasyMovieHeader from "../fantasyMovieHeader";
 import MovieFilterUI from "../movieFilterUI";
 import FantasyMovieList from "../fantasyMovieList";
 import Grid from "@mui/material/Grid";
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
-import { Link } from "react-router-dom";
+import Box from "@mui/material/Box";
 import { FantasyMovie } from "../../types/interfaces";
 
 const styles = {
@@ -41,13 +43,23 @@ export interface FantasyMovieListPageTemplateProps {
   action?: (m: FantasyMovie) => React.ReactNode;
 }
 
-
 const TemplateFantasyMovieListPage: React.FC<FantasyMovieListPageTemplateProps> = ({ movies }) => {
   const [nameFilter, setNameFilter] = useState("");
   const [genreFilter, setGenreFilter] = useState("0");
   const [ratingFilter, setRatingFilter] = useState("");
   const [productionCountryFilter, setProductionCountryFilter] = useState("");
   const [sortOption, setSortOption] = useState("");
+
+  const { isSignedin } = useAuth();
+  const navigate = useNavigate();
+
+  const handleNewFantasyMovieClick = () => {
+    if (isSignedin) {
+      navigate("/movies/fantasy/new");
+    } else {
+      navigate("/login");
+    }
+  };
 
   const handleFilterChange = (name: string, value: string) => {
     switch (name) {
@@ -75,7 +87,7 @@ const TemplateFantasyMovieListPage: React.FC<FantasyMovieListPageTemplateProps> 
     .filter((m) => genreId > 0 ? m.genres?.some((e) => Number(e.id) === genreId) : true);
 
   return (
-    <>
+    <Box sx={styles.root}>
       <FantasyMovieHeader />
 
       <MovieFilterUI
@@ -87,19 +99,17 @@ const TemplateFantasyMovieListPage: React.FC<FantasyMovieListPageTemplateProps> 
         sortOption={sortOption}
       />
 
-      <Grid container spacing={5} sx={styles.root}>
+      <Grid container spacing={5}>
         <Grid item xs={12}>
           <FantasyMovieList movies={displayedMovies} />
         </Grid>
       </Grid>
 
-      <Link to="/movies/fantasy/new" style={{ textDecoration: "none" }}>
-        <Fab color="secondary" variant="extended" sx={styles.floatingButton}>
-          <AddIcon sx={{ mr: 1 }} />
-          New Fantasy Movie
-        </Fab>
-      </Link>
-    </>
+      <Fab color="secondary" variant="extended" sx={styles.floatingButton} onClick={handleNewFantasyMovieClick}>
+        <AddIcon sx={{ mr: 1 }} />
+        {isSignedin ? "Create Fantasy Movie" : "Sign in to Create Movie"}
+      </Fab>
+    </Box>
   );
 };
 

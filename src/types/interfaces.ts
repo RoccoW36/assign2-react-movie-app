@@ -221,9 +221,10 @@ export interface DiscoverTVShows {
 
 export interface AuthContextType {
   token?: string;
-  isSignedin: boolean;
   signin: (token: string) => void;
   signout: () => void;
+  isSignedin: boolean;
+  loading: boolean;
 }
 
 export interface SignupDetails {

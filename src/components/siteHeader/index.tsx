@@ -1,4 +1,5 @@
 import React, { useState, ChangeEvent, KeyboardEvent, MouseEvent } from "react";
+import { useAuth } from "../../contexts/authContext";
 import {
   AppBar,
   Toolbar,
@@ -23,13 +24,6 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useTheme, createTheme, ThemeProvider } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
-// Dummy auth hook (replace with real logic)
-const useAuth = () => {
-  const isAuthenticated = false;
-  const user = { name: "John Doe", email: "john@example.com" };
-  return { isAuthenticated, user };
-};
-
 const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 
 const SiteHeader: React.FC = () => {
@@ -46,8 +40,7 @@ const SiteHeader: React.FC = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
 
-  const { isAuthenticated, user } = useAuth();
-
+  const { isSignedin, token, signout } = useAuth();
   const handleAuthMenuOpen = (event: MouseEvent<HTMLElement>) => {
     setAuthMenuAnchorEl(event.currentTarget);
   };
@@ -57,8 +50,9 @@ const SiteHeader: React.FC = () => {
   };
 
   const handleSignOut = () => {
+    signout();
+    navigate("/");
     handleAuthMenuClose();
-    console.log("User signed out");
   };
 
   const toggleDarkMode = () => {
@@ -124,36 +118,18 @@ const SiteHeader: React.FC = () => {
     <ThemeProvider theme={customTheme}>
       <AppBar position="sticky" elevation={2}>
         <Toolbar>
-          <Typography
-            variant="h5"
-            sx={{ flexGrow: 1, cursor: "pointer" }}
-            onClick={() => navigate("/")}
-          >
+          <Typography variant="h5" sx={{ flexGrow: 1, cursor: "pointer" }} onClick={() => navigate("/")}>
             TMDB Client
           </Typography>
 
-          <Box
-            sx={{
-              position: "relative",
-              borderRadius: 1,
-              backgroundColor: alpha("#ffffff", 0.15),
-              marginRight: 2,
-              marginLeft: 2,
-              maxWidth: 300,
-              flexGrow: 1,
-            }}
-          >
+          <Box sx={{ position: "relative", borderRadius: 1, backgroundColor: alpha("#ffffff", 0.15), marginRight: 2, marginLeft: 2, maxWidth: 300, flexGrow: 1 }}>
             <InputBase
               placeholder="Search…"
               inputProps={{ "aria-label": "search" }}
               value={searchQuery}
               onChange={handleSearchChange}
               onKeyDown={handleSearchKeyDown}
-              sx={{
-                color: "inherit",
-                padding: "8px 8px 8px 40px",
-                width: "100%",
-              }}
+              sx={{ color: "inherit", padding: "8px 8px 8px 40px", width: "100%" }}
             />
           </Box>
 
@@ -161,79 +137,40 @@ const SiteHeader: React.FC = () => {
 
           {!isMobile ? (
             <>
-              <Button
-                color={location.pathname === homeOption.path ? "secondary" : "inherit"}
-                onClick={() => handleMenuSelect(homeOption.path)}
-              >
-                Home
-              </Button>
+              <Button color={location.pathname === homeOption.path ? "secondary" : "inherit"} onClick={() => handleMenuSelect(homeOption.path)}>Home</Button>
 
-              <Button color="inherit" startIcon={<MovieIcon />} onClick={(e) => setMoviesMenuAnchorEl(e.currentTarget)}>
-                Movies
-              </Button>
-              <Menu
-                anchorEl={moviesMenuAnchorEl}
-                open={Boolean(moviesMenuAnchorEl)}
-                onClose={() => setMoviesMenuAnchorEl(null)}
-              >
+              {/* Movies Dropdown */}
+              <Button color="inherit" startIcon={<MovieIcon />} onClick={(e) => setMoviesMenuAnchorEl(e.currentTarget)}>Movies</Button>
+              <Menu anchorEl={moviesMenuAnchorEl} open={Boolean(moviesMenuAnchorEl)} onClose={() => setMoviesMenuAnchorEl(null)}>
                 {moviesMenu.map((opt) => (
-                  <MenuItem key={opt.label} onClick={() => handleMenuSelect(opt.path)}>
-                    {opt.label}
-                  </MenuItem>
+                  <MenuItem key={opt.label} onClick={() => handleMenuSelect(opt.path)}>{opt.label}</MenuItem>
                 ))}
               </Menu>
 
-              <Button color="inherit" startIcon={<TvIcon />} onClick={(e) => setTVShowsMenuAnchorEl(e.currentTarget)}>
-                TV Shows
-              </Button>
-              <Menu
-                anchorEl={tvShowsMenuAnchorEl}
-                open={Boolean(tvShowsMenuAnchorEl)}
-                onClose={() => setTVShowsMenuAnchorEl(null)}
-              >
+              {/* TV Shows Dropdown */}
+              <Button color="inherit" startIcon={<TvIcon />} onClick={(e) => setTVShowsMenuAnchorEl(e.currentTarget)}>TV Shows</Button>
+              <Menu anchorEl={tvShowsMenuAnchorEl} open={Boolean(tvShowsMenuAnchorEl)} onClose={() => setTVShowsMenuAnchorEl(null)}>
                 {tvShowsMenu.map((opt) => (
-                  <MenuItem key={opt.label} onClick={() => handleMenuSelect(opt.path)}>
-                    {opt.label}
-                  </MenuItem>
+                  <MenuItem key={opt.label} onClick={() => handleMenuSelect(opt.path)}>{opt.label}</MenuItem>
                 ))}
               </Menu>
 
-              <Button color="inherit" startIcon={<PersonIcon />} onClick={(e) => setActorsMenuAnchorEl(e.currentTarget)}>
-                Actors
-              </Button>
-              <Menu
-                anchorEl={actorsMenuAnchorEl}
-                open={Boolean(actorsMenuAnchorEl)}
-                onClose={() => setActorsMenuAnchorEl(null)}
-              >
+              {/* Actors Dropdown */}
+              <Button color="inherit" startIcon={<PersonIcon />} onClick={(e) => setActorsMenuAnchorEl(e.currentTarget)}>Actors</Button>
+              <Menu anchorEl={actorsMenuAnchorEl} open={Boolean(actorsMenuAnchorEl)} onClose={() => setActorsMenuAnchorEl(null)}>
                 {actorsMenu.map((opt) => (
-                  <MenuItem key={opt.label} onClick={() => handleMenuSelect(opt.path)}>
-                    {opt.label}
-                  </MenuItem>
+                  <MenuItem key={opt.label} onClick={() => handleMenuSelect(opt.path)}>{opt.label}</MenuItem>
                 ))}
               </Menu>
 
-              <Tooltip title={isAuthenticated ? user.name : "Account"}>
-                <IconButton
-                  onClick={handleAuthMenuOpen}
-                  color="inherit"
-                  size="large"
-                  sx={{ ml: 2 }}
-                >
-                  {isAuthenticated ? (
-                    <Avatar>{user.name.charAt(0)}</Avatar>
-                  ) : (
-                    <AccountCircleIcon />
-                  )}
+              {/* Authentication Menu */}
+              <Tooltip title={isSignedin ? "Profile" : "Account"}>
+                <IconButton onClick={handleAuthMenuOpen} color="inherit" size="large" sx={{ ml: 2 }}>
+                  {isSignedin ? <Avatar>{token?.charAt(0).toUpperCase() || "U"}</Avatar> : <AccountCircleIcon />}
                 </IconButton>
               </Tooltip>
-
-              <Menu
-                anchorEl={authMenuAnchorEl}
-                open={Boolean(authMenuAnchorEl)}
-                onClose={handleAuthMenuClose}
-              >
-                {isAuthenticated ? (
+              <Menu anchorEl={authMenuAnchorEl} open={Boolean(authMenuAnchorEl)} onClose={handleAuthMenuClose}>
+                {isSignedin ? (
                   <>
                     <MenuItem onClick={() => navigate("/profile")}>Profile</MenuItem>
                     <MenuItem onClick={handleSignOut}>Sign Out</MenuItem>
@@ -247,9 +184,7 @@ const SiteHeader: React.FC = () => {
               </Menu>
             </>
           ) : (
-            <IconButton aria-label="menu" onClick={(e) => setMoviesMenuAnchorEl(e.currentTarget)} color="inherit" size="large">
-              <MenuIcon />
-            </IconButton>
+            <IconButton aria-label="menu" color="inherit" size="large"><MenuIcon /></IconButton>
           )}
         </Toolbar>
       </AppBar>

@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 import { AuthContextType } from "../types/interfaces";
 
 const TOKEN_KEY = "token";
@@ -13,10 +13,12 @@ export const useAuth = () => {
 
 export default function AuthProvider({ children }: { children: React.ReactNode }) {
   const [token, setToken] = useState<string | undefined>(undefined);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const storedToken = localStorage.getItem(TOKEN_KEY);
     setToken(storedToken ?? undefined);
+    setLoading(false);
   }, []);
 
   const signin = (newToken: string) => {
@@ -26,13 +28,13 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
 
   const signout = () => {
     localStorage.removeItem(TOKEN_KEY);
-    setToken(undefined); 
+    setToken(undefined);
   };
 
-  const isSignedin = Boolean(token); 
+  const isSignedin = !!token;
 
   return (
-    <AuthContext.Provider value={{ token, signin, signout, isSignedin }}>
+    <AuthContext.Provider value={{ token, signin, signout, isSignedin, loading }}>
       {children}
     </AuthContext.Provider>
   );

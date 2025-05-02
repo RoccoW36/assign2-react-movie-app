@@ -1,8 +1,17 @@
 import React, { useState } from "react";
-import { Box, Paper, Typography, Snackbar, Alert, CircularProgress, Container } from "@mui/material";
+import {
+  Box,
+  Paper,
+  Typography,
+  Snackbar,
+  Alert,
+  CircularProgress,
+  Container
+} from "@mui/material";
 import { LoginForm } from "../components/auth";
 import { authenticateUser } from "../api/backend-api";
 import { SigninDetails } from "../types/interfaces";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const LoginPage: React.FC = () => {
   const [signinDetails, setSigninDetails] = useState<SigninDetails>({
@@ -13,17 +22,31 @@ const LoginPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState<string>("");
+  const [loginSuccess, setLoginSuccess] = useState(false);
+
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const handleLogin = async (details: SigninDetails) => {
     setLoading(true);
     setError(null);
+    setLoginSuccess(false);
 
     try {
       const response = await authenticateUser(details);
-      console.log("Login successful", response);
-      setOpenSnackbar(true);
-    } catch (error) {
-      setError("Login failed. Please check your credentials and try again.");
+      console.log("Login response:", response);
+
+      if (response?.token) {
+        setSnackbarMessage("Login successful!");
+        setOpenSnackbar(true);
+        setLoginSuccess(true);
+      } else {
+        throw new Error(response.message || "Login failed. Please check your credentials and try again.");
+      }
+    } catch (error: any) {
+      setError(error.message || "Unexpected error occurred.");
+      setSnackbarMessage(error.message || "Login failed.");
       setOpenSnackbar(true);
       console.error("Error during login:", error);
     } finally {
@@ -31,8 +54,25 @@ const LoginPage: React.FC = () => {
     }
   };
 
+  const handleSnackbarClose = () => {
+    setOpenSnackbar(false);
+    if (loginSuccess) {
+      const redirectTo = location.state?.from || "/movies/fantasy"; 
+      navigate(redirectTo);
+    }
+  };
+
   return (
-    <Box sx={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "#f5f5f5", padding: 2 }}>
+    <Box
+      sx={{
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#f5f5f5",
+        padding: 2,
+      }}
+    >
       <Container maxWidth="sm">
         <Paper elevation={6} sx={{ padding: 4, textAlign: "center" }}>
           <Typography variant="h4" gutterBottom>
@@ -57,11 +97,15 @@ const LoginPage: React.FC = () => {
 
       <Snackbar
         open={openSnackbar}
-        autoHideDuration={6000}
-        onClose={() => setOpenSnackbar(false)}
+        autoHideDuration={3000}
+        onClose={handleSnackbarClose}
       >
-        <Alert onClose={() => setOpenSnackbar(false)} severity={error ? "error" : "success"} sx={{ width: "100%" }}>
-          {error || "Login successful!"}
+        <Alert
+          onClose={handleSnackbarClose}
+          severity={error ? "error" : "success"}
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
         </Alert>
       </Snackbar>
     </Box>

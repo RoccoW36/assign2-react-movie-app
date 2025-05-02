@@ -34,6 +34,7 @@ import FantasyMovieDetailsPage from "./pages/fantasyMovieDetailsPage";
 import AuthContextProvider from "./contexts/authContext";
 import LoginPage from "./pages/loginPage";
 import SignUpPage from "./pages/signUpPage";
+import PrivateRoute from "./components/privateRoute"; 
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -47,17 +48,17 @@ const queryClient = new QueryClient({
 const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
+       <AuthContextProvider>
       <BrowserRouter>
-        <SiteHeader />
-        <MoviesContextProvider>
-          <ActorsContextProvider>
-            <TVShowsContextProvider>
-              <FantasyMoviesContextProvider>
-                <AuthContextProvider>
+          <SiteHeader />
+          <MoviesContextProvider>
+            <ActorsContextProvider>
+              <TVShowsContextProvider>
+                <FantasyMoviesContextProvider>
                   <Routes>
                     <Route path="/" element={<HomePage />} />
 
-                    {/* Movie Routes */}
+                    {/* Public Movie Routes */}
                     <Route path="/movies/favourites" element={<FavouriteMoviesPage />} />
                     <Route path="/movies/upcoming" element={<UpcomingMoviesPage />} />
                     <Route path="/movies/nowplaying" element={<NowPlayingMoviesPage />} />
@@ -65,16 +66,16 @@ const App = () => {
                     <Route path="/movies/mustwatch" element={<MustWatchMoviesPage />} />
                     <Route path="/movies/:id" element={<MoviePage />} />
 
-                    {/* Review Routes */}
+                    {/* Public Review Routes */}
                     <Route path="/reviews/:id" element={<MovieReviewPage />} />
                     <Route path="/reviews/form" element={<AddMovieReviewPage />} />
 
-                    {/* Actor Routes */}
+                    {/* Public Actor Routes */}
                     <Route path="/actors" element={<PopularActorsPage />} />
                     <Route path="/actors/:id" element={<ActorDetailsPage />} />
                     <Route path="/actors/favourites" element={<FavouriteActorsPage />} />
 
-                    {/* TV Show Routes */}
+                    {/* Public TV Show Routes */}
                     <Route path="/tv" element={<TVShowsPage />} />
                     <Route path="/tv/airingtoday" element={<AiringTodayTVShowsPage />} />
                     <Route path="/tv/toprated" element={<TopRatedTVShowsPage />} />
@@ -82,28 +83,30 @@ const App = () => {
                     <Route path="/tv/favourites" element={<FavouriteTVShowsPage />} />
                     <Route path="/tv/mustwatch" element={<MustWatchTVShowsPage />} />
 
-                    {/* Search Route */}
+                    {/* Public Search Route */}
                     <Route path="/search" element={<SearchPage />} />
 
-                    {/* Fantasy Movies Routes */}
+                    {/* Fantasy Movies: Publicly Viewable */}
                     <Route path="/movies/fantasy" element={<FantasyMoviesPage />} />
-                    <Route path="/movies/fantasy/new" element={<AddFantasyMoviePage />} />
-                    <Route path="/movies/fantasy/:id" element={<FantasyMovieDetailsPage />} />
 
-                    {/* Auth Routes */}
+                    {/* Private Routes: Only signed-in users can access */}
+                    <Route path="/movies/fantasy/new" element={<PrivateRoute><AddFantasyMoviePage /></PrivateRoute>} />
+                    <Route path="/movies/fantasy/:id" element={<PrivateRoute><FantasyMovieDetailsPage /></PrivateRoute>} />
+
+                    {/* Authentication Routes */}
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/signup" element={<SignUpPage />} />
 
                     {/* Default Redirect */}
                     <Route path="*" element={<Navigate to="/" />} />
                   </Routes>
-                </AuthContextProvider>
-              </FantasyMoviesContextProvider>
-            </TVShowsContextProvider>
-          </ActorsContextProvider>
-        </MoviesContextProvider>
+                </FantasyMoviesContextProvider>
+              </TVShowsContextProvider>
+            </ActorsContextProvider>
+          </MoviesContextProvider>
       </BrowserRouter>
       <ReactQueryDevtools initialIsOpen={false} />
+      </AuthContextProvider>
     </QueryClientProvider>
   );
 };
