@@ -107,7 +107,7 @@ const TemplateFantasyMovieListPage: React.FC<FantasyMovieListPageTemplateProps> 
 
       <Fab color="secondary" variant="extended" sx={styles.floatingButton} onClick={handleNewFantasyMovieClick}>
         <AddIcon sx={{ mr: 1 }} />
-        {isSignedin ? "Create Fantasy Movie" : "Sign in to Create Movie"}
+        {isSignedin ? "Create Fantasy Movie" : "Sign in to Create Fantasy Movie"}
       </Fab>
     </Box>
   );

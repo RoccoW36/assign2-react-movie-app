@@ -40,7 +40,8 @@ const SiteHeader: React.FC = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
 
-  const { isSignedin, token, signout } = useAuth();
+  const { isSignedin, signout, username } = useAuth();
+
   const handleAuthMenuOpen = (event: MouseEvent<HTMLElement>) => {
     setAuthMenuAnchorEl(event.currentTarget);
   };
@@ -102,6 +103,22 @@ const SiteHeader: React.FC = () => {
     { label: "Favourite Actors", path: "/actors/favourites" },
   ];
 
+  const renderAuthMenu = () => (
+    <Menu anchorEl={authMenuAnchorEl} open={Boolean(authMenuAnchorEl)} onClose={handleAuthMenuClose}>
+      {isSignedin ? (
+        <>
+          <MenuItem onClick={() => { navigate("/profile"); handleAuthMenuClose(); }}>Profile</MenuItem>
+          <MenuItem onClick={handleSignOut}>Sign Out</MenuItem>
+        </>
+      ) : (
+        <>
+          <MenuItem onClick={() => { navigate("/login"); handleAuthMenuClose(); }}>Login</MenuItem>
+          <MenuItem onClick={() => { navigate("/signup"); handleAuthMenuClose(); }}>Signup</MenuItem>
+        </>
+      )}
+    </Menu>
+  );
+
   const customTheme = createTheme({
     palette: {
       mode: darkMode ? "dark" : "light",
@@ -139,7 +156,6 @@ const SiteHeader: React.FC = () => {
             <>
               <Button color={location.pathname === homeOption.path ? "secondary" : "inherit"} onClick={() => handleMenuSelect(homeOption.path)}>Home</Button>
 
-              {/* Movies Dropdown */}
               <Button color="inherit" startIcon={<MovieIcon />} onClick={(e) => setMoviesMenuAnchorEl(e.currentTarget)}>Movies</Button>
               <Menu anchorEl={moviesMenuAnchorEl} open={Boolean(moviesMenuAnchorEl)} onClose={() => setMoviesMenuAnchorEl(null)}>
                 {moviesMenu.map((opt) => (
@@ -147,7 +163,6 @@ const SiteHeader: React.FC = () => {
                 ))}
               </Menu>
 
-              {/* TV Shows Dropdown */}
               <Button color="inherit" startIcon={<TvIcon />} onClick={(e) => setTVShowsMenuAnchorEl(e.currentTarget)}>TV Shows</Button>
               <Menu anchorEl={tvShowsMenuAnchorEl} open={Boolean(tvShowsMenuAnchorEl)} onClose={() => setTVShowsMenuAnchorEl(null)}>
                 {tvShowsMenu.map((opt) => (
@@ -155,7 +170,6 @@ const SiteHeader: React.FC = () => {
                 ))}
               </Menu>
 
-              {/* Actors Dropdown */}
               <Button color="inherit" startIcon={<PersonIcon />} onClick={(e) => setActorsMenuAnchorEl(e.currentTarget)}>Actors</Button>
               <Menu anchorEl={actorsMenuAnchorEl} open={Boolean(actorsMenuAnchorEl)} onClose={() => setActorsMenuAnchorEl(null)}>
                 {actorsMenu.map((opt) => (
@@ -163,28 +177,19 @@ const SiteHeader: React.FC = () => {
                 ))}
               </Menu>
 
-              {/* Authentication Menu */}
-              <Tooltip title={isSignedin ? "Profile" : "Account"}>
-                <IconButton onClick={handleAuthMenuOpen} color="inherit" size="large" sx={{ ml: 2 }}>
-                  {isSignedin ? <Avatar>{token?.charAt(0).toUpperCase() || "U"}</Avatar> : <AccountCircleIcon />}
-                </IconButton>
-              </Tooltip>
-              <Menu anchorEl={authMenuAnchorEl} open={Boolean(authMenuAnchorEl)} onClose={handleAuthMenuClose}>
-                {isSignedin ? (
-                  <>
-                    <MenuItem onClick={() => navigate("/profile")}>Profile</MenuItem>
-                    <MenuItem onClick={handleSignOut}>Sign Out</MenuItem>
-                  </>
-                ) : (
-                  <>
-                    <MenuItem onClick={() => navigate("/login")}>Login</MenuItem>
-                    <MenuItem onClick={() => navigate("/signup")}>Signup</MenuItem>
-                  </>
-                )}
-              </Menu>
+              <Box sx={{ display: "flex", alignItems: "center", ml: 2 }}>
+                <Tooltip title={isSignedin ? `Welcome, ${username}` : "Account"}>
+                  <IconButton onClick={handleAuthMenuOpen} color="inherit" size="large">
+                    {isSignedin ? <Avatar>{username?.charAt(0).toUpperCase()}</Avatar> : <AccountCircleIcon />}
+                  </IconButton>
+                </Tooltip>
+              </Box>
+              {renderAuthMenu()}
             </>
           ) : (
-            <IconButton aria-label="menu" color="inherit" size="large"><MenuIcon /></IconButton>
+            <IconButton aria-label="menu" color="inherit" size="large">
+              <MenuIcon />
+            </IconButton>
           )}
         </Toolbar>
       </AppBar>

@@ -75,13 +75,12 @@ export interface MovieListPageTemplateProps extends BaseMovieListProps {
 
 export interface Review {
   movieId: number;
-  tvShowId: number;
-  reviewId: number;
   reviewerId: string;
   reviewDate: string;
   content: string;
-  agree: boolean;
   rating: number;
+  tvShowId?: number;
+
 }
 
 export interface DiscoverMovies {
@@ -221,11 +220,13 @@ export interface DiscoverTVShows {
 
 export interface AuthContextType {
   token?: string;
-  signin: (token: string) => void;
-  signout: () => void;
+  username?: string;
   isSignedin: boolean;
   loading: boolean;
+  signin: (token: string, username: string) => void;
+  signout: () => void;
 }
+
 
 export interface SignupDetails {
   email: string;
@@ -275,4 +276,9 @@ export interface FantasyMovieContextType {
   fantasy: FantasyMovie[];
   addToFantasy: (movie: FantasyMovie) => void;
   removeFromFantasy: (id: number) => void;
+}
+
+export interface MovieProps {
+  id: number
+  closeForm: () => void
 }

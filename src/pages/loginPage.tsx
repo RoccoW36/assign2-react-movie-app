@@ -12,6 +12,7 @@ import { LoginForm } from "../components/auth";
 import { authenticateUser } from "../api/backend-api";
 import { SigninDetails } from "../types/interfaces";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/authContext";
 
 const LoginPage: React.FC = () => {
   const [signinDetails, setSigninDetails] = useState<SigninDetails>({
@@ -27,6 +28,7 @@ const LoginPage: React.FC = () => {
 
   const location = useLocation();
   const navigate = useNavigate();
+  const { signin } = useAuth();
 
   const handleLogin = async (details: SigninDetails) => {
     setLoading(true);
@@ -38,6 +40,8 @@ const LoginPage: React.FC = () => {
       console.log("Login response:", response);
 
       if (response?.token) {
+        signin(response.token, details.username);
+
         setSnackbarMessage("Login successful!");
         setOpenSnackbar(true);
         setLoginSuccess(true);
@@ -57,7 +61,7 @@ const LoginPage: React.FC = () => {
   const handleSnackbarClose = () => {
     setOpenSnackbar(false);
     if (loginSuccess) {
-      const redirectTo = location.state?.from || "/movies/fantasy"; 
+      const redirectTo = location.state?.from || "/movies/fantasy";
       navigate(redirectTo);
     }
   };

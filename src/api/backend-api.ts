@@ -3,6 +3,7 @@ import {
   SignupDetails,
   ConfirmSignupDetails,
   SigninDetails,
+  Review
 } from "../types/interfaces";
 
 export const authenticateUser = (details: SigninDetails) => {
@@ -52,3 +53,24 @@ export const confirmSignup = (details: ConfirmSignupDetails) => {
       return json;
     });
 };
+
+export const sendReview = (review: Review, token: string) => {
+  const movieId = review.movieId; 
+
+  return fetch(`${APIConfig.API.endpoints[0].endpoint}/movies/${movieId}/reviews`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(review),
+  })
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error("Failed to submit review");
+      }
+      return res.json();
+    });
+};
+

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { SignupDetails } from "../../types/interfaces";
 import { TextField, Button, CircularProgress } from "@mui/material";
 
@@ -6,26 +6,12 @@ interface SignUpFormProps {
   form: SignupDetails;
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleSubmit: (e: React.FormEvent) => void;
+  loading: boolean; // The loading prop is now passed from parent
 }
 
-const SignUpForm: React.FC<SignUpFormProps> = ({ form, handleChange, handleSubmit }) => {
-  const [loading, setLoading] = useState(false);
-
-  const handleSubmitWithLoading = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!form.email || !form.username || !form.password) {
-      alert("All fields are required.");
-      return;
-    }
-
-    setLoading(true);
-    await handleSubmit(e);
-    setLoading(false);
-  };
-
+const SignUpForm: React.FC<SignUpFormProps> = ({ form, handleChange, handleSubmit, loading }) => {
   return (
-    <form onSubmit={handleSubmitWithLoading} style={{ display: "flex", flexDirection: "column", gap: "16px", maxWidth: "400px", margin: "auto" }}>
+    <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px", maxWidth: "400px", margin: "auto" }}>
       <TextField
         name="email"
         value={form.email}
