@@ -78,7 +78,6 @@ export interface Review {
   reviewerId: string;
   reviewDate: string;
   content: string;
-  rating: number;
   tvShowId?: number;
 
 }

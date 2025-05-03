@@ -6,6 +6,28 @@ import {
   Review
 } from "../types/interfaces";
 
+export const sendReview = (review: Review) => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("No token found. Please sign in first.");
+  }
+  const movieId = review.movieId;
+  const baseUrl = APIConfig.API.endpoints[0].endpoint.replace(/\/+$/, "");
+  const url = `${baseUrl}/movies/${movieId}/reviews`;
+  console.log("Sending review to URL:", url);
+  console.log("Authorization Token:", token);
+
+  return fetch(url, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(review),
+  });
+};
+
 export const authenticateUser = (details: SigninDetails) => {
   return fetch(`${APIConfig.API.endpoints[1].endpoint}/signin`, {
     method: "POST",
@@ -54,23 +76,5 @@ export const confirmSignup = (details: ConfirmSignupDetails) => {
     });
 };
 
-export const sendReview = (review: Review, token: string) => {
-  const movieId = review.movieId; 
 
-  return fetch(`${APIConfig.API.endpoints[0].endpoint}/movies/${movieId}/reviews`, {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(review),
-  })
-    .then((res) => {
-      if (!res.ok) {
-        throw new Error("Failed to submit review");
-      }
-      return res.json();
-    });
-};
 

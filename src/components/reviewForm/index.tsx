@@ -1,7 +1,6 @@
-import React, { useState, ChangeEvent } from "react";
+import React, { useState } from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import MenuItem from "@mui/material/MenuItem";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
@@ -14,18 +13,12 @@ import { MovieProps, Review } from "../../types/interfaces";
 import { useAuth } from "../../contexts/authContext";
 
 import styles from "./styles";
-import ratings from "./ratingCategories";
 
 const ReviewForm: React.FC<MovieProps> = ({ id, closeForm }) => {
   const { control, handleSubmit, reset, formState: { errors } } = useForm<Review>();
   const navigate = useNavigate();
   const { token } = useAuth();
-  const [rating, setRating] = useState<number>(3);
   const [open, setOpen] = useState<boolean>(false);
-
-  const handleRatingChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setRating(Number(event.target.value));
-  };
 
   const handleSnackClose = () => {
     setOpen(false);
@@ -38,15 +31,19 @@ const ReviewForm: React.FC<MovieProps> = ({ id, closeForm }) => {
       return;
     }
 
-    review.movieId = id;
-    review.rating = rating;
-    review.reviewDate = new Date().toISOString();
+    const reviewPayload = {
+      movieId: id,
+      reviewerId: review.reviewerId,
+      reviewDate: new Date().toISOString().split("T")[0],
+      content: review.content,
+    };
 
     try {
-      await sendReview(review, token);
+    
+      await sendReview(reviewPayload);
       setOpen(true);
-      if (closeForm) closeForm();
-      reset();
+      if (closeForm) closeForm(); 
+      reset(); 
     } catch (error) {
       console.error("Error sending review:", error);
     }
@@ -104,7 +101,7 @@ const ReviewForm: React.FC<MovieProps> = ({ id, closeForm }) => {
               margin="normal"
               required
               fullWidth
-              label="Review text"
+              label="Review content text"
               multiline
               minRows={10}
             />
@@ -113,22 +110,6 @@ const ReviewForm: React.FC<MovieProps> = ({ id, closeForm }) => {
         {errors.content && (
           <Typography variant="h6">{errors.content.message}</Typography>
         )}
-
-        <TextField
-          id="select-rating"
-          select
-          variant="outlined"
-          label="Rating Select"
-          value={rating}
-          onChange={handleRatingChange}
-          helperText="Don't forget your rating"
-        >
-          {ratings.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
-              {option.label}
-            </MenuItem>
-          ))}
-        </TextField>
 
         <Box>
           <Button type="submit" variant="contained" color="primary" sx={styles.submit}>
