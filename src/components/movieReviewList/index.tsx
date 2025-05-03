@@ -10,9 +10,14 @@ interface MovieReviewListProps {
 
 const MovieReviewList: React.FC<MovieReviewListProps> = ({ reviews, action }) => {
   return (
-    <Grid container spacing={3} justifyContent="center">
+    <Grid 
+      container 
+      spacing={3} 
+      justifyContent="flex-start" 
+      sx={{ paddingLeft: 2, paddingTop: 2 }}
+    >
       {reviews.map((review) => (
-        <Grid key={review.reviewId} item xs={12} sm={6} md={4} lg={3}>
+        <Grid key={review.reviewId} item xs={12} sm={6} md={6} lg={4}>
           <MovieReviewCard review={review}>
             {action && action(review)}
           </MovieReviewCard>

@@ -35,7 +35,7 @@ import AuthContextProvider from "./contexts/authContext";
 import LoginPage from "./pages/loginPage";
 import SignUpPage from "./pages/signUpPage";
 import PrivateRoute from "./components/privateRoute"; 
-import MyMovieReviewsPage from "./pages/MyMovieReviewsPage";
+import MyMovieReviewsPage from "./pages/myMovieReviewsPage";
 import { MovieReviewsProvider } from "./contexts/moviereviewsContext"; // Import MovieReviewsProvider
 
 const queryClient = new QueryClient({

@@ -21,7 +21,6 @@ const HeaderMovieReviewsList: React.FC<HeaderMovieReviewsListProps> = ({
   onForward,
 }) => {
   const navigate = useNavigate();
-
   const handleBack = onBack || (() => navigate(-1));
   const handleForward = onForward || (() => navigate(1));
 
@@ -33,22 +32,30 @@ const HeaderMovieReviewsList: React.FC<HeaderMovieReviewsListProps> = ({
         flexDirection: "column",
         alignItems: "center",
         padding: 2,
-        marginBottom: 3,
-        backgroundColor: "#f5f5f5",
-        borderRadius: "12px",
+        marginBottom: 2,
       }}
     >
-      <Box sx={{ display: "flex", justifyContent: "space-between", width: "100%", alignItems: "center" }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          width: "100%",
+          alignItems: "center",
+        }}
+      >
         <IconButton aria-label="go back" size="large" onClick={handleBack}>
           <ArrowBackIcon color="primary" fontSize="large" />
         </IconButton>
 
         <Box sx={{ flexGrow: 1, textAlign: "center" }}>
-          <Typography variant="h5" component="h1" noWrap>
+          <Typography variant="h5" component="h1">
             {title}
           </Typography>
           {subtitle && (
-            <Typography variant="subtitle1" sx={{ color: "gray", marginTop: 0.5 }}>
+            <Typography
+              variant="subtitle1"
+              sx={{ color: "gray", marginTop: 1 }}
+            >
               {subtitle}
             </Typography>
           )}
