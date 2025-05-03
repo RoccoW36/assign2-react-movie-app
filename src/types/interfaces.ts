@@ -281,3 +281,17 @@ export interface MovieProps {
   id: number
   closeForm: () => void
 }
+
+export interface MovieReview {
+  movieId: number;
+  reviewId: number;
+  reviewerId: string;
+  reviewDate: string;
+  content: string;
+  translations?: {
+    [language: string]: {
+      content: string;
+      lastUpdated: string;
+    };
+  };
+};

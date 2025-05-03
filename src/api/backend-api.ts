@@ -28,6 +28,21 @@ export const sendReview = (review: Review) => {
   });
 };
 
+export const getReviews = async () => {
+  const baseUrl = APIConfig.API.endpoints[0].endpoint.replace(/\/+$/, "");
+  const url = `${baseUrl}/movies/all-reviews`;
+
+  console.log("Fetching reviews from URL:", url);
+
+  return fetch(url, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+    },
+  });
+};
+
+
 export const authenticateUser = (details: SigninDetails) => {
   return fetch(`${APIConfig.API.endpoints[1].endpoint}/signin`, {
     method: "POST",

@@ -154,23 +154,36 @@ const SiteHeader: React.FC = () => {
 
           {!isMobile ? (
             <>
-              <Button color={location.pathname === homeOption.path ? "secondary" : "inherit"} onClick={() => handleMenuSelect(homeOption.path)}>Home</Button>
+              <Button color={location.pathname === homeOption.path ? "secondary" : "inherit"} onClick={() => handleMenuSelect(homeOption.path)}>
+                Home
+              </Button>
 
-              <Button color="inherit" startIcon={<MovieIcon />} onClick={(e) => setMoviesMenuAnchorEl(e.currentTarget)}>Movies</Button>
+              {/* 🔥 My Movie Reviews Button */}
+              <Button color={location.pathname === "/reviews" ? "secondary" : "inherit"} onClick={() => navigate("/reviews")}>
+                My Movie Reviews
+              </Button>
+
+              <Button color="inherit" startIcon={<MovieIcon />} onClick={(e) => setMoviesMenuAnchorEl(e.currentTarget)}>
+                Movies
+              </Button>
               <Menu anchorEl={moviesMenuAnchorEl} open={Boolean(moviesMenuAnchorEl)} onClose={() => setMoviesMenuAnchorEl(null)}>
                 {moviesMenu.map((opt) => (
                   <MenuItem key={opt.label} onClick={() => handleMenuSelect(opt.path)}>{opt.label}</MenuItem>
                 ))}
               </Menu>
 
-              <Button color="inherit" startIcon={<TvIcon />} onClick={(e) => setTVShowsMenuAnchorEl(e.currentTarget)}>TV Shows</Button>
+              <Button color="inherit" startIcon={<TvIcon />} onClick={(e) => setTVShowsMenuAnchorEl(e.currentTarget)}>
+                TV Shows
+              </Button>
               <Menu anchorEl={tvShowsMenuAnchorEl} open={Boolean(tvShowsMenuAnchorEl)} onClose={() => setTVShowsMenuAnchorEl(null)}>
                 {tvShowsMenu.map((opt) => (
                   <MenuItem key={opt.label} onClick={() => handleMenuSelect(opt.path)}>{opt.label}</MenuItem>
                 ))}
               </Menu>
 
-              <Button color="inherit" startIcon={<PersonIcon />} onClick={(e) => setActorsMenuAnchorEl(e.currentTarget)}>Actors</Button>
+              <Button color="inherit" startIcon={<PersonIcon />} onClick={(e) => setActorsMenuAnchorEl(e.currentTarget)}>
+                Actors
+              </Button>
               <Menu anchorEl={actorsMenuAnchorEl} open={Boolean(actorsMenuAnchorEl)} onClose={() => setActorsMenuAnchorEl(null)}>
                 {actorsMenu.map((opt) => (
                   <MenuItem key={opt.label} onClick={() => handleMenuSelect(opt.path)}>{opt.label}</MenuItem>
