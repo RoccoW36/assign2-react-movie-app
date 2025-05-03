@@ -36,7 +36,7 @@ import LoginPage from "./pages/loginPage";
 import SignUpPage from "./pages/signUpPage";
 import PrivateRoute from "./components/privateRoute"; 
 import MyMovieReviewsPage from "./pages/myMovieReviewsPage";
-import { MovieReviewsProvider } from "./contexts/moviereviewsContext"; // Import MovieReviewsProvider
+import { MovieReviewsProvider } from "./contexts/moviereviewsContext";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -57,7 +57,6 @@ const App = () => {
             <ActorsContextProvider>
               <TVShowsContextProvider>
                 <FantasyMoviesContextProvider>
-                  {/* Wrap the routes where MovieReviewsContext is needed */}
                   <MovieReviewsProvider>
                     <Routes>
                       <Route path="/" element={<HomePage />} />
@@ -72,8 +71,6 @@ const App = () => {
 
                       {/* Public Review Routes */}
                       <Route path="/reviews/:id" element={<MovieReviewPage />} />
-                      <Route path="/reviews/form" element={<AddMovieReviewPage />} />
-                      <Route path="/reviews" element={<MyMovieReviewsPage />} />
 
                       {/* Public Actor Routes */}
                       <Route path="/actors" element={<PopularActorsPage />} />
@@ -97,6 +94,8 @@ const App = () => {
                       {/* Private Routes: Only signed-in users can access */}
                       <Route path="/movies/fantasy/new" element={<PrivateRoute><AddFantasyMoviePage /></PrivateRoute>} />
                       <Route path="/movies/fantasy/:id" element={<PrivateRoute><FantasyMovieDetailsPage /></PrivateRoute>} />
+                      <Route path="/reviews" element={<PrivateRoute><MyMovieReviewsPage /></PrivateRoute>} />
+                      <Route path="/reviews/form" element={<PrivateRoute><AddMovieReviewPage /></PrivateRoute>} />
 
                       {/* Authentication Routes */}
                       <Route path="/login" element={<LoginPage />} />

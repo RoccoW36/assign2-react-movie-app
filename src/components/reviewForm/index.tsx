@@ -4,20 +4,34 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 
 import { sendReview } from "../../api/backend-api";
-import { MovieProps, Review } from "../../types/interfaces";
+import { Review } from "../../types/interfaces";
 import { useAuth } from "../../contexts/authContext";
 
 import styles from "./styles";
 
-const ReviewForm: React.FC<MovieProps> = ({ id, closeForm }) => {
+interface ReviewFormProps {
+  id: number;
+  closeForm: () => void;
+}
+
+const ReviewForm: React.FC<ReviewFormProps> = ({ id, closeForm }) => {
   const { control, handleSubmit, reset, formState: { errors } } = useForm<Review>();
   const navigate = useNavigate();
   const { token } = useAuth();
+  const location = useLocation();
+
+  const movieId = id || location.state?.movieId || sessionStorage.getItem("movieId");
+
+  if (!movieId) {
+    console.error("No movieId found—handling gracefully.");
+    return <Typography variant="h6">Error: No movie found for review</Typography>;
+  }
+
   const [open, setOpen] = useState<boolean>(false);
 
   const handleSnackClose = () => {
@@ -32,18 +46,17 @@ const ReviewForm: React.FC<MovieProps> = ({ id, closeForm }) => {
     }
 
     const reviewPayload = {
-      movieId: id,
+      movieId,
       reviewerId: review.reviewerId,
       reviewDate: new Date().toISOString().split("T")[0],
       content: review.content,
     };
 
     try {
-    
       await sendReview(reviewPayload);
       setOpen(true);
-      if (closeForm) closeForm(); 
-      reset(); 
+      reset();
+      if (closeForm) closeForm();
     } catch (error) {
       console.error("Error sending review:", error);
     }

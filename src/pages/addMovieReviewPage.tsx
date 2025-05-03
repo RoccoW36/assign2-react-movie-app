@@ -9,7 +9,13 @@ import { MovieDetailsProps } from "../types/interfaces";
 
 const WriteReviewPage: React.FC = () => {
   const location = useLocation();
-  const { movieId } = location.state;
+
+  const movieId = location.state?.movieId || sessionStorage.getItem("movieId");
+
+  if (!movieId) {
+    console.error("No movieId found—handling gracefully.");
+    return <h1>Error: No movieId available</h1>;
+  }
 
   const { data: movie, error, isLoading, isError } = useQuery<MovieDetailsProps, Error>(
     ["movie", movieId],

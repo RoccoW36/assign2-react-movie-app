@@ -23,7 +23,6 @@ const MovieReviewCard: React.FC<MovieReviewCardProps> = ({ review, children }) =
       }}
     >
       <CardContent>
-        {/* Displaying the Movie ID */}
         <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1 }}>
           <strong>Movie ID:</strong> {review.movieId}
         </Typography>

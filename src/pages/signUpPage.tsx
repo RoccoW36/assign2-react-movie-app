@@ -21,8 +21,8 @@ const SignUpPage: React.FC = () => {
   const [loadingSignup, setLoadingSignup] = useState(false);
   const [loadingConfirm, setLoadingConfirm] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [isSignUpPhase, setIsSignUpPhase] = useState(true); // Toggle phase
-  const [snackBarMessage, setSnackBarMessage] = useState<string>(''); // Message for Snackbar
+  const [isSignUpPhase, setIsSignUpPhase] = useState(true);
+  const [snackBarMessage, setSnackBarMessage] = useState<string>('');
   const navigate = useNavigate();
 
   const handleSignUpSubmit = async (details: SignupDetails) => {
@@ -34,8 +34,7 @@ const SignUpPage: React.FC = () => {
       console.log("Signup successful", response);
       setSnackBarMessage('Signup successful! Please confirm your email.');
       setOpenSnackbar(true);
-      setIsSignUpPhase(false); // Switch to confirmation phase
-    } catch (error) {
+      setIsSignUpPhase(false);
       setError("Signup failed. Please try again.");
       setSnackBarMessage('Signup failed, please try again.');
       setOpenSnackbar(true);
@@ -53,7 +52,7 @@ const SignUpPage: React.FC = () => {
       console.log("Confirm Signup successful", response);
       setSnackBarMessage('Confirmation successful! Redirecting to login...');
       setOpenSnackbar(true);
-      navigate("/login"); // Navigate to login after confirmation
+      navigate("/login"); 
     } catch (error) {
       setError("Confirmation failed. Please try again.");
       setSnackBarMessage('Confirmation failed, please try again.');
@@ -86,7 +85,7 @@ const SignUpPage: React.FC = () => {
                   e.preventDefault();
                   handleSignUpSubmit(signupDetails);
                 }}
-                loading={loadingSignup} // Pass loading state here
+                loading={loadingSignup}
               />
               {loadingSignup && <CircularProgress sx={{ mt: 2 }} />}
             </>

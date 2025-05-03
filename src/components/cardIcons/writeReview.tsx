@@ -1,6 +1,6 @@
 import React from "react";
 import RateReviewIcon from "@mui/icons-material/RateReview";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export interface WriteReviewIconProps {
   movieId?: number;
@@ -8,16 +8,22 @@ export interface WriteReviewIconProps {
 }
 
 const WriteReviewIcon: React.FC<WriteReviewIconProps> = ({ movieId, tvShowId }) => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    if (movieId) {
+      sessionStorage.setItem("movieId", movieId.toString());
+    }
+    navigate("/reviews/form", movieId ? { state: { movieId, tvShowId } } : undefined);
+  };
+
   return (
-    <Link
-      to={'/reviews/form'}
-      state={{
-        movieId: movieId,
-        tvShowId: tvShowId
-      }}
-    >
-      <RateReviewIcon color="primary" fontSize="large" />
-    </Link>
+    <RateReviewIcon 
+      color="primary" 
+      fontSize="large" 
+      style={{ cursor: "pointer" }} 
+      onClick={handleClick}
+    />
   );
 };
 

@@ -279,7 +279,7 @@ export interface FantasyMovieContextType {
 
 export interface MovieProps {
   id: number
-  closeForm: () => void
+  closeForm?: () => void
 }
 
 export interface MovieReview {

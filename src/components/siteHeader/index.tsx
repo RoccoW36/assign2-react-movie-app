@@ -158,10 +158,14 @@ const SiteHeader: React.FC = () => {
                 Home
               </Button>
 
-              {/* 🔥 My Movie Reviews Button */}
-              <Button color={location.pathname === "/reviews" ? "secondary" : "inherit"} onClick={() => navigate("/reviews")}>
-                My Movie Reviews
-              </Button>
+              {isSignedin && (
+                <Button
+                  color={location.pathname === "/reviews" ? "secondary" : "inherit"}
+                  onClick={() => navigate("/reviews")}
+                >
+                  My Movie Reviews
+                </Button>
+              )}
 
               <Button color="inherit" startIcon={<MovieIcon />} onClick={(e) => setMoviesMenuAnchorEl(e.currentTarget)}>
                 Movies

@@ -1,13 +1,5 @@
 import React, { useState } from "react";
-import {
-  Box,
-  Paper,
-  Typography,
-  Snackbar,
-  Alert,
-  CircularProgress,
-  Container
-} from "@mui/material";
+import { Box, Paper, Typography, Snackbar, Alert, CircularProgress, Container, Button } from "@mui/material";
 import { LoginForm } from "../components/auth";
 import { authenticateUser } from "../api/backend-api";
 import { SigninDetails } from "../types/interfaces";
@@ -62,7 +54,16 @@ const LoginPage: React.FC = () => {
     setOpenSnackbar(false);
     if (loginSuccess) {
       const redirectTo = location.state?.from || "/movies/fantasy";
-      navigate(redirectTo);
+      
+      const movieId = sessionStorage.getItem("movieId");
+
+      if (redirectTo === "/reviews/form" && movieId) {
+        navigate(redirectTo, { state: { movieId } });
+      } else {
+        navigate(redirectTo);
+      }
+
+      if (movieId) sessionStorage.removeItem("movieId");
     }
   };
 
@@ -96,6 +97,18 @@ const LoginPage: React.FC = () => {
           />
 
           {loading && <CircularProgress sx={{ mt: 2 }} />}
+
+          {/* Link to sign up page */}
+          {!loginSuccess && (
+            <Button
+              variant="text"
+              color="primary"
+              sx={{ mt: 2 }}
+              onClick={() => navigate("/signup")}
+            >
+              Don't have an account? Sign up
+            </Button>
+          )}
         </Paper>
       </Container>
 

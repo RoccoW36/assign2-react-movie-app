@@ -6,7 +6,7 @@ interface SignUpFormProps {
   form: SignupDetails;
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleSubmit: (e: React.FormEvent) => void;
-  loading: boolean; // The loading prop is now passed from parent
+  loading: boolean;
 }
 
 const SignUpForm: React.FC<SignUpFormProps> = ({ form, handleChange, handleSubmit, loading }) => {
