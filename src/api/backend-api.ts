@@ -6,27 +6,24 @@ import {
   Review
 } from "../types/interfaces";
 
-export const sendReview = (review: Review) => {
-  const token = localStorage.getItem("token");
-  if (!token) {
-    throw new Error("No token found. Please sign in first.");
-  }
+export const sendReview = (review: Review, authToken: string) => {
   const movieId = review.movieId;
   const baseUrl = APIConfig.API.endpoints[0].endpoint.replace(/\/+$/, "");
   const url = `${baseUrl}/movies/${movieId}/reviews`;
   console.log("Sending review to URL:", url);
-  console.log("Authorization Token:", token);
 
   return fetch(url, {
     method: "POST",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      Cookie: `token=${authToken}; Path=/; HttpOnly; Secure`,
     },
     body: JSON.stringify(review),
   });
 };
+
+
 
 export const getReviews = async () => {
   const baseUrl = APIConfig.API.endpoints[0].endpoint.replace(/\/+$/, "");

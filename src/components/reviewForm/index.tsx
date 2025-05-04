@@ -53,12 +53,13 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ id, closeForm }) => {
     };
 
     try {
-      await sendReview(reviewPayload);
+      await sendReview(reviewPayload, token);
       setOpen(true);
       reset();
       if (closeForm) closeForm();
     } catch (error) {
       console.error("Error sending review:", error);
+      setOpen(true);
     }
   };
 

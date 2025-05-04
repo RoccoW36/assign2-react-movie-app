@@ -23,6 +23,7 @@ const SignUpPage: React.FC = () => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [isSignUpPhase, setIsSignUpPhase] = useState(true);
   const [snackBarMessage, setSnackBarMessage] = useState<string>('');
+  const [snackBarSeverity, setSnackBarSeverity] = useState<"success" | "error">("success"); // New state for message type
   const navigate = useNavigate();
 
   const handleSignUpSubmit = async (details: SignupDetails) => {
@@ -32,11 +33,16 @@ const SignUpPage: React.FC = () => {
     try {
       const response = await signupUser(details);
       console.log("Signup successful", response);
+
       setSnackBarMessage('Signup successful! Please confirm your email.');
+      setSnackBarSeverity("success");
       setOpenSnackbar(true);
       setIsSignUpPhase(false);
+
+    } catch (error) {
       setError("Signup failed. Please try again.");
       setSnackBarMessage('Signup failed, please try again.');
+      setSnackBarSeverity("error");
       setOpenSnackbar(true);
     } finally {
       setLoadingSignup(false);
@@ -50,12 +56,16 @@ const SignUpPage: React.FC = () => {
     try {
       const response = await confirmSignup(details);
       console.log("Confirm Signup successful", response);
+
       setSnackBarMessage('Confirmation successful! Redirecting to login...');
+      setSnackBarSeverity("success");
       setOpenSnackbar(true);
       navigate("/login"); 
+
     } catch (error) {
       setError("Confirmation failed. Please try again.");
       setSnackBarMessage('Confirmation failed, please try again.');
+      setSnackBarSeverity("error");
       setOpenSnackbar(true);
     } finally {
       setLoadingConfirm(false);
@@ -125,7 +135,7 @@ const SignUpPage: React.FC = () => {
         autoHideDuration={6000}
         onClose={() => setOpenSnackbar(false)}
       >
-        <Alert onClose={() => setOpenSnackbar(false)} severity={error ? "error" : "success"} sx={{ width: "100%" }}>
+        <Alert onClose={() => setOpenSnackbar(false)} severity={snackBarSeverity} sx={{ width: "100%" }}>
           {snackBarMessage}
         </Alert>
       </Snackbar>
