@@ -1,13 +1,13 @@
 import { StoryFn, Meta } from "@storybook/react";
-import MovieDetails from "../components/movieDetails";
-import SampleMovie from "./sampleMovieData";
+import MovieReviews from "../components/movieReviews";
 import { MemoryRouter } from "react-router";
+import SampleMovie from "./sampleMovieData";
 import MoviesContextProvider from "../contexts/moviesContext";
 import { MovieDetailsProps } from "../types/interfaces";
 
 export default {
-  title: "Movie Details Page/MovieDetails",
-  component: MovieDetails,
+  title: "Movie Details Page/MovieReviews",
+  component: MovieReviews,
   decorators: [
     (Story: StoryFn) => (
       <MemoryRouter initialEntries={["/"]}>
@@ -22,7 +22,7 @@ export default {
   ],
 } as Meta;
 
-export const Basic: StoryFn<MovieDetailsProps> = (args: MovieDetailsProps) => <MovieDetails {...args} />;
+export const Basic: StoryFn<MovieDetailsProps> = (args: MovieDetailsProps) => <MovieReviews {...args} />;
 
 Basic.args = {
   ...SampleMovie,

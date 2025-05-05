@@ -1,24 +1,27 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj, StoryFn } from "@storybook/react";
 import MovieHeader from "../components/headerMovie";
 import SampleMovie from "./sampleMovieData";
 import { MemoryRouter } from "react-router";
-import React from 'react';
+import { MovieDetailsProps } from "../types/interfaces";
 
-const meta = {
-    title: "Movie Details Page/MovieHeader",
-    component: MovieHeader,
-    decorators: [
-        (Story: React.FC) => <MemoryRouter initialEntries={["/"]}><Story /></MemoryRouter>,
-    ],
-} satisfies Meta<typeof MovieHeader>;
+const meta: Meta<typeof MovieHeader> = {
+  title: "Movie Details Page/MovieHeader",
+  component: MovieHeader,
+  decorators: [
+    (Story: StoryFn) => (
+      <MemoryRouter initialEntries={["/"]}>
+        <Story />
+      </MemoryRouter>
+    ),
+  ],
+};
 
 export default meta;
 
-type Story = StoryObj<typeof meta>;
-
-export const Basic: Story = {
-    args: {
-        movie: SampleMovie
-    }
+export const Basic: StoryObj<MovieDetailsProps> = {
+  args: {
+    ...SampleMovie,
+  },
 };
+
 Basic.storyName = "Default";

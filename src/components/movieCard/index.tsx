@@ -29,7 +29,7 @@ const styles = {
   },
 };
 
-interface MovieCardProps  {
+export interface MovieCardProps  {
   movie: BaseMovieProps;
   action: (m: BaseMovieProps) => React.ReactNode;
 }

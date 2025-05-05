@@ -54,16 +54,14 @@ const LoginPage: React.FC = () => {
     setOpenSnackbar(false);
     if (loginSuccess) {
       const redirectTo = location.state?.from || "/movies/fantasy";
-      
-      const movieId = sessionStorage.getItem("movieId");
-
-      if (redirectTo === "/reviews/form" && movieId) {
-        navigate(redirectTo, { state: { movieId } });
+  
+      if (location.state?.from === "/movies/favourites") {
+        navigate("/movies/favourites");
+      } else if (location.state?.from === "/movies/fantasy") {
+        navigate("/movies/fantasy");
       } else {
         navigate(redirectTo);
       }
-
-      if (movieId) sessionStorage.removeItem("movieId");
     }
   };
 
@@ -98,7 +96,6 @@ const LoginPage: React.FC = () => {
 
           {loading && <CircularProgress sx={{ mt: 2 }} />}
 
-          {/* Link to sign up page */}
           {!loginSuccess && (
             <Button
               variant="text"

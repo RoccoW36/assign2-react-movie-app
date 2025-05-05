@@ -1,44 +1,49 @@
-import { Meta, StoryObj } from '@storybook/react';
-import ActorList from '../components/actorList';
-import { BaseActorProps } from '../types/interfaces';
+import ActorList from "../components/actorList";
+import SampleActor from "./sampleActorData";
+import { MemoryRouter } from "react-router";
+import AddToActorFavouritesIcon from "../components/cardIcons/addToActorFavourites";
+import Grid from "@mui/material/Grid";
+import ActorContextProvider from "../contexts/actorsContext";
+import { StoryFn, Meta } from "@storybook/react";
 
-const meta: Meta<typeof ActorList> = {
+export default {
+  title: "Actor List/ActorList",
   component: ActorList,
-  title: 'Components/ActorList',
+  decorators: [
+    (Story: StoryFn, context) => (
+      <MemoryRouter initialEntries={["/"]}>
+        <Story {...context.args} />
+      </MemoryRouter>
+    ),
+    (Story: StoryFn, context) => (
+      <ActorContextProvider>
+        <Story {...context.args} />
+      </ActorContextProvider>
+    ),
+  ],
+  argTypes: {
+    actors: { control: "object" },
+  },
+} as Meta;
+
+export const Basic: StoryFn = (args) => {
+  const actors = [
+    { ...SampleActor, id: 1 },
+    { ...SampleActor, id: 2 },
+    { ...SampleActor, id: 3 },
+    { ...SampleActor, id: 4 },
+    { ...SampleActor, id: 5 },
+  ];
+
+  return (
+    <Grid container spacing={5}>
+      <ActorList
+        actors={actors}
+        action={(actor) => <AddToActorFavouritesIcon actor={actor} />}
+        {...args}
+      />
+    </Grid>
+  );
 };
 
-export default meta;
-
-type Story = StoryObj<typeof ActorList>;
-
-const sampleActors: BaseActorProps[] = [
-  {
-    id: 1,
-    name: 'John Doe',
-    profile_path: '/sample-path-1.jpg',
-    gender: 2,
-    popularity: 8.5,
-    known_for_department: 'Acting',
-    known_for: [
-      { id: 101, title: 'Action Movie', name: 'Action Movie', media_type: 'movie' },
-    ],
-  },
-  {
-    id: 2,
-    name: 'Jane Smith',
-    profile_path: '/sample-path-2.jpg',
-    gender: 1,
-    popularity: 7.8,
-    known_for_department: 'Directing', 
-    known_for: [
-      { id: 102, title: 'Drama Series', name: 'Drama Series', media_type: 'series' },
-    ],
-  },
-];
-
-export const Default: Story = {
-  args: {
-    actors: sampleActors,
-    action: () => <button>Sample Action</button>,
-  },
-};
+Basic.storyName = "Default";

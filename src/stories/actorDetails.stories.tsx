@@ -1,32 +1,48 @@
-import { Meta, StoryObj } from '@storybook/react';
-import ActorDetails from '../components/actorDetails';
-import { ActorDetailsProps } from '../types/interfaces';
+import type { Meta, StoryFn } from "@storybook/react";
+import ActorDetails from "../components/actorDetails";
+import SampleActor from "./sampleActorData";
+import { MemoryRouter } from "react-router";
+import ActorContextProvider from "../contexts/actorsContext";
+import type { BaseActorProps } from "../types/interfaces";
 
 const meta: Meta<typeof ActorDetails> = {
+  title: "Actor Details Page/ActorDetails",
   component: ActorDetails,
-  title: 'Components/ActorDetails',
+  decorators: [
+    (Story: StoryFn) => (
+      <MemoryRouter initialEntries={["/"]}>
+        <Story />
+      </MemoryRouter>
+    ),
+    (Story: StoryFn) => (
+      <ActorContextProvider>
+        <Story />
+      </ActorContextProvider>
+    ),
+  ],
 };
 
 export default meta;
 
-type Story = StoryObj<typeof ActorDetails>;
+export const Basic: StoryFn = () => (
+  <ActorDetails
+    actor={{
+      ...SampleActor,
+      biography: "Some biography text here",
+      known_for: SampleActor.known_for || [],
+    } as BaseActorProps & { biography: string; known_for: { id: number; title?: string; name?: string; media_type?: string }[] }}
+  />
+);
+Basic.storyName = "NoDeathDay";
 
-const sampleActor: ActorDetailsProps = {
-  id: 1,
-  name: 'John Doe',
-  biography: 'This is a sample biography for John Doe.',
-  birthday: '1980-01-01',
-  place_of_birth: 'New York, USA',
-  gender: 2,
-  known_for_department: 'Acting',
-  known_for: [
-    { id: 101, title: 'Action Movie', name: 'Action Movie', media_type: 'movie' },
-  ],
-  popularity: 8.5,
-};
-
-export const Default: Story = {
-  args: {
-    actor: sampleActor,
-  },
-};
+export const Alternate: StoryFn = () => (
+  <ActorDetails
+    actor={{
+      ...SampleActor,
+      biography: "Some biography text here", 
+      deathday: "2022-12-31",
+      known_for: SampleActor.known_for || [],
+    } as BaseActorProps & { biography: string; deathday: string; known_for: { id: number; title?: string; name?: string; media_type?: string }[] }}
+  />
+);
+Alternate.storyName = "WithDeathDay";

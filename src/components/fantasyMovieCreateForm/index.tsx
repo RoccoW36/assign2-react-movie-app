@@ -164,7 +164,7 @@ const FantasyMovieForm: React.FC = () => {
           </Box>
         </Box>
 
-        <Typography variant="h6" mt={3}>Add Actors</Typography>
+        <Typography variant="h6" mt={3}>Add Cast</Typography>
         <TextField
           label="Search for People"
           variant="outlined"

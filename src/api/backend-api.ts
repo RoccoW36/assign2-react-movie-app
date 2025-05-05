@@ -6,21 +6,31 @@ import {
   Review
 } from "../types/interfaces";
 
-export const sendReview = (review: Review, authToken: string) => {
+export const sendReview = async (review: Review) => {
   const movieId = review.movieId;
   const baseUrl = APIConfig.API.endpoints[0].endpoint.replace(/\/+$/, "");
   const url = `${baseUrl}/movies/${movieId}/reviews`;
-  console.log("Sending review to URL:", url);
 
-  return fetch(url, {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      Cookie: `token=${authToken}; Path=/; HttpOnly; Secure`,
-    },
-    body: JSON.stringify(review),
-  });
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(review),
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to send review');
+    }
+
+    return response.json(); 
+  } catch (err) {
+    console.log('Error while adding a review:', err);
+    throw err;
+  }
 };
 
 

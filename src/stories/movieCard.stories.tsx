@@ -1,42 +1,47 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import { StoryFn, Meta } from "@storybook/react";
 import MovieCard from "../components/movieCard";
-import SampleMovie from "./sampleMovieData"; 
+import SampleMovie from "./sampleMovieData";
 import { MemoryRouter } from "react-router";
 import MoviesContextProvider from "../contexts/moviesContext";
 import AddToFavouritesIcon from "../components/cardIcons/addToFavourites";
+import { MovieCardProps } from "../components/movieCard";
 
-const meta = {
-  title: 'Home Page/MovieCard',
+export default {
+  title: "Home Page/MovieCard",
   component: MovieCard,
   decorators: [
-    (Story) => <MemoryRouter initialEntries={["/"]}>{Story()}</MemoryRouter>,
-    (Story) => <MoviesContextProvider>{Story()}</MoviesContextProvider>,
+    (Story: StoryFn) => (
+      <MemoryRouter initialEntries={["/"]}>
+        <Story />
+      </MemoryRouter>
+    ),
+    (Story: StoryFn) => (
+      <MoviesContextProvider>
+        <Story />
+      </MoviesContextProvider>
+    ),
   ],
-} satisfies Meta<typeof MovieCard>;
+} as Meta<typeof MovieCard>;
 
-export default meta;
+export const Basic: StoryFn<MovieCardProps> = (args) => (
+  <MovieCard {...args} />
+);
 
-type Story = StoryObj<typeof meta>;
-
-const sampleMovieWithProductionCountry = {
-  ...SampleMovie,
-  production_country: [SampleMovie.production_countries[0]],
+Basic.args = {
+  movie: SampleMovie,
+  action: (movie) => <AddToFavouritesIcon {...movie} />,
 };
 
-export const Basic: Story = {
-  args: {
-    action: (movie) => <AddToFavouritesIcon {...movie} />,
-    movie: sampleMovieWithProductionCountry,
-  }
-};
-Basic.storyName = "Default";
+export const Exceptional: StoryFn<MovieCardProps> = (args) => (
+  <MovieCard {...args} />
+);
 
-const sampleNoPoster = { ...sampleMovieWithProductionCountry, poster_path: undefined };
-export const Exceptional: Story = {
-  args: {
-    movie: sampleNoPoster,
-    action: (movie) => <AddToFavouritesIcon {...movie} />,
-  }
+Exceptional.args = {
+  movie: {
+    ...SampleMovie,
+    poster_path: undefined,
+  },
+  action: (movie) => <AddToFavouritesIcon {...movie} />,
 };
+
 Exceptional.storyName = "Exception";
-

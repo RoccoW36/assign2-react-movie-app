@@ -1,50 +1,58 @@
 import React from "react";
 import SiteHeader from "../components/siteHeader";
 import { MemoryRouter } from "react-router";
-import type { Meta, StoryObj } from '@storybook/react';
+import AuthProvider from "../contexts/authContext";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 
-const meta = {
+const darkModeTheme = createTheme({
+  palette: {
+    mode: "dark",
+    primary: {
+      main: "#1976d2",
+    },
+    background: {
+      default: "#121212",
+    },
+  },
+});
+
+const lightModeTheme = createTheme({
+  palette: {
+    mode: "light",
+    primary: {
+      main: "#6c5ce7",
+    },
+    background: {
+      default: "#fff",
+    },
+  },
+});
+
+export default {
   title: "App Header",
   component: SiteHeader,
   decorators: [
     (Story: React.FC) => (
       <MemoryRouter initialEntries={["/"]}>
-        <ThemeProvider theme={createTheme()}>
+        <AuthProvider>
           <Story />
-        </ThemeProvider>
+        </AuthProvider>
       </MemoryRouter>
     ),
   ],
-  parameters: {
-    layout: 'fullscreen',
-  },
-} satisfies Meta<typeof SiteHeader>;
-
-export default meta;
-
-type Story = StoryObj<typeof meta>;
-
-export const Basic: Story = {
-  args: {},
 };
+
+export const Basic = () => <SiteHeader />;
 Basic.storyName = "Default";
 
-export const DarkMode: Story = {
-  args: {},
-  parameters: {
-    backgrounds: { default: 'dark' },
-  },
-};
+export const LightMode = () => (
+  <ThemeProvider theme={lightModeTheme}>
+    <SiteHeader />
+  </ThemeProvider>
+);
 
-DarkMode.storyName = "Dark Mode";
-
-export const Mobile: Story = {
-  args: {},
-  parameters: {
-    viewport: {
-      defaultViewport: 'mobile1',
-    },
-  },
-};
-Mobile.storyName = "Mobile View";
+export const DarkMode = () => (
+  <ThemeProvider theme={darkModeTheme}>
+    <SiteHeader />
+  </ThemeProvider>
+);

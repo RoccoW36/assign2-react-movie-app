@@ -1,32 +1,37 @@
-import { Meta, StoryObj } from '@storybook/react';
-import ActorCard from '../components/actorCard';
-import { BaseActorProps } from '../types/interfaces';
+import type { Meta, StoryFn } from "@storybook/react";
+import ActorCard from "../components/actorCard";
+import SampleActor from "./sampleActorData";
+import { MemoryRouter } from "react-router";
+import ActorContextProvider from "../contexts/actorsContext";
+import AddToActorFavouritesIcon from "../components/cardIcons/addToActorFavourites";
+import type { BaseActorProps } from "../types/interfaces";
 
 const meta: Meta<typeof ActorCard> = {
+  title: "Actor List/ActorCard",
   component: ActorCard,
-  title: 'Components/ActorCard',
+  decorators: [
+    (Story: StoryFn) => <MemoryRouter initialEntries={["/"]}>{<Story />}</MemoryRouter>,
+    (Story: StoryFn) => <ActorContextProvider>{<Story />}</ActorContextProvider>,
+  ],
 };
 
 export default meta;
 
-type Story = StoryObj<typeof ActorCard>;
+export const Basic: StoryFn = () => (
+  <ActorCard
+    actor={SampleActor}
+    action={(actor: BaseActorProps) => <AddToActorFavouritesIcon actor={actor} />}
+  />
+);
+Basic.storyName = "Default";
 
-const sampleActor: BaseActorProps = {
-  id: 1,
-  name: 'John Doe',
-  profile_path: '/sample-path.jpg',
-  gender: 2,
-  popularity: 8.5,
-  known_for_department: 'Acting',
-  known_for: [
-    { id: 101, title: 'Sample Movie', name: 'Sample Movie' },
-    { id: 102, title: 'Another Movie', name: 'Another Movie' },
-  ],
+export const Exceptional: StoryFn = () => {
+  const sampleNoProfile = { ...SampleActor, profile_path: undefined };
+  return (
+    <ActorCard
+      actor={sampleNoProfile}
+      action={(actor: BaseActorProps) => <AddToActorFavouritesIcon actor={actor} />}
+    />
+  );
 };
-
-export const Default: Story = {
-  args: {
-    actor: sampleActor,
-    action: () => <button>Sample Action</button>,
-  },
-};
+Exceptional.storyName = "exception";

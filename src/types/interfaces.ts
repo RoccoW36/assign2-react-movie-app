@@ -16,7 +16,7 @@ export interface BaseMovieProps {
   favourite?: boolean;
   genre_ids?: number[];
   production_country: production_country[];
-  image?: string; 
+  image?: string;
 }
 
 export interface BaseMovieListProps {

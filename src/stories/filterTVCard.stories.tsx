@@ -1,4 +1,4 @@
-import FilterMoviesCard from "../components/filterMoviesCard";
+import FilterTVCard from "../components/filterTVShowsCard";
 import { MemoryRouter } from "react-router";
 import { action } from "@storybook/addon-actions";
 import { QueryClientProvider, QueryClient } from "react-query";
@@ -15,8 +15,8 @@ const queryClient = new QueryClient({
 });
 
 export default {
-  title: "Discover Movie Page/FilterMoviesCard",
-  component: FilterMoviesCard,
+  title: "Discover TV Page/FilterTVCard",
+  component: FilterTVCard,
   decorators: [
     (Story: StoryFn) => (
       <MemoryRouter initialEntries={["/"]}>
@@ -33,7 +33,7 @@ export default {
 
 export const Basic = () => {
   return (
-    <FilterMoviesCard
+    <FilterTVCard
       titleFilter=""
       genreFilter=""
       ratingFilter=""
