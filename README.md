@@ -1,4 +1,4 @@
-# 🎬 Movie Review App – A Full-Stack React SPA
+# 🎬 Movies App – A Full-Stack React SPA
 
 **Author:** Martin Walsh  
 **Demo:** [YouTube Walkthrough](to be added when recorded)
