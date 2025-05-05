@@ -6,7 +6,14 @@ import {
   Review
 } from "../types/interfaces";
 
-export const sendReview = async (review: Review) => {
+export const sendReview = async (review: Review, token: string) => {
+  if (!token) {
+    throw new Error("No token found, user might not be signed in.");
+  }
+
+  // Set the token as a cookie
+  document.cookie = `token=${token}; Path=/; Secure; SameSite=None; Max-Age=3600`;
+
   const movieId = review.movieId;
   const baseUrl = APIConfig.API.endpoints[0].endpoint.replace(/\/+$/, "");
   const url = `${baseUrl}/movies/${movieId}/reviews`;
@@ -17,22 +24,24 @@ export const sendReview = async (review: Review) => {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`, // Token sent as Authorization header
       },
       body: JSON.stringify(review),
-      credentials: "include",
+      credentials: "include", 
     });
 
     if (!response.ok) {
-      throw new Error('Failed to send review');
+      const errorText = await response.text();
+      console.error("Server responded with:", errorText);
+      throw new Error("Failed to send review");
     }
 
-    return response.json(); 
+    return response.json();
   } catch (err) {
-    console.log('Error while adding a review:', err);
+    console.error("Error while adding a review:", err);
     throw err;
   }
 };
-
 
 
 export const getReviews = async () => {
