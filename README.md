@@ -1,30 +1,103 @@
-# React + TypeScript + Vite
+# 🎬 Movie Review App – A Full-Stack React SPA
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Author:** Martin Walsh  
+**Demo:** [YouTube Walkthrough](https://www.youtube.com/watch?v=ZcYaq3EdJCw)
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Overview
 
-## Expanding the ESLint configuration
+A full-featured single-page application (SPA) built with **React + TypeScript** that enables users to explore movies, TV shows, and actors via **TMDB**, write and manage reviews, and contribute to a **community fantasy movie** catalog. Authenticated features are powered by a **custom backend (AWS Cognito + Lambda + DynamoDB)**.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+---
 
-- Configure the top-level `parserOptions` property like this:
+## 🧰 Tech Stack
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
+### Frontend
+- Vite + React + TypeScript
+- Tailwind CSS
+- React Router
+- React Query
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+### Backend / APIs
+- AWS Cognito – user authentication
+- AWS Lambda + API Gateway – REST API
+- DynamoDB – stores reviews and fantasy movies
+- TMDB – external data source
+
+### Tooling
+- React Query DevTools
+- ESLint + Prettier
+- Context API
+- Private routes for protected access
+
+---
+
+
+---
+
+## 🗺️ Routing Overview
+
+| Path | Access | Description |
+|------|--------|-------------|
+| `/` | Public | Home page (movie list) |
+| `/movies/:id` | Public | Movie details |
+| `/movies/favourites` | Public | Favourite movies |
+| `/movies/mustwatch` | Public | Must-watch list |
+| `/movies/upcoming` | Public | Upcoming movies |
+| `/movies/nowplaying` | Public | Now playing |
+| `/movies/toprated` | Public | Top rated |
+| `/movies/fantasy` | Public | Community fantasy movies |
+| `/movies/fantasy/new` | Private | Add fantasy movie |
+| `/movies/fantasy/:id` | Private | Fantasy movie detail |
+| `/tv` | Public | Discover TV shows |
+| `/tv/:id` | Public | TV show details |
+| `/tv/airingtoday` | Public | Airing today |
+| `/tv/toprated` | Public | Top rated shows |
+| `/tv/favourites` | Public | Favourite TV shows |
+| `/tv/mustwatch` | Public | Must-watch TV shows |
+| `/actors` | Public | Popular actors |
+| `/actors/:id` | Public | Actor details |
+| `/actors/favourites` | Public | Favourite actors |
+| `/reviews/:id` | Public | Read a movie review |
+| `/reviews/form` | Private | Submit a new review |
+| `/reviews` | Private | My submitted reviews |
+| `/search` | Public | Search all TMDB content |
+| `/login` / `/signup` | Public | Auth pages |
+
+---
+
+## 🔐 Authentication
+
+- Uses **AWS Cognito** for registration, confirmation, login
+- JWT token stored in localStorage
+- Auth context handles login state
+- Protected routes gated by `<PrivateRoute />` component
+
+---
+
+## 🌐 API Overview
+
+### 🔸 Custom API (AWS Lambda)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/signup` | User signup |
+| POST | `/confirm_signup` | Confirm account |
+| POST | `/signin` | Sign in |
+| GET  | `/movies/all-reviews` | Get all reviews |
+| POST | `/movies/:movieId/reviews` | Submit a review |
+
+### 🔹 TMDB API
+
+| Resource | Endpoint |
+|----------|----------|
+| Movies | `/discover/movie`, `/movie/:id`, etc. |
+| TV Shows | `/discover/tv`, `/tv/:id`, etc. |
+| People | `/person/:id`, `/person/popular` |
+| Search | `/search/movie`, `/search/person`, `/search/tv` |
+| Genres | `/genre/movie/list` |
+| Reviews | `/movie/:id/reviews`, `/tv/:id/reviews` |
+
+> My TMDB API key is stored via Vite's env:
+```env
