@@ -1,7 +1,7 @@
 # 🎬 Movie Review App – A Full-Stack React SPA
 
 **Author:** Martin Walsh  
-**Demo:** [YouTube Walkthrough](https://www.youtube.com/watch?v=ZcYaq3EdJCw)
+**Demo:** [YouTube Walkthrough](to be added when recorded)
 
 ---
 
@@ -27,7 +27,7 @@ A full-featured single-page application (SPA) built with **React + TypeScript** 
 
 ### Tooling
 - React Query DevTools
-- ESLint + Prettier
+- ESLint
 - Context API
 - Private routes for protected access
 
