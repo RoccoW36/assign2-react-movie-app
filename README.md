@@ -1,38 +1,38 @@
 # 🎬 Movies App – A Full-Stack React SPA
 
 **Author:** Martin Walsh  
-**Demo:** [YouTube Walkthrough](to be added when recorded)
+**Demo:** [YouTube Walkthrough](to be added when recorded)  
+**GitHub Repo (React)**: [GitHub Repo](https://github.com/RoccoW36/assign2-react-movie-app.git)  
+**GitHub Repo (CDK)**: [CDK Repo](https://github.com/RoccoW36/assign2-cdk-serverless-api.git)  
 
 ---
 
 ## 🚀 Overview
 
-A full-featured single-page application (SPA) built with **React + TypeScript** that enables users to explore movies, TV shows, and actors via **TMDB**, write and manage reviews, and contribute to a **community fantasy movie** catalog. Authenticated features are powered by a **custom backend (AWS Cognito + Lambda + DynamoDB)**.
+This **single-page application (SPA)** was developed using **React + TypeScript** and integrates **TMDB** API for exploring movies, TV shows, and actors. It includes user authentication via **AWS Cognito** and features a custom backend built with **AWS Lambda** and **DynamoDB**. The app supports **pagination**, **filtering**, **sorting**, and **multi-criteria search** functionalities for movie, TV series, and actor browsing.
+
+In this assignment, I extended the functionality from Assignment 1 by integrating the backend API and adding various new features, including a **fantasy movie** section, **movie reviews**, and **advanced sorting and filtering** options.
 
 ---
 
 ## 🧰 Tech Stack
 
 ### Frontend
-- Vite + React + TypeScript
-- Tailwind CSS
-- React Router
-- React Query
+- **Vite** + **React** + **TypeScript**
+- **React Router**
+- **React Query** – for state management and caching
+- **MUI (Material UI)** – for pagination and UI components
 
 ### Backend / APIs
-- AWS Cognito – user authentication
-- AWS Lambda + API Gateway – REST API
-- DynamoDB – stores reviews and fantasy movies
-- TMDB – external data source
+- **AWS Cognito** – user authentication
+- **AWS Lambda** + **API Gateway** – custom REST API
+- **DynamoDB** – stores reviews
+- **TMDB** – external data source for movies, TV shows, and actors
 
-### Tooling
-- React Query DevTools
-- ESLint
-- Context API
-- Private routes for protected access
-
----
-
+### Additional Libraries and Tools
+- **React Query DevTools** – for live query debugging
+- **Context API** – for state management (auth state)
+- **MUI Pagination** – for pagination UI
 
 ---
 
@@ -69,10 +69,10 @@ A full-featured single-page application (SPA) built with **React + TypeScript** 
 
 ## 🔐 Authentication
 
-- Uses **AWS Cognito** for registration, confirmation, login
-- JWT token stored in localStorage
-- Auth context handles login state
-- Protected routes gated by `<PrivateRoute />` component
+- **AWS Cognito** handles user registration, login, and session management.
+- JWT token stored in `localStorage` for authentication.
+- Protected routes are gated by the `<PrivateRoute />` component to ensure users can only access authenticated pages.
+- User data, including movie reviews, is stored securely in **DynamoDB**.
 
 ---
 
@@ -86,7 +86,7 @@ A full-featured single-page application (SPA) built with **React + TypeScript** 
 | POST | `/confirm_signup` | Confirm account |
 | POST | `/signin` | Sign in |
 | GET  | `/movies/all-reviews` | Get all reviews |
-| POST | `/movies/:movieId/reviews` | Submit a review |
+| POST | `/movies/:movieId/reviews` | Submit a movie review |
 
 ### 🔹 TMDB API
 
@@ -99,5 +99,38 @@ A full-featured single-page application (SPA) built with **React + TypeScript** 
 | Genres | `/genre/movie/list` |
 | Reviews | `/movie/:id/reviews`, `/tv/:id/reviews` |
 
-> My TMDB API key is stored via Vite's env:
-```env
+> API keys stored securely via Vite `.env` files
+
+---
+
+## 🧩 Features
+
+- 🔍 **Browse movies, TV shows, and actors** from TMDB
+- ✍️ **Add and read movie reviews**.
+- 🧠 **Fantasy movie builder** – create and manage fantasy movie entries (Note: fantasy movies are stored **locally**, not in the backend).
+- 🧾 **Manage personal lists** – favourites, must-watch lists.
+- 🔒 **Private routes** – certain pages only accessible to logged-in users.
+- 🗂️ **Filtering and sorting** – by genre, popularity, release date, vote average, and more.
+- 📄 **Pagination UI** – on movie, TV show, and actor listing pages.
+- 🔁 **Smooth client-side routing** for seamless transitions between pages.
+- 🧑‍🤝‍🧑 **Favourites** – allow users to mark their favourite movies, TV shows, and actors.
+
+### New Features:
+- **Fantasy Movie Creation**: Users can create fantasy movie records with limited details (Title, Overview, Genres, Release Date, Runtime, and Production Companies). These fantasy movies are stored **locally** in the frontend and are not submitted to the backend.
+- **Multi-Criteria Search**: Implemented a search feature to search movies, TV shows, and actors based on multiple criteria (genre, popularity, release year, etc.).
+- **Advanced Pagination**: Pagination integrated using MUI's `<Pagination />` component with client-side state caching via React Query for smoother and faster page transitions.
+- **Movie Reviews**: Users can submit reviews for movies, which are stored in DynamoDB for later retrieval and display on the app.
+
+---
+
+## 🔢 Pagination, Filtering & Sorting
+
+Pagination is implemented on all content listing pages (movies, TV series, actors) using **React Query** for caching and **MUI Pagination** for the UI.
+
+Key features include:
+- **Pagination**: For movie and TV show lists with dynamic page control.
+- **Advanced Filtering**: Includes filtering by genre, rating, and other criteria.
+- **Sorting**: Sort movie lists by popularity, rating, release date, etc.
+- **Multi-Criteria Search**: A form-based search to filter content based on multiple parameters.
+
+---
