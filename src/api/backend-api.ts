@@ -11,9 +11,6 @@ export const sendReview = async (review: Review, token: string) => {
     throw new Error("No token found, user might not be signed in.");
   }
 
-  // Set the token as a cookie
-  document.cookie = `token=${token}; Path=/; Secure; SameSite=None; Max-Age=3600`;
-
   const movieId = review.movieId;
   const baseUrl = APIConfig.API.endpoints[0].endpoint.replace(/\/+$/, "");
   const url = `${baseUrl}/movies/${movieId}/reviews`;
@@ -27,7 +24,7 @@ export const sendReview = async (review: Review, token: string) => {
         Authorization: `Bearer ${token}`, // Token sent as Authorization header
       },
       body: JSON.stringify(review),
-      credentials: "include", 
+      credentials: "include", // Ensures cookies are sent if needed
     });
 
     if (!response.ok) {
@@ -42,7 +39,6 @@ export const sendReview = async (review: Review, token: string) => {
     throw err;
   }
 };
-
 
 export const getReviews = async () => {
   const baseUrl = APIConfig.API.endpoints[0].endpoint.replace(/\/+$/, "");
