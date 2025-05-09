@@ -10,7 +10,6 @@ import Alert from "@mui/material/Alert";
 
 import { sendReview } from "../../api/backend-api";
 import { Review } from "../../types/interfaces";
-import { useAuth } from "../../contexts/authContext";
 
 import styles from "./styles";
 
@@ -20,9 +19,14 @@ interface ReviewFormProps {
 }
 
 const ReviewForm: React.FC<ReviewFormProps> = ({ id, closeForm }) => {
-  const { control, handleSubmit, reset, formState: { errors } } = useForm<Review>();
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<Review>({ shouldFocusError: true });
+
   const navigate = useNavigate();
-  const { token } = useAuth();
   const location = useLocation();
 
   const movieId = id || location.state?.movieId || sessionStorage.getItem("movieId");
@@ -40,11 +44,6 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ id, closeForm }) => {
   };
 
   const onSubmit: SubmitHandler<Review> = async (review) => {
-    if (!token) {
-      console.error("No token found. Please sign in.");
-      return;
-    }
-
     const reviewPayload = {
       movieId,
       reviewerId: review.reviewerId,
@@ -53,7 +52,7 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ id, closeForm }) => {
     };
 
     try {
-      await sendReview(reviewPayload, token);
+      await sendReview(reviewPayload);
       setOpen(true);
       reset();
       if (closeForm) closeForm();
@@ -82,7 +81,13 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ id, closeForm }) => {
         <Controller
           name="reviewerId"
           control={control}
-          rules={{ required: "Email address is required" }}
+          rules={{
+            required: "Email address is required",
+            pattern: {
+              value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+              message: "Please enter a valid email address",
+            },
+          }}
           defaultValue=""
           render={({ field }) => (
             <TextField
@@ -93,12 +98,12 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ id, closeForm }) => {
               required
               label="Reviewer's email"
               autoFocus
+              type="email"
+              error={!!errors.reviewerId}
+              helperText={errors.reviewerId?.message}
             />
           )}
         />
-        {errors.reviewerId && (
-          <Typography variant="h6">{errors.reviewerId.message}</Typography>
-        )}
 
         <Controller
           name="content"
@@ -118,12 +123,11 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ id, closeForm }) => {
               label="Review content text"
               multiline
               minRows={10}
+              error={!!errors.content}
+              helperText={errors.content?.message}
             />
           )}
         />
-        {errors.content && (
-          <Typography variant="h6">{errors.content.message}</Typography>
-        )}
 
         <Box>
           <Button type="submit" variant="contained" color="primary" sx={styles.submit}>

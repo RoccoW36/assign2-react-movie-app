@@ -69,32 +69,57 @@ const FantasyMovieForm: React.FC = () => {
   };
 
   const onSubmit: SubmitHandler<FormValues> = (fantasyFormData) => {
-    const newId = context.fantasy.length 
-        ? Math.max(...context.fantasy.map((m: FantasyMovie) => m.id)) + 1 
-        : 0;
-
-        const formattedFantasyMovie: FantasyMovie = {
-          ...fantasyFormData,
-          id: newId,
-          genres: selectedGenres.map(g => ({ id: g.id, name: g.name })),
-          actors: selectedActors.map(a => ({ id: a.id, name: a.name })),
-          directors: selectedDirectors.map(d => ({ id: d.id, name: d.name })),
-          image: image ?? "",
-          production_country: fantasyFormData.productionCountries ?? [],
-          budget: 0,
-          imdb_id: "",
-          vote_average: 0,
-          popularity: 0,
-          tagline: "",
-          runtime: 0,
-          revenue: 0,
-          vote_count: 0,
-          favourite: false,
-      };
-      
+    let isValid = true;
+  
+    if (selectedGenres.length === 0) {
+      isValid = false;
+      alert("At least one genre is required.");
+    }
+  
+    if (selectedActors.length === 0) {
+      isValid = false;
+      alert("At least one actor is required.");
+    }
+  
+    if (selectedDirectors.length === 0) {
+      isValid = false;
+      alert("At least one director is required.");
+    }
+  
+    if (!image) {
+      isValid = false;
+      alert("Movie poster image is required.");
+    }
+  
+    if (!isValid) return;
+  
+    const newId = context.fantasy.length
+      ? Math.max(...context.fantasy.map((m: FantasyMovie) => m.id)) + 1
+      : 0;
+  
+    const formattedFantasyMovie: FantasyMovie = {
+      ...fantasyFormData,
+      id: newId,
+      genres: selectedGenres,
+      actors: selectedActors,
+      directors: selectedDirectors,
+      image: image ?? "",
+      production_country: fantasyFormData.productionCountries ?? [],
+      budget: 0,
+      imdb_id: "",
+      vote_average: 0,
+      popularity: 0,
+      tagline: "",
+      runtime: 0,
+      revenue: 0,
+      vote_count: 0,
+      favourite: false,
+    };
+  
     context.addToFantasy(formattedFantasyMovie);
     setOpen(true);
-};
+  };
+  
 
 
   if (isLoading) return <Spinner />;

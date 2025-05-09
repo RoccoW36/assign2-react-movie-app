@@ -6,11 +6,7 @@ import {
   Review
 } from "../types/interfaces";
 
-export const sendReview = async (review: Review, token: string) => {
-  if (!token) {
-    throw new Error("No token found, user might not be signed in.");
-  }
-
+export const sendReview = async (review: Review) => {
   const movieId = review.movieId;
   const baseUrl = APIConfig.API.endpoints[0].endpoint.replace(/\/+$/, "");
   const url = `${baseUrl}/movies/${movieId}/reviews`;
@@ -21,10 +17,8 @@ export const sendReview = async (review: Review, token: string) => {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`, // Token sent as Authorization header
       },
       body: JSON.stringify(review),
-      credentials: "include", // Ensures cookies are sent if needed
     });
 
     if (!response.ok) {
@@ -39,6 +33,8 @@ export const sendReview = async (review: Review, token: string) => {
     throw err;
   }
 };
+
+
 
 export const getReviews = async () => {
   const baseUrl = APIConfig.API.endpoints[0].endpoint.replace(/\/+$/, "");
