@@ -1,18 +1,41 @@
 import React, { useEffect } from "react";
 import { useQuery } from "react-query";
-import { getAiringTodayTVShows } from "../api/tmdb-api"; 
-import PageTemplate from "../components/templateTVShowListPage"; 
-import Spinner from "../components/spinner"; 
-import Alert from "@mui/material/Alert"; 
-import TVShowFilterUI, { titleFilter, genreFilter } from "../components/TVShowFilterUI"; 
+import { getAiringTodayTVShows } from "../api/tmdb-api";
+import PageTemplate from "../components/templateTVShowListPage";
+import Spinner from "../components/spinner";
+import Alert from "@mui/material/Alert";
+import TVShowFilterUI, { titleFilter, genreFilter } from "../components/TVShowFilterUI";
 import AddToMustWatchTVShowIcon from "../components/cardIcons/addToMustWatchTVShows";
-import PaginationUI from "../components/PaginationUI"; 
-import { DiscoverTVShows, BaseTVShowProps } from "../types/interfaces"; 
-import { usePagination } from "../hooks/usePagination"; 
-import useFiltering from "../hooks/useFiltering"; 
+import PaginationUI from "../components/PaginationUI";
+import { DiscoverTVShows, BaseTVShowProps } from "../types/interfaces";
+import { usePagination } from "../hooks/usePagination";
+import useFiltering from "../hooks/useFiltering";
 
-const titleFiltering = { name: "title", value: "", condition: titleFilter };
-const genreFiltering = { name: "genre", value: "0", condition: genreFilter };
+const titleFiltering = {
+  name: "title",
+  value: "",
+  condition: titleFilter,
+};
+
+const genreFiltering = {
+  name: "genre",
+  value: "0",
+  condition: genreFilter,
+};
+
+const ratingFiltering = {
+  name: "rating",
+  value: "",
+  condition: (tvShow: BaseTVShowProps, value: string) =>
+    value ? tvShow.vote_average >= Number(value) : true,
+};
+
+const productionCountryFiltering = {
+  name: "production country",
+  value: "",
+  condition: (tvShow: BaseTVShowProps, value: string) =>
+    value ? tvShow.production_country?.some(country => country.name === value) : true,
+};
 
 const AiringTodayTVShowsPage: React.FC = () => {
   const { page, handlePageChange, totalPages, updateTotalPages } = usePagination({});
@@ -35,7 +58,12 @@ const AiringTodayTVShowsPage: React.FC = () => {
     (id) => tvShows.find((tvShow: BaseTVShowProps) => tvShow.id === id)
   );
 
-  const { filterValues, setFilterValues, filterFunction } = useFiltering([titleFiltering, genreFiltering]);
+  const { filterValues, setFilterValues, filterFunction } = useFiltering([
+    titleFiltering,
+    genreFiltering,
+    ratingFiltering,
+    productionCountryFiltering,
+  ]);
 
   const displayedTVShows = filterFunction(uniqueTVShows);
 
@@ -64,11 +92,9 @@ const AiringTodayTVShowsPage: React.FC = () => {
       <PageTemplate
         title="Airing Today TV Shows"
         tvShows={displayedTVShows}
-        action={(tvShow: BaseTVShowProps) => (
-          <AddToMustWatchTVShowIcon {...tvShow} />
-        )}
-        onBack={onBack} 
-        onForward={onForward} 
+        action={(tvShow: BaseTVShowProps) => <AddToMustWatchTVShowIcon {...tvShow} />}
+        onBack={onBack}
+        onForward={onForward}
       />
       <PaginationUI
         page={page}
@@ -76,12 +102,12 @@ const AiringTodayTVShowsPage: React.FC = () => {
         totalPages={totalPages}
       />
       <TVShowFilterUI
-       onFilterValuesChange={changeFilterValues}
-       titleFilter={filterValues.find((filter) => filter.name === "title")?.value || ""}
-       genreFilter={filterValues.find((filter) => filter.name === "genre")?.value || "0"}
-       ratingFilter={filterValues.find((filter) => filter.name === "rating")?.value || ""}
-       productionCountryFilter={filterValues.find((filter) => filter.name === "production country")?.value || ""}
-       sortOption={filterValues.find((filter) => filter.name === "sortOption")?.value || ""}
+        onFilterValuesChange={changeFilterValues}
+        titleFilter={filterValues.find((filter) => filter.name === "title")?.value || ""}
+        genreFilter={filterValues.find((filter) => filter.name === "genre")?.value || "0"}
+        ratingFilter={filterValues.find((filter) => filter.name === "rating")?.value || ""}
+        productionCountryFilter={filterValues.find((filter) => filter.name === "production country")?.value || ""}
+        sortOption={filterValues.find((filter) => filter.name === "sortOption")?.value || ""}
       />
     </>
   );

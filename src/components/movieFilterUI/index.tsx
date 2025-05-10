@@ -23,7 +23,7 @@ export const ratingFilter = (movie: BaseMovieProps, value: string): boolean =>
   value ? movie.vote_average >= Number(value) : true;
 
 export const productionCountryFilter = (movie: BaseMovieProps, value: string): boolean =>
-  value ? movie.production_country?.some(country => country.name === value) ?? false : true;
+  value ? Array.isArray(movie.production_country) && movie.production_country.some(country => country.name === value) : true;
 
 const styles = {
   fab: {

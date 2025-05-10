@@ -23,7 +23,7 @@ const SignUpPage: React.FC = () => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [isSignUpPhase, setIsSignUpPhase] = useState(true);
   const [snackBarMessage, setSnackBarMessage] = useState<string>('');
-  const [snackBarSeverity, setSnackBarSeverity] = useState<"success" | "error">("success"); // New state for message type
+  const [snackBarSeverity, setSnackBarSeverity] = useState<"success" | "error">("success");
   const navigate = useNavigate();
 
   const handleSignUpSubmit = async (details: SignupDetails) => {

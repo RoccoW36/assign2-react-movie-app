@@ -25,7 +25,7 @@ export const ratingFilter = (tvShow: BaseTVShowProps, value: string): boolean =>
 };
 
 export const productionCountryFilter = (tvShow: BaseTVShowProps, value: string): boolean => {
-  return value ? tvShow.production_country?.some(country => country.name === value) ?? false : true;
+  return value ? Array.isArray(tvShow.production_country) && tvShow.production_country.some(country => country.name === value) : true;
 };
 
 const styles = {
