@@ -1,7 +1,7 @@
 # 🎬 Movies App – A Full-Stack React SPA
 
 **Author:** Martin Walsh  
-**Demo:** [YouTube Walkthrough](to be added when recorded)  
+**Demo:** [YouTube Walkthrough](https://youtu.be/gSbar2H3hOk)  
 **GitHub Repo (React)**: [GitHub Repo](https://github.com/RoccoW36/assign2-react-movie-app.git)  
 **GitHub Repo (CDK)**: [CDK Repo](https://github.com/RoccoW36/assign2-cdk-serverless-api.git)  
 
@@ -9,9 +9,23 @@
 
 ## 🚀 Overview
 
-This **single-page application (SPA)** was developed using **React + TypeScript** and integrates **TMDB** API for exploring movies, TV shows, and actors. It includes user authentication via **AWS Cognito** and features a custom backend built with **AWS Lambda** and **DynamoDB**. The app supports **pagination**, **filtering**, **sorting**, and **multi-criteria search** functionalities for movie, TV series, and actor browsing.
+This **single-page application (SPA)** was developed using **React + TypeScript** and integrates the **TMDB** API for exploring movies, TV shows, and actors. It includes user authentication via **AWS Cognito** and features a custom backend built with **AWS Lambda** and **DynamoDB**. The app supports **pagination**, **filtering**, **sorting**, and **title-based search** functionalities for browsing movies, TV series, and actors.
 
-In this assignment, I extended the functionality from Assignment 1 by integrating the backend API and adding various new features, including a **fantasy movie** section, **movie reviews**, and **advanced sorting and filtering** options.
+### Key Features:
+- 🔍 **Browse movies, TV shows, and actors** from TMDB.
+- ✍️ **Add and read movie reviews** – submit reviews on favourite movies; read my movie reviews stored in the backend.
+- 🧠 **Fantasy movie builder** – create and manage fantasy movie entries (Note: fantasy movies are stored **locally**, not in the backend).
+- 🧾 **Manage personal lists** – mark favourites and build must-watch playlists for upcoming movies and airing TV shows.
+- 🔒 **Private routes** – certain pages only accessible to logged-in users: my movie reviews, fantasy movie details, create fantasy movie form, submit movie review form.
+- 🗂️ **Filtering and sorting** – by title/name, genre, rating, newest, popularity, and more.
+- 📄 **Pagination UI** – on movie, TV show, and actor listing pages.
+- 🔁 **Smooth client-side routing** for seamless transitions between pages.
+- 🧑‍🤝‍🧑 **Favourites** – allow users to mark their favourite movies, TV shows, and actors.
+- **Fantasy Movie Creation**: Users can create fantasy movie records with details such as Title, Overview, Genres, Release Date, Runtime, and Production Companies. These movies are stored **locally** on the frontend.
+- **Must-Watch Playlist**: Users can mark upcoming movies and TV shows airing today as "must-watch", creating a personalized watchlist separate from general favourites.
+- **Movie Reviews**: Users can submit and view movie reviews stored securely in **DynamoDB**.
+- **Global Search**: A search feature allows users to search for movies, TV shows, and actors using TMDB's search endpoint.
+- **Advanced Pagination & Sorting**: Pagination is integrated with **MUI Pagination** and state caching using **React Query**, with advanced sorting and filtering options across genres, popularity, ratings, and more.
 
 ---
 
@@ -33,6 +47,7 @@ In this assignment, I extended the functionality from Assignment 1 by integratin
 - **React Query DevTools** – for live query debugging
 - **Context API** – for state management (auth state)
 - **MUI Pagination** – for pagination UI
+- **Storybook** – for building and testing UI components in isolation to align with the app build
 
 ---
 
@@ -106,20 +121,14 @@ In this assignment, I extended the functionality from Assignment 1 by integratin
 ## 🧩 Features
 
 - 🔍 **Browse movies, TV shows, and actors** from TMDB
-- ✍️ **Add and read movie reviews**.
-- 🧠 **Fantasy movie builder** – create and manage fantasy movie entries (Note: fantasy movies are stored **locally**, not in the backend).
-- 🧾 **Manage personal lists** – favourites, must-watch lists.
-- 🔒 **Private routes** – certain pages only accessible to logged-in users.
-- 🗂️ **Filtering and sorting** – by genre, popularity, release date, vote average, and more.
-- 📄 **Pagination UI** – on movie, TV show, and actor listing pages.
-- 🔁 **Smooth client-side routing** for seamless transitions between pages.
-- 🧑‍🤝‍🧑 **Favourites** – allow users to mark their favourite movies, TV shows, and actors.
-
-### New Features:
-- **Fantasy Movie Creation**: Users can create fantasy movie records with limited details (Title, Overview, Genres, Release Date, Runtime, and Production Companies). These fantasy movies are stored **locally** in the frontend and are not submitted to the backend.
-- **Multi-Criteria Search**: Implemented a search feature to search movies, TV shows, and actors based on multiple criteria (genre, popularity, release year, etc.).
-- **Advanced Pagination**: Pagination integrated using MUI's `<Pagination />` component with client-side state caching via React Query for smoother and faster page transitions.
-- **Movie Reviews**: Users can submit reviews for movies, which are stored in DynamoDB for later retrieval and display on the app.
+- ✍️ **Add and read movie reviews** – submit reviews on favourite movies; read my movie reviews stored in the backend.
+- 🧠 **Fantasy movie builder** – create and manage fantasy movie entries (Note: fantasy movies are stored **locally**, not in the backend)
+- 🧾 **Manage personal lists** – mark favourites and build must-watch playlists for upcoming movies and airing TV shows
+- 🔒 **Private routes** – certain pages only accessible to logged-in users: my movie reviews, fantasy movie details, create fantasy movie form, submit movie review form
+- 🗂️ **Filtering and sorting** – by genre, popularity, release date, vote average, and more
+- 📄 **Pagination UI** – on movie, TV show, and actor listing pages
+- 🔁 **Smooth client-side routing** for seamless transitions between pages
+- 🧑‍🤝‍🧑 **Favourites** – allow users to mark their favourite movies, TV shows, and actors
 
 ---
 
@@ -128,9 +137,9 @@ In this assignment, I extended the functionality from Assignment 1 by integratin
 Pagination is implemented on all content listing pages (movies, TV series, actors) using **React Query** for caching and **MUI Pagination** for the UI.
 
 Key features include:
-- **Pagination**: For movie and TV show lists with dynamic page control.
-- **Advanced Filtering**: Includes filtering by genre, rating, and other criteria.
-- **Sorting**: Sort movie lists by popularity, rating, release date, etc.
-- **Multi-Criteria Search**: A form-based search to filter content based on multiple parameters.
+- **Pagination**: For movie and TV show lists with dynamic page control
+- **Advanced Filtering**: Includes filtering by title, genre, gender, rating, and other criteria
+- **Sorting**: Sort movie lists and TV show lists by ratings; Sort movie review lists by review date, movie ID, reviewerID
+- **Search feature**: A title-based search field in the header filters Movies, TV Shows, and Actors into tabbed result views
 
 ---
